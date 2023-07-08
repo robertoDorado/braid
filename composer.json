@@ -4,9 +4,9 @@
     "minimum-stability": "stable",
     "authors": [
         {
-            "name": "Laborcode",
+            "name": "Braid",
             "email": "robertodorado7@gmail.com",
-            "homepage": "http://localhost",
+            "homepage": "http://clientes.laborcode.com.br/braid",
             "role": "Developer"
         }
     ],
