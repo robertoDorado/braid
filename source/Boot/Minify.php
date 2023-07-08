@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ALL & ~E_NOTICE);
 use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
 
