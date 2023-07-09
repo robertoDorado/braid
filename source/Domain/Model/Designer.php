@@ -20,9 +20,9 @@ class Designer
     {
     }
 
-    public function setContract(Contract $contract)
+    public function setContract(int $id, Contract $contract)
     {
-        $this->contracts = $contract;
+        $this->contracts[$id] = $contract;
     }
 
     /**
