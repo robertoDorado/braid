@@ -46,7 +46,7 @@ class User
         }
     }
 
-    public function login(string $login = null, string $email = null, string $password = null, string $userType = null): bool
+    public function login(string $login = '', string $email = '', string $password = '', string $userType = ''): bool
     {
         if (empty($this->login)) {
             $this->login = $login;
@@ -200,6 +200,11 @@ class User
         return (time() > $expiresTimestamp) ? false : true;
     }
 
+    /**
+     * @param string $login
+     * @param string $email
+     * @return object|null
+     */
     private function getRecoverPasswordByLogin(string $login, string $email)
     {
         $recoverPassword = new RecoverPassword();
@@ -213,7 +218,12 @@ class User
         return $recover;
     }
 
-    private function getUserByLogin(string $login = null, string $email = null)
+    /**
+     * @param string $login
+     * @param string $email
+     * @return object|null
+     */
+    private function getUserByLogin(string $login = '', string $email = '')
     {
         if ($this->user instanceof ModelsUser) {
             $user = $this->user->find('login=:login', ':login=' . $login . '')->fetch();
