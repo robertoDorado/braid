@@ -31,7 +31,7 @@ class User
     /**
      * Login constructor
      */
-    public function __construct(string $login = null, string $email = null, string $password = null, string $userType = null)
+    public function __construct(string $login = '', string $email = '', string $password = '', string $userType = '')
     {
         $this->user = new ModelsUser();
         $this->login = $login;
@@ -46,7 +46,7 @@ class User
         }
     }
 
-    public function login(string $login, string $email, string $password, string $userType)
+    public function login(string $login = null, string $email = null, string $password = null, string $userType = null): bool
     {
         if (empty($this->login)) {
             $this->login = $login;
@@ -87,7 +87,7 @@ class User
         return true;
     }
 
-    public function register(string $name, string $document, string $email, string $pathPhoto = '', string $login, string $password, string $userType)
+    public function register(string $name, string $document, string $email, string $pathPhoto = '', string $login, string $password, string $userType): bool
     {
         if ($this->user instanceof ModelsUser) {
 
@@ -128,7 +128,7 @@ class User
         return false;
     }
 
-    public function requestRecoverPassword(string $login, string $email)
+    public function requestRecoverPassword(string $login, string $email): bool
     {
         $user = $this->getUserByLogin($login, $email);
 
@@ -151,7 +151,7 @@ class User
         return true;
     }
 
-    public function recoverPassword(string $login, string $email, string $newPassword, string $confirmPassword)
+    public function recoverPassword(string $login, string $email, string $newPassword, string $confirmPassword): bool
     {
         $user = $this->getUserByLogin($login, $email);
 
@@ -186,7 +186,7 @@ class User
         return true;
     }
 
-    private function isValidHash(string $hash)
+    private function isValidHash(string $hash): bool
     {
         $recoverPassword = new RecoverPassword();
         $expires = $recoverPassword->find('hash=:hash', ':hash=' . $hash . '', 'expires_in')->fetch();
@@ -213,7 +213,7 @@ class User
         return $recover;
     }
 
-    private function getUserByLogin(string $login, string $email)
+    private function getUserByLogin(string $login = null, string $email = null)
     {
         if ($this->user instanceof ModelsUser) {
             $user = $this->user->find('login=:login', ':login=' . $login . '')->fetch();
@@ -229,7 +229,7 @@ class User
         return null;
     }
 
-    private function validateUserType(string $userType)
+    private function validateUserType(string $userType): bool
     {
         if ($userType == 'businessman' || $userType == 'designer') {
             return true;
@@ -237,7 +237,7 @@ class User
         return false;
     }
 
-    private function validateDocument(string $document)
+    private function validateDocument(string $document): bool
     {
         if (preg_match("/^\d{3}\.\d{3}\.\d{3}-\d{2}$/", $document) || preg_match("/^\d{2}\.\d{3}\.\d{3}-\d{1}$/", $document)) {
             return true;
@@ -245,7 +245,7 @@ class User
         return false;
     }
 
-    private function checkParamsNotEmpty(...$args)
+    private function checkParamsNotEmpty(...$args): bool
     {
         foreach ($args as $value) {
             if ($value == '') {
