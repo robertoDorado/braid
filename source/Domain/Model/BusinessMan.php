@@ -10,6 +10,9 @@ namespace Source\Domain\Model;
  */
 class BusinessMan
 {
+    /** @var string Nome do dono da empresa */
+    private string $ceoName;
+
     /** @var string Nome da empresa */
     private string $companyName;
 
@@ -34,14 +37,25 @@ class BusinessMan
     /**
      * BusinessMan constructor
      */
-    public function __construct(string $companyName = '', string $companyDescription = '', string $branchOfCompany = '', string $jobDescrpiption = '', float $paymentValue = 0, bool $validCompany = false)
+    public function __construct(string $ceoName = '', string $companyName = '', string $companyDescription = '', string $branchOfCompany = '', string $jobDescrpiption = '', float $paymentValue = 0, bool $validCompany = false)
     {
+        $this->ceoName = $ceoName;
         $this->companyName = $companyName;
         $this->companyDescription = $companyDescription;
         $this->branchOfCompany = $branchOfCompany;
         $this->jobDescrpiption = $jobDescrpiption;
         $this->paymentValue = $paymentValue;
         $this->validCompany = $validCompany;
+    }
+
+    public function setCeoName(string $ceoName)
+    {
+        $this->ceoName = $ceoName;
+    }
+
+    public function getCeoName(): string
+    {
+        return $this->ceoName;
     }
 
     public function getCompanyName(): string
