@@ -31,19 +31,6 @@ class Designer
     /** @var Contract[] */
     private array $contracts;
 
-    /**
-     * Designer constructor
-     */
-    public function __construct(string $designerName = '', string $biography = '', array $goals = [], array $qualifications = [], array $portfolio = [], array $experience = [])
-    {
-        $this->designerName = $designerName;
-        $this->biography = $biography;
-        $this->goals = $goals;
-        $this->qualifications = $qualifications;
-        $this->portfolio = $portfolio;
-        $this->experience = $experience;
-    }
-
     public function setExperience(array $experience)
     {
         $this->experience = $experience;

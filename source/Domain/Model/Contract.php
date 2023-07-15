@@ -34,26 +34,17 @@ class Contract
     /** @var string Clausulas adicionais */
     private string $additionalClauses;
 
+    /** @var string Assinatura do contratante */
+    private string $signatureBusinessMan;
+
+    /** @var string Assinatura do contratado */
+    private string $signatureDesigner;
+
     /** @var BusinessMan */
     private BusinessMan $businessMan;
 
     /** @var Designer */
     private Designer $designer;
-
-    /**
-     * Contract constructor
-     */
-    public function __construct(array $jobs = [],  array $jobsDescription = [], string $timestampJobs = '', float $remuneration = 0, string $intellectualProperty = '', string $confidentiality = '', string $terminationOfContract = '', string $additionalClauses = '')
-    {
-        $this->jobs = $jobs;
-        $this->jobsDescription = $jobsDescription;
-        $this->timestampJobs = $timestampJobs;
-        $this->remuneration = $remuneration;
-        $this->intellectualProperty = $intellectualProperty;
-        $this->confidentiality = $confidentiality;
-        $this->terminationOfContract = $terminationOfContract;
-        $this->additionalClauses = $additionalClauses;
-    }
 
     public function setJobs(array $jobs)
     {
@@ -105,7 +96,7 @@ class Contract
         return $this->intellectualProperty;
     }
 
-    public function setConfidenciality(string $confidentiality)
+    public function setConfidentiality(string $confidentiality)
     {
         $this->confidentiality = $confidentiality;
     }
@@ -153,5 +144,25 @@ class Contract
     public function getBusinessMan(): BusinessMan
     {
         return $this->businessMan;
+    }
+
+    public function setSignatureBusinessMan(string $signature)
+    {
+        $this->signatureBusinessMan = $signature;
+    }
+
+    public function getSignatureBusinessMan()
+    {
+        return $this->signatureBusinessMan;
+    }
+
+    public function setSignatureDesigner(string $signature)
+    {
+        $this->signatureDesigner = $signature;
+    }
+
+    public function getSignatureDesigner()
+    {
+        return $this->signatureDesigner;
     }
 }
