@@ -91,9 +91,9 @@ class Designer
         return $this->goals;
     }
 
-    public function setContract(int $id, Contract $contract)
+    public function setContract(Contract $contract)
     {
-        $this->contracts[$id] = $contract;
+        $this->contracts[] = $contract;
     }
 
     /**

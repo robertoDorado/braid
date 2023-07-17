@@ -34,20 +34,6 @@ class BusinessMan
     /** @var bool */
     private bool $validCompany;
 
-    /**
-     * BusinessMan constructor
-     */
-    public function __construct(string $ceoName = '', string $companyName = '', string $companyDescription = '', string $branchOfCompany = '', string $jobDescrpiption = '', float $paymentValue = 0, bool $validCompany = false)
-    {
-        $this->ceoName = $ceoName;
-        $this->companyName = $companyName;
-        $this->companyDescription = $companyDescription;
-        $this->branchOfCompany = $branchOfCompany;
-        $this->jobDescrpiption = $jobDescrpiption;
-        $this->paymentValue = $paymentValue;
-        $this->validCompany = $validCompany;
-    }
-
     public function setCeoName(string $ceoName)
     {
         $this->ceoName = $ceoName;
@@ -116,9 +102,9 @@ class BusinessMan
         return $this->contracts;
     }
 
-    public function setContract(int $id, Contract $contract)
+    public function setContract(Contract $contract)
     {
-        $this->contracts[$id] = $contract;
+        $this->contracts[] = $contract;
     }
 
     public function isValidCompany(): bool
