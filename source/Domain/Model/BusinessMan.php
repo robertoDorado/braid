@@ -25,9 +25,6 @@ class BusinessMan
     /** @var string Descrição do trabalho */
     private string $jobDescrpiption;
 
-    /** @var float Valor de pagamento */
-    private float $paymentValue;
-
     /** @var Contract[] Contratos */
     private array $contracts;
 
@@ -82,16 +79,6 @@ class BusinessMan
     public function setJobDescription(string $jobDescrpiption)
     {
         $this->jobDescrpiption = $jobDescrpiption;
-    }
-
-    public function getPaymentValue(): float
-    {
-        return $this->paymentValue;
-    }
-
-    public function setPaymentValue(float $paymentValue)
-    {
-        $this->paymentValue = $paymentValue;
     }
 
     /**

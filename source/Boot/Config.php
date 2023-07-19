@@ -14,7 +14,7 @@ define("CONF_MAIL", "robertodorado7@gmail.com");
  */
 define("CONF_VIEW_PATH", __DIR__ . "/../../themes");
 define("CONF_VIEW_EXT", "php");
-define("CONF_VIEW_THEME", "mytheme");
+define("CONF_VIEW_THEME", "braid-theme");
 
 /**
  * Database Setup
