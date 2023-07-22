@@ -1,8 +1,6 @@
 <?php
 
 namespace Source\Domain\Model;
-
-use ReflectionClass;
 use Source\Models\BusinessMan as ModelsBusinessMan;
 
 /**
@@ -39,8 +37,8 @@ class BusinessMan
 
     public function  setModelBusinessMan(BusinessMan $obj)
     {
-        $getters = $this->checkGettersFilled($obj);
-        $isMethods = $this->checkIsMethodsFilled($obj);
+        $getters = checkGettersFilled($obj);
+        $isMethods = checkIsMethodsFilled($obj);
 
         if (is_array($getters) && is_array($isMethods)) {
             $this->businessMan = new ModelsBusinessMan();
@@ -54,36 +52,6 @@ class BusinessMan
                 throw new \Exception($this->businessMan->fail());
             }
         }
-    }
-
-    private function checkIsMethodsFilled(BusinessMan $obj)
-    {
-        $reflection = new ReflectionClass($obj);
-        $isMethods = [];
-
-        foreach ($reflection->getMethods() as $method) {
-            if (strpos($method->name, 'is') === 0 && $method->getNumberOfParameters() === 0) {
-                $propertyName = lcfirst(substr($method->name, 2));
-                $isMethods[$propertyName] = $obj->{$method->name}();
-            }
-        }
-
-        return $isMethods;
-    }
-
-    private function checkGettersFilled(BusinessMan $obj)
-    {
-        $reflection = new ReflectionClass($obj);
-        $getters = [];
-
-        foreach ($reflection->getMethods() as $method) {
-            if (strpos($method->name, 'get') === 0 && $method->getNumberOfParameters() === 0) {
-                $propertyName = lcfirst(substr($method->name, 3));
-                $getters[$propertyName] = $obj->{$method->name}();
-            }
-        }
-
-        return $getters;
     }
 
     public function setCeoName(string $ceoName)

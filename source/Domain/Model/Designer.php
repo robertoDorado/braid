@@ -2,6 +2,8 @@
 
 namespace Source\Domain\Model;
 
+use Source\Models\Designer as ModelsDesigner;
+
 /**
  * Designer Source\Domain\Model
  * @link 
@@ -31,6 +33,28 @@ class Designer
     /** @var Contract[] */
     private array $contracts;
 
+    /** @var ModelsDesigner Model Designer */
+    private ModelsDesigner $designer;
+
+    public function setModelDesigner(Designer $obj)
+    {
+        $getters = checkGettersFilled($obj);
+        $isMethods = checkIsMethodsFilled($obj);
+
+        if (is_array($getters) && is_array($isMethods)) {
+            $this->designer = new ModelsDesigner();
+            $this->designer->name = $this->getDesignerName();
+            $this->designer->experience = $this->getExperienceAsString();
+            $this->designer->portfolio = $this->getPortfolioAsString();
+            $this->designer->qualifications = $this->getQualificationAsString();
+            $this->designer->biography = $this->getBiography();
+            $this->designer->goals = $this->getGoalsAsString();
+            if (!$this->designer->save()) {
+                throw new \Exception($this->designer->fail());
+            }
+        }
+    }
+
     public function setExperience(array $experience)
     {
         $this->experience = $experience;
@@ -39,6 +63,16 @@ class Designer
     public function getExperience(): array
     {
         return $this->experience;
+    }
+
+    public function getExperienceAsString()
+    {
+        if (!empty($this->experience)) {
+            $experience = implode(";", $this->experience);
+            return $experience;
+        }
+
+        return null;
     }
 
     public function setPortfolio(array $portfolio)
@@ -51,6 +85,16 @@ class Designer
         return $this->portfolio;
     }
 
+    public function getPortfolioAsString()
+    {
+        if (!empty($this->portfolio)) {
+            $portfolio = implode(";", $this->portfolio);
+            return $portfolio;
+        }
+
+        return null;
+    }
+
     public function setQualifications(array $qualifications)
     {
         $this->qualifications = $qualifications;
@@ -59,6 +103,14 @@ class Designer
     public function getQualifications(): array
     {
         return $this->qualifications;
+    }
+
+    public function getQualificationAsString(): string
+    {
+        if (!empty($this->qualifications)) {
+            $qualifications = implode(";", $this->qualifications);
+            return $qualifications;
+        }
     }
 
     public function getDesignerName(): string
@@ -89,6 +141,14 @@ class Designer
     public function getGoals(): array
     {
         return $this->goals;
+    }
+
+    public function getGoalsAsString(): string
+    {
+        if (!empty($this->goals)) {
+            $goals = implode(";", $this->goals);
+            return $goals;
+        }
     }
 
     public function setContract(Contract $contract)

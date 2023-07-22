@@ -1,5 +1,33 @@
 <?php
 
+function checkIsMethodsFilled($obj) {
+    $reflection = new ReflectionClass($obj);
+    $isMethods = [];
+
+    foreach ($reflection->getMethods() as $method) {
+        if (strpos($method->name, 'is') === 0 && $method->getNumberOfParameters() === 0) {
+            $propertyName = lcfirst(substr($method->name, 2));
+            $isMethods[$propertyName] = $obj->{$method->name}();
+        }
+    }
+
+    return $isMethods;
+}
+
+function checkGettersFilled($obj) {
+    $reflection = new ReflectionClass($obj);
+    $getters = [];
+
+    foreach ($reflection->getMethods() as $method) {
+        if (strpos($method->name, 'get') === 0 && $method->getNumberOfParameters() === 0) {
+            $propertyName = lcfirst(substr($method->name, 3));
+            $getters[$propertyName] = $obj->{$method->name}();
+        }
+    }
+
+    return $getters;
+}
+
 /**
  * @param string $path
  * @return string

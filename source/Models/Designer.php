@@ -18,6 +18,6 @@ class Designer extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], ['name', 'biography', 'goals', 'qualifications', 'experience']);
+        parent::__construct($this->tableName, ['id'], ['name', 'biography', 'goals', 'qualifications', 'experience', 'portfolio']);
     }
 }
