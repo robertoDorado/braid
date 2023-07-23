@@ -1,6 +1,7 @@
 <?php
 
 namespace Source\Domain\Model;
+use Source\Models\Contract as ModelsContract;
 
 /**
  * Contract Source\Domain\Model
@@ -23,7 +24,7 @@ class Contract
     private float $remuneration;
 
     /** @var string Definição da propiedade intelectual */
-    private string $intellectualProperty;
+    private $intellectualProperty;
 
     /** @var string Definição de confidencialidade */
     private string $confidentiality;
@@ -46,6 +47,34 @@ class Contract
     /** @var Designer */
     private Designer $designer;
 
+    /** @var ModelosContract Modelo de contrato para persistência */
+    private ModelsContract $contract;
+
+    public function setModelContract(Contract $obj)
+    {
+        $getter = checkGettersFilled($obj);
+        $isMethods = checkIsMethodsFilled($obj);
+
+        if (is_array($getter) && is_array($isMethods)) {
+            $this->contract = new ModelsContract();
+            $this->contract->designer_id = $this->getDesigner()->getId();
+            $this->contract->businessman_id = $this->getBusinessMan()->getId();
+            $this->contract->jobs = $this->getJobsAsString();
+            $this->contract->jobs_description = $this->getJobsDescriptionAsString();
+            $this->contract->timestamp_jobs = $this->getTimestampJobs();
+            $this->contract->remuneration = $this->getRemuneration();
+            $this->contract->intellectual_property = $this->getIntellectualProperty();
+            $this->contract->confidentiality = $this->getConfidentiality();
+            $this->contract->termination_of_contract = $this->getTerminationOfContract();
+            $this->contract->additional_clauses = $this->getAdditionalClauses();
+            $this->contract->signature_businessman = $this->getSignatureBusinessMan();
+            $this->contract->signature_designer = $this->getSignatureDesigner();
+            if (!$this->contract->save()) {
+                throw new \Exception($this->contract->fail());
+            }
+        }
+    }
+
     public function setJobs(array $jobs)
     {
         $this->jobs = $jobs;
@@ -56,6 +85,14 @@ class Contract
         return $this->jobs;
     }
 
+    public function getJobsAsString(): string
+    {
+        if (!empty($this->jobs)) {
+            $jobs = implode(";", $this->jobs);
+            return $jobs;
+        }
+    }
+
     public function setJobsDescription(array $jobsDescription)
     {
         $this->jobsDescription = $jobsDescription;
@@ -64,6 +101,14 @@ class Contract
     public function getJobsDescription(): array
     {
         return $this->jobsDescription;
+    }
+
+    public function getJobsDescriptionAsString(): string
+    {
+        if (!empty($this->jobsDescription)) {
+            $jobs = implode(";", $this->jobsDescription);
+            return $jobs;
+        }
     }
 
     public function setTimestampJobs(string $timestampJobs)
@@ -91,8 +136,12 @@ class Contract
         $this->intellectualProperty = $intellectualProperty;
     }
 
-    public function getIntellectualProperty(): string
+    public function getIntellectualProperty()
     {
+        if (empty($this->intellectualProperty)) {
+            return null;
+        }
+
         return $this->intellectualProperty;
     }
 
@@ -101,8 +150,11 @@ class Contract
         $this->confidentiality = $confidentiality;
     }
 
-    public function getConfidentiality(): string
+    public function getConfidentiality()
     {
+        if (empty($this->confidentiality)) {
+            return null;
+        }
         return $this->confidentiality;
     }
 
@@ -111,8 +163,11 @@ class Contract
         $this->terminationOfContract = $terminationOfContract;
     }
 
-    public function getTerminationOfContract(): string
+    public function getTerminationOfContract()
     {
+        if (empty($this->terminationOfContract)) {
+            return null;
+        }
         return $this->terminationOfContract;
     }
 
@@ -121,8 +176,11 @@ class Contract
         $this->additionalClauses = $additionalClauses;
     }
 
-    public function getAdditionalClauses(): string
+    public function getAdditionalClauses()
     {
+        if (empty($this->additionalClauses)) {
+            return null;
+        }
         return $this->additionalClauses;
     }
 

@@ -1,6 +1,8 @@
 <?php
 
 namespace Source\Domain\Model;
+
+use Source\Core\Connect;
 use Source\Models\BusinessMan as ModelsBusinessMan;
 
 /**
@@ -11,20 +13,23 @@ use Source\Models\BusinessMan as ModelsBusinessMan;
  */
 class BusinessMan
 {
+    /** @var int Ultimo id inserido no banco */
+    private int $id;
+
     /** @var string Nome do dono da empresa */
     private string $ceoName;
 
     /** @var string Nome da empresa */
     private string $companyName;
 
+    /** @var string CNPJ da empresa */
+    private string $registerNumber;
+
     /** @var string Descrição da empresa */
     private string $companyDescription;
 
     /** @var string Ramo da empresa */
     private string $branchOfCompany;
-
-    /** @var string Descrição do trabalho */
-    private string $jobDescrpiption;
 
     /** @var Contract[] Contratos */
     private array $contracts;
@@ -44,14 +49,24 @@ class BusinessMan
             $this->businessMan = new ModelsBusinessMan();
             $this->businessMan->name = $this->getCeoName();
             $this->businessMan->company_name = $this->getCompanyName();
+            $this->businessMan->register_number = $this->getRegisterNumber();
             $this->businessMan->company_description = $this->getDescriptionCompany();
             $this->businessMan->branch_of_company = $this->getBranchOfCompany();
-            $this->businessMan->job_description = $this->getJobDescription();
             $this->businessMan->valid_company = $this->isValidCompany();
             if (!$this->businessMan->save()) {
                 throw new \Exception($this->businessMan->fail());
             }
+
+            $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function getId()
+    {
+        if (empty($this->id)) {
+            return null;
+        }
+        return $this->id;
     }
 
     public function setCeoName(string $ceoName)
@@ -74,6 +89,19 @@ class BusinessMan
         $this->companyName = $companyName;
     }
 
+    public function getRegisterNumber()
+    {
+        return $this->registerNumber;
+    }
+
+    public function setRegisterNumber(string $number)
+    {
+        if (!preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})$/", $number)) {
+            throw new \Exception("Número de CNPJ inválido");
+        }
+        $this->registerNumber = $number;
+    }
+
     public function getDescriptionCompany(): string
     {
         return $this->companyDescription;
@@ -94,21 +122,14 @@ class BusinessMan
         $this->branchOfCompany = $branchOfCompany;
     }
 
-    public function getJobDescription(): string
-    {
-        return $this->jobDescrpiption;
-    }
-
-    public function setJobDescription(string $jobDescrpiption)
-    {
-        $this->jobDescrpiption = $jobDescrpiption;
-    }
-
     /**
      * @return Contract[]
      */
     public function getContracts()
     {
+        if (empty($this->contracts)) {
+            return null;
+        }
         return $this->contracts;
     }
 

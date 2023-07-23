@@ -2,6 +2,7 @@
 
 namespace Source\Domain\Model;
 
+use Source\Core\Connect;
 use Source\Models\Designer as ModelsDesigner;
 
 /**
@@ -12,8 +13,14 @@ use Source\Models\Designer as ModelsDesigner;
  */
 class Designer
 {
+    /** @var int Ultimo id inserido na tabela Designer */
+    private int $id;
+
     /** @var string Nome do Designer  */
     private string $designerName;
+
+    /** @var string Número do CPF */
+    private string $document;
 
     /** @var string $biografia */
     private string $biography;
@@ -44,6 +51,7 @@ class Designer
         if (is_array($getters) && is_array($isMethods)) {
             $this->designer = new ModelsDesigner();
             $this->designer->name = $this->getDesignerName();
+            $this->designer->document = $this->getDocument();
             $this->designer->experience = $this->getExperienceAsString();
             $this->designer->portfolio = $this->getPortfolioAsString();
             $this->designer->qualifications = $this->getQualificationAsString();
@@ -52,7 +60,31 @@ class Designer
             if (!$this->designer->save()) {
                 throw new \Exception($this->designer->fail());
             }
+
+            $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function setDocument(string $number)
+    {
+        if (!preg_match("/^\d{3}\.\d{3}\.\d{3}-\d{2}$/", $number)) {
+            throw new \Exception("Número de CPF Inválido");
+        }
+
+        $this->document = $number;
+    }
+
+    public function getDocument()
+    {
+        return $this->document;
+    }
+
+    public function getId()
+    {
+        if (empty($this->id)) {
+            return null;
+        }
+        return $this->id;
     }
 
     public function setExperience(array $experience)
@@ -60,19 +92,22 @@ class Designer
         $this->experience = $experience;
     }
 
-    public function getExperience(): array
+    public function getExperience()
     {
+        if (empty($this->experience)) {
+            return null;
+        }
         return $this->experience;
     }
 
     public function getExperienceAsString()
     {
-        if (!empty($this->experience)) {
-            $experience = implode(";", $this->experience);
-            return $experience;
+        if (empty($this->experience)) {
+            return null;
         }
 
-        return null;
+        $experience = implode(";", $this->experience);
+        return $experience;
     }
 
     public function setPortfolio(array $portfolio)
@@ -80,19 +115,22 @@ class Designer
         $this->portfolio = $portfolio;
     }
 
-    public function getPortfolio(): array
+    public function getPortfolio()
     {
+        if (empty($this->portfolio)) {
+            return null;
+        }
         return $this->portfolio;
     }
 
     public function getPortfolioAsString()
     {
-        if (!empty($this->portfolio)) {
-            $portfolio = implode(";", $this->portfolio);
-            return $portfolio;
+        if (empty($this->portfolio)) {
+            return null;
         }
-
-        return null;
+        
+        $portfolio = implode(";", $this->portfolio);
+        return $portfolio;
     }
 
     public function setQualifications(array $qualifications)
@@ -157,10 +195,13 @@ class Designer
     }
 
     /**
-     * @return Contract[]
+     * @return Contract[]|null
      */
     public function getContract()
     {
+        if (empty($this->contracts)) {
+            return null;
+        }
         return $this->contracts;
     }
 }
