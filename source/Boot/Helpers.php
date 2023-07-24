@@ -1,6 +1,38 @@
 <?php
 
-function checkIsMethodsFilled($obj) {
+function transformCamelCaseToSnakeCase(array $args)
+{
+    foreach($args as &$originalString) {
+        $transformedString = preg_replace('/([a-z])([A-Z])/', '$1_$2', $originalString);
+        $originalString = strtolower($transformedString);
+    }
+    return $args;
+}
+
+function formatDate($days)
+{
+    date_default_timezone_set('America/Sao_Paulo');
+    $date = new DateTime();
+
+    $date->modify($days);
+    $formatedDate = $date->format('Y-m-d');
+    return $formatedDate;
+}
+
+function formatDateTime($days, $hour, $minute, $second)
+{
+    date_default_timezone_set('America/Sao_Paulo');
+    $dateTime = new DateTime();
+
+    $dateTime->modify($days);
+    $dateTime->setTime($hour, $minute, $second);
+
+    $formatedDateTime = $dateTime->format('Y-m-d H:i:s');
+    return $formatedDateTime;
+}
+
+function checkIsMethodsFilled($obj)
+{
     $reflection = new ReflectionClass($obj);
     $isMethods = [];
 
@@ -14,7 +46,8 @@ function checkIsMethodsFilled($obj) {
     return $isMethods;
 }
 
-function checkGettersFilled($obj) {
+function checkGettersFilled($obj)
+{
     $reflection = new ReflectionClass($obj);
     $getters = [];
 

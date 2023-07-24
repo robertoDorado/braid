@@ -17,7 +17,7 @@ class BusinessMan
     private int $id;
 
     /** @var string Nome do dono da empresa */
-    private string $ceoName;
+    private string $name;
 
     /** @var string Nome da empresa */
     private string $companyName;
@@ -69,14 +69,14 @@ class BusinessMan
         return $this->id;
     }
 
-    public function setCeoName(string $ceoName)
+    public function setCeoName(string $name)
     {
-        $this->ceoName = $ceoName;
+        $this->name = $name;
     }
 
     public function getCeoName(): string
     {
-        return $this->ceoName;
+        return $this->name;
     }
 
     public function getCompanyName(): string

@@ -17,7 +17,7 @@ class Designer
     private int $id;
 
     /** @var string Nome do Designer  */
-    private string $designerName;
+    private string $name;
 
     /** @var string Número do CPF */
     private string $document;
@@ -153,12 +153,12 @@ class Designer
 
     public function getDesignerName(): string
     {
-        return $this->designerName;
+        return $this->name;
     }
 
-    public function setDesignerName(string $designerName)
+    public function setDesignerName(string $name)
     {
-        $this->designerName = $designerName;
+        $this->name = $name;
     }
 
     public function setBiography(string $biography)

@@ -11,7 +11,7 @@ use Source\Core\Model;
  */
 class BusinessMan extends Model
 {
-    private string $tableName = CONF_DB_NAME . ".businessman";
+    private string $tableName = CONF_DB_NAME . ".business_man";
     /**
      * BusinessMan constructor
      */
