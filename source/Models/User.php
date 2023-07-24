@@ -12,7 +12,7 @@ use Source\Core\Model;
 class User extends Model
 {
     /** @var string Nome da tabela */
-    private string $tableName = CONF_DB_NAME . ".users";
+    private string $tableName = CONF_DB_NAME . ".user";
 
     /**
      * User constructor

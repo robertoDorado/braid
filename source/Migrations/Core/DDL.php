@@ -22,14 +22,19 @@ class DDL
     /** @var string String sql */
     private string $sql;
 
+    /** @var string Nome da classe */
     private string $className;
+
+    /** @var string Parametro Class */
+    private string $class;
 
     /**
      * DDL constructor
      */
     public function __construct(string $class)
     {
-        $this->reflectionClass = new ReflectionClass($class);
+        $this->class = $class;
+        $this->reflectionClass = new ReflectionClass($this->class);
     }
 
     public function setClassProperties()
@@ -41,11 +46,19 @@ class DDL
         $this->classProperties = $this->reflectionClass->getProperties();
         
         $getName = function ($property) {
-            return $property->name;
+            if ($property->class == $this->class) {
+                return $property->name;
+            }
         };
 
+        $filterEmpty = function ($property) {
+            if (!empty($property)) {
+                return $property;
+            }
+        };
         
         $this->classProperties = array_map($getName, $this->classProperties);
+        $this->classProperties = array_filter($this->classProperties, $filterEmpty);
         $this->classProperties = transformCamelCaseToSnakeCase($this->classProperties);
 
         if (!in_array('id', $this->classProperties)) {
@@ -58,14 +71,21 @@ class DDL
         return $this->classProperties;
     }
 
+    public function setClassName(string $className)
+    {
+        $this->className = $className; 
+    }
+
     public function getClassName()
     {
         if (!$this->reflectionClass instanceof ReflectionClass) {
             throw new \Exception("A instancia precisa ser do tipo ReflectionClass.");
         }
 
-        $transformedString = preg_replace('/([a-z])([A-Z])/', '$1_$2', basename($this->reflectionClass->getName()));
-        $this->className = strtolower($transformedString);
+        if (empty($this->className)) {
+            $transformedString = preg_replace('/([a-z])([A-Z])/', '$1_$2', basename($this->reflectionClass->getName()));
+            $this->className = strtolower($transformedString);
+        }
 
         return $this->className;
     }

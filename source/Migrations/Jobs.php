@@ -27,7 +27,7 @@ class Jobs extends DDL
         $this->setClassProperties();
         $this->setProperty('');
         $this->changeValueOfProperties(5, 'businessman_id');
-        $this->setKeysToProperties(['INT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 
         'VARCHAR(255) NOT NULL', 'DECIMAL(10, 2) NOT NULL',
         'DATETIME NOT NULL', 'INT NOT NULL',
         'FOREIGN KEY (businessman_id) REFERENCES business_man(id)']);

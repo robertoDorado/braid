@@ -30,12 +30,12 @@ class Contract extends DDL
         $this->removeProperty('contract');
         $this->setProperty('');
         $this->setProperty('');
-        $this->setKeysToProperties(['INT AUTO_INCREMENT PRIMARY KEY', 
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'TIMESTAMP NOT NULL DEFAULT current_timestamp()',
         'DECIMAL(10,2) NOT NULL', 'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) DEFAULT NULL', 'DATE DEFAULT NULL',
-        'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'INT NOT NULL', 'INT NOT NULL',
-        'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`) ON DELETE CASCADE',
-        'CONSTRAINT `contract_ibfk_2` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`) ON DELETE CASCADE']);
+        'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'BIGINT NOT NULL', 'BIGINT NOT NULL',
+        'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
+        'CONSTRAINT `contract_ibfk_2` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`)']);
         $this->createTableQuery();
         $this->executeQuery();
     }

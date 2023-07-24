@@ -27,7 +27,7 @@ class BusinessMan extends DDL
         $this->setClassProperties();
         $this->removeProperty('contracts');
         $this->removeProperty('business_man');
-        $this->setKeysToProperties(['INT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 
         'TINYINT(1) NOT NULL']);
         $this->createTableQuery();
