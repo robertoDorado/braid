@@ -1,8 +1,8 @@
 <?php
 namespace Source\Migrations;
 
-use Source\Domain\Model\User as DomainModelUser;
 use Source\Migrations\Core\DDL;
+use Source\Models\User as ModelsUser;
 
 require __DIR__ . "../../../vendor/autoload.php";
 
@@ -19,16 +19,13 @@ class User extends DDL
      */
     public function __construct()
     {
-        parent::__construct(DomainModelUser::class);
+        parent::__construct(ModelsUser::class);
     }
 
     public function defineTable()
     {
         $this->setClassProperties();
-        $this->removeProperty('user');
-        $this->setProperty('name');
-        $this->setProperty('document');
-        $this->setProperty('path_photo');
+        $this->removeProperty('table_name');
         $this->setProperty('');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',

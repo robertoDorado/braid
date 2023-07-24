@@ -1,8 +1,8 @@
 <?php
 namespace Source\Migrations;
 
-use Source\Domain\Model\Designer as DomainModelDesigner;
 use Source\Migrations\Core\DDL;
+use Source\Models\Designer as ModelsDesigner;
 
 require __DIR__ . "../../../vendor/autoload.php";
 
@@ -19,14 +19,13 @@ class Designer extends DDL
      */
     public function __construct()
     {
-        parent::__construct(DomainModelDesigner::class);
+        parent::__construct(ModelsDesigner::class);
     }
 
     public function defineTable()
     {
         $this->setClassProperties();
-        $this->removeProperty('contracts');
-        $this->removeProperty('designer');
+        $this->removeProperty('table_name');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL']);

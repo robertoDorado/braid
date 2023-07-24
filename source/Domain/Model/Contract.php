@@ -24,7 +24,7 @@ class Contract
     private float $remuneration;
 
     /** @var string Definição da propiedade intelectual */
-    private $intellectualProperty;
+    private string $intellectualProperty;
 
     /** @var string Definição de confidencialidade */
     private string $confidentiality;

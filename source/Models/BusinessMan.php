@@ -12,11 +12,30 @@ use Source\Core\Model;
 class BusinessMan extends Model
 {
     private string $tableName = CONF_DB_NAME . ".business_man";
+
+    /** @var string Nome do contratante */
+    private string $name = 'name';
+
+    /** @var string  Nome da empresa */
+    private string $companyName = 'company_name';
+
+    /** @var string Numero do CPNJ da empresa */
+    private string $registerNumber = 'register_number';
+
+    /** @var string Descrição sobre a empresa */
+    private string $companyDescription = 'company_description';
+
+    /** @var string Descrição sobre o ramo da empresa */
+    private string $branchOfCompany = 'branch_of_company';
+
+    /** @var bool Verificação se a empresa é valida */
+    private string $validCompany = 'valid_company';
+
     /**
      * BusinessMan constructor
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], ['name', 'company_name', 'register_number', 'company_description', 'branch_of_company', 'job_description', 'valid_company']);
+        parent::__construct($this->tableName, ['id'], [$this->name, $this->companyName, $this->registerNumber, $this->companyDescription, $this->branchOfCompany, $this->validCompany]);
     }
 }

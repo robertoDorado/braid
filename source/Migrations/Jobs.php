@@ -1,8 +1,8 @@
 <?php
 namespace Source\Migrations;
 
-use Source\Domain\Model\Jobs as DomainModelJobs;
 use Source\Migrations\Core\DDL;
+use Source\Models\Jobs as ModelsJobs;
 
 require __DIR__ . "../../../vendor/autoload.php";
 
@@ -19,18 +19,19 @@ class Jobs extends DDL
      */
     public function __construct()
     {
-        parent::__construct(DomainModelJobs::class);
+        parent::__construct(ModelsJobs::class);
     }
 
     public function defineTable()
     {
         $this->setClassProperties();
+        $this->removeProperty('table_name');
         $this->setProperty('');
-        $this->changeValueOfProperties(5, 'businessman_id');
-        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL',
+        'VARCHAR(255) NOT NULL', 
         'VARCHAR(255) NOT NULL', 'DECIMAL(10, 2) NOT NULL',
-        'DATETIME NOT NULL', 'INT NOT NULL',
-        'FOREIGN KEY (businessman_id) REFERENCES business_man(id)']);
+        'DATETIME NOT NULL',
+        'FOREIGN KEY (business_man_id) REFERENCES business_man(id)']);
         $this->createTableQuery();
         $this->executeQuery();
     }

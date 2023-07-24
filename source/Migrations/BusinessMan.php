@@ -1,8 +1,8 @@
 <?php
 namespace Source\Migrations;
 
-use Source\Domain\Model\BusinessMan as DomainModelBusinessMan;
 use Source\Migrations\Core\DDL;
+use Source\Models\BusinessMan as ModelsBusinessMan;
 
 require __DIR__ . "../../../vendor/autoload.php";
 
@@ -19,14 +19,13 @@ class BusinessMan extends DDL
      */
     public function __construct()
     {
-        parent::__construct(DomainModelBusinessMan::class);   
+        parent::__construct(ModelsBusinessMan::class);   
     }
 
     public function defineTable()
     {
         $this->setClassProperties();
-        $this->removeProperty('contracts');
-        $this->removeProperty('business_man');
+        $this->removeProperty('table_name');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 
         'TINYINT(1) NOT NULL']);
