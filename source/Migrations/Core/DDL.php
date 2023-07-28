@@ -123,6 +123,13 @@ class DDL
         }
     }
 
+    public function alterTable(array $params)
+    {
+        $this->sql .= "ALTER TABLE " . strtolower($this->getClassName()) . " ";
+        $this->sql .= implode(",", $params) . ";";
+        return $this;
+    }
+
     public function dropTableIfExists()
     {
         $this->sql .= "DROP TABLE IF EXISTS " . strtolower($this->getClassName()) . ";";
