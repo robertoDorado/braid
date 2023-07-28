@@ -34,7 +34,7 @@ class Contract extends DDL
         'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
         'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
         'CONSTRAINT `contract_ibfk_2` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`)']);
-        $this->createTableQuery();
+        $this->dropTableIfExists()->createTableQuery();
         $this->executeQuery();
     }
 }

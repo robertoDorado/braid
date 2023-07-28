@@ -20,7 +20,7 @@ class DDL
     private array $classProperties;
 
     /** @var string String sql */
-    private string $sql;
+    private string $sql = '';
 
     /** @var string Nome da classe */
     private string $className;
@@ -123,6 +123,12 @@ class DDL
         }
     }
 
+    public function dropTableIfExists()
+    {
+        $this->sql .= "DROP TABLE IF EXISTS " . strtolower($this->getClassName()) . ";";
+        return $this;
+    }
+
     public function createTableQuery()
     {
         if (!$this->reflectionClass instanceof ReflectionClass) {
@@ -130,7 +136,7 @@ class DDL
         }
 
         $params = "(" . implode(", ", $this->classProperties) . ")";
-        $this->sql = "CREATE TABLE IF NOT EXISTS " . strtolower($this->getClassName()) . " " . $params ."";
+        $this->sql .= "CREATE TABLE IF NOT EXISTS " . strtolower($this->getClassName()) . " " . $params .";";
         return $this;
     }
 

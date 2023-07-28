@@ -32,7 +32,7 @@ class RecoverPassword extends DDL
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'TINYINT(1) NOT NULL',
         'DATETIME NOT NULL', 'KEY id_user (id_user)',
         'CONSTRAINT FK1_user FOREIGN KEY (id_user) REFERENCES user (id) ON DELETE NO ACTION ON UPDATE NO ACTION']);
-        $this->createTableQuery();
+        $this->dropTableIfExists()->createTableQuery();
         $this->executeQuery();
     }
 }
