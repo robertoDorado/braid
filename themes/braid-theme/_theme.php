@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>W3.CSS Template</title>
+    <title>Braid.</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="<?= theme("assets/style.css") ?>">
@@ -13,14 +13,26 @@
 
 <body>
     <!-- Navbar -->
-    <div class="w3-top">
-        <div class="w3-bar w3-red w3-card w3-left-align w3-large">
-            <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-            <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
-            <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 1</a>
-            <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 2</a>
-            <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 3</a>
-            <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 4</a>
+    <div class="top-nav">
+        <div class="w3-bar w3-card w3-white w3-left-align w3-large menu-bar">
+            <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+            <a href="#" class="w3-bar-item w3-padding-large"><img class="logo-braid" style="width:100px" src="<?= theme("assets/img/logo-rbg.png") ?>" alt="logo"></a>
+            <div class="container-home">
+                <a href="#" class="w3-hide-small">Home</a>
+                <div class="underline-home"></div>
+            </div>
+            <div class="container-about">
+                <a href="#" class="w3-hide-small">Sobre</a>
+                <div class="underline-about"></div>
+            </div>
+            <div class="container-register">
+                <a href="#" class="w3-hide-small">Cadastre-se</a>
+                <div class="underline-register"></div>
+            </div>
+            <div class="container-login">
+                <a href="#" class="w3-hide-small">Login</a>
+                <div class="underline-login"></div>
+            </div>
         </div>
 
         <!-- Navbar on small screens -->

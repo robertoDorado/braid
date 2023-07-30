@@ -18,3 +18,49 @@ button {
 .fa-coffee {
     font-size: 200px
 }
+
+@media screen and (min-width: 1200px) {
+
+    .underline-home {
+        width: 4rem;
+        height: .2rem;
+        background-color: #FF2C2C;
+    }
+
+    .container-home {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container-home a {
+        text-decoration: none;
+    }
+
+    .menu-bar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+
+        background: url(../img/icon-rbg.png);
+        background-repeat: no-repeat;
+    }
+
+    .logo-braid {
+        background-color: transparent;
+    }
+
+    .logo-link:hover {
+        background-color: transparent !important;
+    }
+
+    .top-nav {
+        -webkit-box-shadow: 1px 0px 11px 0px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 1px 0px 11px 0px rgba(0, 0, 0, 0.75);
+        box-shadow: 1px 0px 11px 0px rgba(0, 0, 0, 0.75);
+
+        position: absolute;
+        width: 100%;
+    }
+}
