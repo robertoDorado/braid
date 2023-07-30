@@ -4,6 +4,7 @@
 <head>
     <title>Braid.</title>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="<?= theme("assets/img/favicon.ico") ?>" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="<?= theme("assets/style.css") ?>">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -37,19 +38,12 @@
 
         <!-- Navbar on small screens -->
         <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-            <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-            <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-            <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-            <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 4</a>
+            <a href="#" class="w3-bar-item w3-button w3-padding-large">Home</a>
+            <a href="#" class="w3-bar-item w3-button w3-padding-large">Sobre</a>
+            <a href="#" class="w3-bar-item w3-button w3-padding-large">Cadastre-se</a>
+            <a href="#" class="w3-bar-item w3-button w3-padding-large">Login</a>
         </div>
     </div>
-
-    <!-- Header -->
-    <header class="w3-container w3-red w3-center" style="padding:128px 16px">
-        <h1 class="w3-margin w3-jumbo">START PAGE</h1>
-        <p class="w3-xlarge">Template by w3.css</p>
-        <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Get Started</button>
-    </header>
 
     <?= $v->section("content") ?>
 

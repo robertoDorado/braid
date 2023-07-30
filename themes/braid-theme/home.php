@@ -1,5 +1,11 @@
 <?php $v->layout("_theme") ?>
 
+<!-- Header -->
+<header class=" w3-center background-home" style="padding:300px 16px">
+    <h1 class="w3-margin" class="first-title">Potencialize seus projetos com a nossa plataforma para designers freelancers!</h1>
+    <h1 style="display:none" class="second-title" class="w3-margin">Encontre projetos com a nossa plataforma para designers freelancers!</h1>
+</header>
+
 <!-- First Grid -->
 <div class="w3-row-padding w3-padding-64 w3-container">
     <div class="w3-content">
@@ -35,3 +41,4 @@
         </div>
     </div>
 </div>
+<script src="<?= theme("assets/scripts.js") ?>"></script>
