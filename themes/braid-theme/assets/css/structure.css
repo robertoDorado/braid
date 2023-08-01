@@ -19,6 +19,23 @@ button {
     font-size: 200px
 }
 
+@keyframes pisca {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.background-home h1:after {
+    content: '|';
+    margin-left: 5px;
+    opacity: 1;
+    animation: pisca .7s infinite;
+}
+
 .top-nav {
     -webkit-box-shadow: 1px 0px 11px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 1px 0px 11px 0px rgba(0, 0, 0, 0.75);
@@ -28,44 +45,45 @@ button {
     width: 100%;
 }
 
+.background-home {
+    background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .25) 35%, rgba(0, 0, 0, .25) 100%), url(../img/background-home.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position-y: top;
+    background-repeat: no-repeat;
+    padding: 50px 16px;
+}
+
+.background-home {
+    color: #fff;
+}
+
+.background-home h1 {
+    height:300px;
+}
+
 @media screen and (min-width: 1200px) {
 
-    @keyframes pisca{
-        0%, 100%{
-            opacity: 1;
-        }
-        50%{
-            opacity: 0;
-        }
-    }
-
-    .container-btn {
-        margin-top:7rem;
-    }
-
-    .background-home h1 {
-        font-size: 3rem;
-        position:absolute;
-        top:15rem;
-    }
-
-    .background-home h1:after{
-        content: '|';
-        margin-left: 5px;
-        opacity: 1;
-        animation: pisca .7s infinite;
-       }
-
     .background-home {
-        color: #fff;
-    }
-
-    .background-home {
-        background: linear-gradient(180deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.25) 35%, rgba(0,0,0,.25) 100%), url(../img/background-home.jpg);
+        background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .25) 35%, rgba(0, 0, 0, .25) 100%), url(../img/background-home.jpg);
         background-attachment: fixed;
         background-size: cover;
         background-position-y: top;
         background-repeat: no-repeat;
+        padding:300px 16px;
+    }
+
+    .container-btn {
+        margin-top: 7rem;
+        position: absolute;
+        left: 0;
+        right: 0;
+    }
+
+    .background-home h1 {
+        font-size: 3rem;
+        position: absolute;
+        top: 15rem;
     }
 
     .container-login a:hover+.underline-login {
