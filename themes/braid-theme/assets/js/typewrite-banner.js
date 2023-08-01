@@ -1,26 +1,29 @@
-function typeWrite(element) {
-    const arrayText = element.innerHTML.split('');
-    element.innerHTML = ' ';
+function typeWrite(text) {
+    const arrayText = text.split('');
+    document.querySelector('.background-home h1').innerHTML = ' ';
     arrayText.forEach(function (letter, i) {
         setTimeout(function () {
-            element.innerHTML += letter;
+            document.querySelector('.background-home h1').innerHTML += letter;
         }, 75 * i)
     });
 }
 
-typeWrite(document.querySelector('.background-home h1'));
+const texts = [
+    {
+        title: "Potencialize seus projetos com a nossa plataforma para designers freelancers!",
+    },
+    {
+        title: "Encontre projetos com a nossa plataforma para designers freelancers!",
+    }
+]
+
+let currentIndex = 0;
+const intervalTime = 10000;
+
+typeWrite(texts[currentIndex].title);
 
 setInterval(() => {
-    const firstTitle = document.querySelector('.background-home h1');
-    const secondTitle = firstTitle.nextElementSibling;
-
-    if (firstTitle.style.display === 'none') {
-        firstTitle.style.display = 'block';
-        secondTitle.style.display = 'none';
-        typeWrite(firstTitle);
-    } else {
-        firstTitle.style.display = 'none';
-        secondTitle.style.display = 'block';
-        typeWrite(secondTitle);
-    }
-}, 10000)
+    currentIndex++;
+    currentIndex = currentIndex >= texts.length ? 0 : currentIndex
+    typeWrite(texts[currentIndex].title);
+}, intervalTime);

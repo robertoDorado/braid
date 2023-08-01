@@ -2,8 +2,11 @@
 
 <!-- Header -->
 <header class=" w3-center background-home" style="padding:300px 16px">
-    <h1 class="w3-margin" class="first-title">Potencialize seus projetos com a nossa plataforma para designers freelancers!</h1>
-    <h1 style="display:none" class="second-title" class="w3-margin">Encontre projetos com a nossa plataforma para designers freelancers!</h1>
+    <h1 class="w3-margin" class="first-title"></h1>
+    <div class="container-btn">
+        <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Quero encontrar freelancers</button>
+        <button class="w3-button w3-padding-large w3-large w3-margin-top" style="background-color: #ff2c2c;">Sou um freelancer</button>
+    </div>
 </header>
 
 <!-- First Grid -->
