@@ -1,22 +1,8 @@
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Lato", sans-serif
-}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;1,300&display=swap');
 
-.w3-bar,
-h1,
-button {
-    font-family: "Montserrat", sans-serif
-}
-
-.fa-anchor,
-.fa-coffee {
-    font-size: 200px
+* {
+    font-family: 'Open Sans', sans-serif;
+    font-style: normal;
 }
 
 @keyframes pisca {
@@ -59,10 +45,123 @@ button {
 }
 
 .background-home h1 {
-    height:300px;
+    height: 300px;
+}
+
+.call-to-action-1 {
+    background-color: #3c4049;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.call-to-action-1 p {
+    color: #ffffff;
+    font-weight: normal;
+    width: 300px;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.call-to-action-1 a {
+    color: #57cbf2;
+    text-decoration: none;
+}
+
+.call-to-action-1 a:hover {
+    opacity: .7;
+}
+
+.registers-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.businessman-register span {
+    font-size: 2.5rem;
+}
+
+.freelancers-register span {
+    font-size: 2.5rem;
+}
+
+.freelancers-register p {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    font-style: italic;
+}
+
+.businessman-register p {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    font-style: italic;
+}
+
+.freelancers-register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 2rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.businessman-register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width:100%;
+    padding: 2rem 0;
+}
+
+.about-us {
+    background-color: #3c4049;
+    color:#ffffff;
+}
+
+.about-us .about-us-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 2rem 0;
+}
+
+.about-us .about-us-title p {
+    margin:0;
+    font-size:1.2rem;
+}
+
+.about-us .about-us-title h1 {
+    margin:0;
 }
 
 @media screen and (min-width: 1200px) {
+
+    .businessman-register {
+        width: 50%;
+    }
+
+    .freelancers-register {
+        width: 50%;
+        border-right: 1px solid #ccc;
+    }
+
+    .registers-view {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+        background-color: #ffffff;
+    }
+
+    .call-to-action-1 p {
+        width: auto;
+    }
 
     .background-home {
         background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .25) 35%, rgba(0, 0, 0, .25) 100%), url(../img/background-home.jpg);
@@ -70,7 +169,7 @@ button {
         background-size: cover;
         background-position-y: top;
         background-repeat: no-repeat;
-        padding:300px 16px;
+        padding: 300px 16px;
     }
 
     .container-btn {
@@ -87,7 +186,7 @@ button {
     }
 
     .container-login a:hover+.underline-login {
-        width: 3.4rem;
+        width: 3rem;
     }
 
     .underline-login {
@@ -108,7 +207,7 @@ button {
     }
 
     .container-register a:hover+.underline-register {
-        width: 7rem;
+        width: 6rem;
     }
 
     .underline-register {
@@ -135,7 +234,7 @@ button {
     }
 
     .container-about a:hover+.underline-about {
-        width: 3.5rem;
+        width: 3rem;
     }
 
     .underline-about {
