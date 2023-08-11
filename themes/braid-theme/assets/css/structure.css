@@ -113,13 +113,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width:100%;
+    width: 100%;
     padding: 2rem 0;
 }
 
 .about-us {
     background-color: #3c4049;
-    color:#ffffff;
+    color: #ffffff;
 }
 
 .about-us .about-us-title {
@@ -127,20 +127,120 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+
     padding: 2rem 0;
 }
 
 .about-us .about-us-title p {
-    margin:0;
-    font-size:1.2rem;
+    margin: 1rem .9rem;
+    font-size: 1.2rem;
+    text-align: center;
 }
 
 .about-us .about-us-title h1 {
-    margin:0;
+    margin: 0;
+}
+
+.about-us-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-us-1 p {
+    margin: 0 1rem;
+}
+
+.about-us-2 p {
+    margin: 0 1rem;
+}
+
+.about-us-3 p {
+    margin: 0 1rem;
+}
+
+.about-us-1 i {
+    font-size: 4rem;
+}
+
+.about-us-2 i {
+    font-size: 4rem;
+}
+
+.about-us-3 i {
+    font-size: 4rem;
+}
+
+.about-us-1 {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.about-us-2 {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.about-us-3 {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.call-to-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    background-color: #FF2C2C;
+    height: 300px;
+}
+
+.call-to-action h3 {
+    text-align: center;
+    color: #fff;
+    margin: 0 !important;
+    padding: 0 2rem;
 }
 
 @media screen and (min-width: 1200px) {
+
+    .call-to-action {
+        height: 200px;
+    }
+
+    .call-to-action h3 {
+        padding: 0;
+    }
+
+    .about-us {
+        height: 460px;
+    }
+
+    .about-us .about-us-title p {
+        margin: 0;
+    }
+
+    .about-us-1 {
+        width: 33.33%;
+    }
+
+    .about-us-2 {
+        width: 33.33%;
+    }
+
+    .about-us-3 {
+        width: 33.33%;
+    }
+
+    .about-us-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        padding: 0 5rem;
+    }
 
     .businessman-register {
         width: 50%;

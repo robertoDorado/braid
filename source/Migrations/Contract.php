@@ -31,20 +31,12 @@ class Contract extends DDL
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL', 'BIGINT NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'DATETIME NOT NULL',
         'DECIMAL(10,2) NOT NULL', 'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) DEFAULT NULL', 'DATE DEFAULT NULL',
-        'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'DECIMAL(10,2) NOT NULL',
+        'VARCHAR(255) DEFAULT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
         'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
         'CONSTRAINT `contract_ibfk_2` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`)']);
         $this->dropTableIfExists()->createTableQuery();
         $this->executeQuery();
     }
-
-    public function modifyTable()
-    {
-        $this->setClassProperties();
-        $lastProperty = array_pop($this->getProperties());
-        $this->alterTable(['ADD '. $lastProperty .' DECIMAL(10,2) NOT NULL']);
-        $this->executeQuery();
-    }
 }
 
-(new Contract())->modifyTable();
+(new Contract())->defineTable();

@@ -50,9 +50,6 @@ class Contract
     /** @var ModelosContract Modelo de contrato para persistência */
     private ModelsContract $contract;
 
-    /** @var string Valor cobrado pela braid com base no valor do contrato (taxa de 1%) */
-    private float $billingAmount;
-
     public function setModelContract(Contract $obj)
     {
         $getter = checkGettersFilled($obj);
@@ -72,21 +69,10 @@ class Contract
             $this->contract->additional_clauses = $this->getAdditionalClauses();
             $this->contract->signature_businessman = $this->getSignatureBusinessMan();
             $this->contract->signature_designer = $this->getSignatureDesigner();
-            $this->contract->billing_amount = $this->getBillingAmount();
             if (!$this->contract->save()) {
                 throw new \Exception($this->contract->fail());
             }
         }
-    }
-
-    public function getBillingAmount()
-    {
-        return $this->billingAmount;
-    }
-
-    public function setBillingAmount(float $amount)
-    {
-        $this->billingAmount = $amount;
     }
 
     public function setJobs(array $jobs)

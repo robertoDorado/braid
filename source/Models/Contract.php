@@ -49,14 +49,11 @@ class Contract extends Model
     /** @var string Assinatura do contratado */
     private string $signatureDesigner = 'signature_designer';
 
-    /** @var string Valor cobrado pela braid com base no valor do contrato (taxa de 1%) */
-    private string $billingAmount = 'billing_amount';
-
     /**
      * Contract constructor
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobs, $this->jobsDescription, $this->timestampJobs, $this->remuneration, $this->intellectualProperty, $this->confidentiality, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner, $this->billingAmount]);    
+        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobs, $this->jobsDescription, $this->timestampJobs, $this->remuneration, $this->intellectualProperty, $this->confidentiality, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner]);    
     }
 }
