@@ -23,7 +23,7 @@
     </div>
 </section>
 
-<section class="about-us">
+<section class="about-us" id="about-us">
     <div class="about-us-title">
         <h1>Como Funciona?</h1>
         <p>Microepresário: Anuncie a sua demanda facilmente, contrate freelancers e pague com segurança.</p>

@@ -15,6 +15,10 @@
     }
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 .background-home h1:after {
     content: '|';
     margin-left: 5px;
@@ -204,7 +208,124 @@
     padding: 0 2rem;
 }
 
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contact-info img {
+    width: 150px;
+}
+
+.important-links h3 {
+    font-size: 1.4em;
+    color: #555;
+}
+
+.important-links ul li {
+    margin: .5rem 0;
+}
+
+.important-links ul li a {
+    text-decoration: none;
+}
+
+.important-links ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer p {
+    text-align: center;
+}
+
+.important-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.call-to-action-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.call-to-action-footer p {
+    width:310px;
+}
+
+footer p a {
+    text-decoration: none;
+    color: #FF2C2C;
+}
+
+footer {
+    padding: 0 !important;
+    background-color: #f2f1f1;
+}
+
+.rights-reserved {
+    background-color: #dfdfdf;
+    margin: 0;
+    padding: .5rem;
+}
+
+.content-wrap {
+    padding: 3rem 0;
+}
+
 @media screen and (min-width: 1200px) {
+
+    footer p a {
+        color: #3c4049;
+    }
+
+    footer p a {
+        text-decoration: none;
+    }
+
+    footer p a:hover {
+        color: #FF2C2C;
+    }
+
+    .call-to-action-footer p {
+        text-align: left;
+    }
+
+    .call-to-action-footer {
+        align-items: baseline;
+        width: 38.33%;
+    }
+
+    .important-links ul li a:hover {
+        color: #FF2C2C;
+    }
+
+    .important-links {
+        width: 23.33%;
+        align-items: baseline;
+        padding: 0;
+    }
+
+    .contact-info {
+        width: 38.33%;
+    }
+
+    .contact-info img {
+        width: 250px;
+    }
+
+    .content-wrap {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+    }
 
     .call-to-action {
         height: 200px;
@@ -349,7 +470,7 @@
     }
 
     .container-home a:hover+.underline-home {
-        width: 3.5rem;
+        width: 3rem;
     }
 
     .underline-home {
