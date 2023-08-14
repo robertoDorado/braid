@@ -27,11 +27,11 @@
                 <div class="underline-about"></div>
             </div>
             <div class="container-register">
-                <a href="#" class="w3-hide-small">Cadastre-se</a>
+                <a href="<?= url("user/register") ?>" class="w3-hide-small">Cadastre-se</a>
                 <div class="underline-register"></div>
             </div>
             <div class="container-login">
-                <a href="#" class="w3-hide-small">Login</a>
+                <a href="<?= url("user/login") ?>" class="w3-hide-small">Login</a>
                 <div class="underline-login"></div>
             </div>
         </div>
@@ -60,8 +60,8 @@
                 <ul>
                     <li><a href="#">Home</a></li>
                     <li><a href="#about-us">Sobre</a></li>
-                    <li><a href="#">Cadatre-se</a></li>
-                    <li><a href="#">Login</a></li>
+                    <li><a href="<?= url("user/register") ?>">Cadatre-se</a></li>
+                    <li><a href="<?= url("user/login") ?>">Login</a></li>
                 </ul>
             </div>
             <div class="call-to-action-footer">

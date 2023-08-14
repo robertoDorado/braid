@@ -9,7 +9,7 @@ use Source\Core\MyRouter;
 $route = new MyRouter(url(), ":");
 
 /**
- * Home Route
+ * Home
  */
 $module = null;
 $route->namespace("Source\Controllers");
@@ -17,7 +17,16 @@ $route->group($module);
 $route->get("/", "Home:index");
 
 /**
- * Error Route
+ * Login
+ */
+$module = "user";
+$route->namespace("Source\Controllers");
+$route->group($module);
+$route->get("/login", "User:login");
+$route->get("/register", "User:register");
+
+/**
+ * Error
  */
 $module = "ops";
 $route->namespace("Source\Controllers");
