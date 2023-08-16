@@ -4,12 +4,12 @@
 <header class=" w3-center background-home">
     <h1 class="w3-margin" class="first-title"></h1>
     <div class="container-btn">
-        <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Quero encontrar freelancers</button>
-        <button class="w3-button w3-padding-large w3-large w3-margin-top" style="background-color: #ff2c2c;">Sou um freelancer</button>
+        <a href="<?= url("user/register") ?>" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Quero encontrar freelancers</a>
+        <a href="<?= url("user/register") ?>" class="w3-button w3-padding-large w3-large w3-margin-top" style="background-color: #ff2c2c;">Sou um freelancer</a>
     </div>
 </header>
 <div class="call-to-action-1">
-    <p>Ainda não tem uma conta? <a href="#">Cadastre-se</a></p>
+    <p>Ainda não tem uma conta? <a href="<?= url("user/register") ?>">Cadastre-se</a></p>
 </div>
 
 <section class="registers-view">
@@ -27,7 +27,7 @@
     <div class="about-us-title">
         <h1>Como Funciona?</h1>
         <p>Microepresário: Anuncie a sua demanda facilmente, contrate freelancers e pague com segurança.</p>
-        <p>Freelancer: Anuncie a sua demanda facilmente, contrate freelancers e pague com segurança.</p>
+        <p>Freelancer: Publique o seu currículo e o seu porfólio e se canditate a diversas vagas na plataforma.</p>
     </div>
     <div class="about-us-content">
         <div class="about-us-1">

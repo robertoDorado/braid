@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Braid.</title>
+    <title>Braid.pro</title>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="<?= theme("assets/img/favicon.ico") ?>" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,8 +40,8 @@
         <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
             <a href="<?= url("/") ?>" class="w3-bar-item w3-button w3-padding-large">Home</a>
             <a href="#about-us" class="w3-bar-item w3-button w3-padding-large">Sobre</a>
-            <a href="#" class="w3-bar-item w3-button w3-padding-large">Cadastre-se</a>
-            <a href="#" class="w3-bar-item w3-button w3-padding-large">Login</a>
+            <a href="<?= url("user/register") ?>" class="w3-bar-item w3-button w3-padding-large">Cadastre-se</a>
+            <a href="<?= url("user/login") ?>" class="w3-bar-item w3-button w3-padding-large">Login</a>
         </div>
     </div>
 
@@ -67,7 +67,7 @@
             <div class="call-to-action-footer">
                 <p>Você é um freelancer?
                     Nós conectamos milhares de profissionais a empresas todos os dias.</p>
-                <button class="w3-button w3-black">Cadastre-se</button>
+                <a href="<?= url("user/register") ?>" class="w3-button w3-black">Cadastre-se</a>
             </div>
         </div>
         <p class="rights-reserved">Todos os direitos reservados por <a href="#">Braid.pro</a></p>
