@@ -26,10 +26,18 @@ class Designer extends DDL
     {
         $this->setClassProperties();
         $this->removeProperty('table_name');
-        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
+        $this->setProperty('');
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
-        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL']);
+        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'ADD CONSTRAINT email UNIQUE (email)']);
         $this->createTableQuery();
+        $this->executeQuery();
+    }
+
+    public function setEmailColumn()
+    {
+        $this->setClassProperties();
+        $this->alterTable(['ADD email VARCHAR(255) NOT NULL', 'ADD CONSTRAINT email UNIQUE (email)']);
         $this->executeQuery();
     }
 }

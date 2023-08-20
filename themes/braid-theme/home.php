@@ -4,21 +4,21 @@
 <header class=" w3-center background-home">
     <h1 class="w3-margin" class="first-title"></h1>
     <div class="container-btn">
-        <a href="<?= url("user/register") ?>" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Quero encontrar freelancers</a>
-        <a href="<?= url("user/register") ?>" class="w3-button w3-padding-large w3-large w3-margin-top" style="background-color: #ff2c2c;">Sou um freelancer</a>
+        <a href="<?= url("user/register?userType=businessman") ?>" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Quero encontrar freelancers</a>
+        <a href="<?= url("user/register?userType=designer") ?>" class="w3-button w3-padding-large w3-large w3-margin-top" style="background-color: #ff2c2c;">Sou um freelancer</a>
     </div>
 </header>
 <div class="call-to-action-1">
-    <p>Ainda não tem uma conta? <a href="<?= url("user/register") ?>">Cadastre-se</a></p>
+    <p>Ainda não tem uma conta? <a href="<?= url("user/register?userType=generic") ?>">Cadastre-se</a></p>
 </div>
 
 <section class="registers-view">
     <div class="freelancers-register">
-        <span>345987</span>
+        <span><?= $designerTotalData ?></span>
         <p>Freelancers cadastrados</p>
     </div>
     <div class="businessman-register">
-        <span>274569</span>
+        <span><?= $businessManTotalData ?></span>
         <p>Microempresas cadastrados</p>
     </div>
 </section>
@@ -54,7 +54,7 @@
 
 <section class="call-to-action">
     <h3 class="w3-margin w3-xlarge">Você está pronto para encontrar o freelancer ideal para o seu projeto?</h3>
-    <button class="w3-button w3-black w3-padding-large w3-large">Cadastre-se agora mesmo!</button>
+    <a href="<?= url("user/register?userType=generic") ?>" class="w3-button w3-black w3-padding-large w3-large">Cadastre-se agora mesmo!</a>
 </section>
 
 <script src="<?= theme("assets/scripts.js") ?>"></script>

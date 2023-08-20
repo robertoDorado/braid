@@ -26,6 +26,18 @@ class User extends Controller
 
     public function register()
     {
-        echo $this->view->render("admin/register", []);
+        if (!$this->has('userType')) {
+            redirect("/");
+        }
+
+        $validUserType = ['businessman', 'designer', 'generic'];
+        if (!in_array($this->get('userType'), $validUserType)) {
+            redirect("/");
+        }
+
+        $registerType = $this->get('userType');
+        echo $this->view->render("admin/register", [
+            'registerType' => $registerType
+        ]);
     }
 }

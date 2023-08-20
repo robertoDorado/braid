@@ -16,6 +16,9 @@ class BusinessMan extends Model
     /** @var string Nome do contratante */
     private string $name = 'name';
 
+    /** @var string Email do contratante */
+    private string $email = 'email';
+
     /** @var string  Nome da empresa */
     private string $companyName = 'company_name';
 
@@ -36,6 +39,6 @@ class BusinessMan extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->companyName, $this->registerNumber, $this->companyDescription, $this->branchOfCompany, $this->validCompany]);
+        parent::__construct($this->tableName, ['id'], [$this->name, $this->email, $this->companyName, $this->registerNumber, $this->companyDescription, $this->branchOfCompany, $this->validCompany]);
     }
 }

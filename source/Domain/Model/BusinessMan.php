@@ -61,6 +61,12 @@ class BusinessMan
         }
     }
 
+    public function getTotalData()
+    {
+        $this->businessMan = new ModelsBusinessMan();
+        return $this->businessMan->find('')->count();
+    }
+
     public function getId()
     {
         if (empty($this->id)) {

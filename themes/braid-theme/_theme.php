@@ -27,7 +27,7 @@
                 <div class="underline-about"></div>
             </div>
             <div class="container-register">
-                <a href="<?= url("user/register") ?>" class="w3-hide-small">Cadastre-se</a>
+                <a href="<?= url("user/register?userType=generic") ?>" class="w3-hide-small">Cadastre-se</a>
                 <div class="underline-register"></div>
             </div>
             <div class="container-login">
@@ -40,7 +40,7 @@
         <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
             <a href="<?= url("/") ?>" class="w3-bar-item w3-button w3-padding-large">Home</a>
             <a href="#about-us" class="w3-bar-item w3-button w3-padding-large">Sobre</a>
-            <a href="<?= url("user/register") ?>" class="w3-bar-item w3-button w3-padding-large">Cadastre-se</a>
+            <a href="<?= url("user/register?userType=generic") ?>" class="w3-bar-item w3-button w3-padding-large">Cadastre-se</a>
             <a href="<?= url("user/login") ?>" class="w3-bar-item w3-button w3-padding-large">Login</a>
         </div>
     </div>
@@ -60,14 +60,14 @@
                 <ul>
                     <li><a href="#">Home</a></li>
                     <li><a href="#about-us">Sobre</a></li>
-                    <li><a href="<?= url("user/register") ?>">Cadatre-se</a></li>
+                    <li><a href="<?= url("user/register?userType=generic") ?>">Cadatre-se</a></li>
                     <li><a href="<?= url("user/login") ?>">Login</a></li>
                 </ul>
             </div>
             <div class="call-to-action-footer">
                 <p>Você é um freelancer?
                     Nós conectamos milhares de profissionais a empresas todos os dias.</p>
-                <a href="<?= url("user/register") ?>" class="w3-button w3-black">Cadastre-se</a>
+                <a href="<?= url("user/register?userType=generic") ?>" class="w3-button w3-black">Cadastre-se</a>
             </div>
         </div>
         <p class="rights-reserved">Todos os direitos reservados por <a href="#">Braid.pro</a></p>

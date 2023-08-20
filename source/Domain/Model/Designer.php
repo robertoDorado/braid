@@ -65,6 +65,12 @@ class Designer
         }
     }
 
+    public function getTotalData()
+    {
+        $this->designer = new ModelsDesigner();
+        return $this->designer->find('')->count();
+    }
+
     public function setDocument(string $number)
     {
         if (!preg_match("/^\d{3}\.\d{3}\.\d{3}-\d{2}$/", $number)) {

@@ -3,6 +3,8 @@
 namespace Source\Controllers;
 
 use Source\Core\Controller;
+use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Designer;
 
 /**
  * Home Controllers
@@ -23,7 +25,16 @@ class Home extends Controller
 
     public function index(): void
     {
-        echo $this->view->render("home", []);
+        $businessMan = new BusinessMan();
+        $businessManTotalData = $businessMan->getTotalData();
+
+        $designer = new Designer();
+        $designerTotalData = $designer->getTotalData();
+        
+        echo $this->view->render("home", [
+            'businessManTotalData' => $businessManTotalData,
+            'designerTotalData' => $designerTotalData
+        ]);
     }
 
     /**

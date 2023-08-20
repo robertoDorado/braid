@@ -15,6 +15,8 @@ class Designer extends Model
 
     private string $name = 'name';
 
+    private string $email = 'email';
+
     private string $document = 'document';
 
     private string $biography = 'biography';
@@ -32,6 +34,6 @@ class Designer extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->document, $this->biography, $this->goals, $this->qualifications, $this->experience, $this->portfolio]);
+        parent::__construct($this->tableName, ['id'], [$this->name, $this->email, $this->document, $this->biography, $this->goals, $this->qualifications, $this->experience, $this->portfolio]);
     }
 }
