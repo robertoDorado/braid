@@ -7,7 +7,6 @@ use Source\Support\Message;
 
 class Controller
 {
-
     /** @var View */
     protected $view;
 
