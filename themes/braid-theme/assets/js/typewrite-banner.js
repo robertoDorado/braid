@@ -1,4 +1,4 @@
-if (new Url().getCurrentEndpoint() == "/") {
+if (url.getCurrentEndpoint() == "/") {
     function typeWrite(text) {
         const arrayText = text.split('');
         document.querySelector('.background-home h1').innerHTML = ' ';

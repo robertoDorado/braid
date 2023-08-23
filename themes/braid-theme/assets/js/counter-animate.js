@@ -1,4 +1,4 @@
-if (new Url().getCurrentEndpoint() == "/") {
+if (url.getCurrentEndpoint() == "/") {
     function animateCounter(selector) {
         const target = document.querySelector(selector)
         let counter = parseInt(target.innerHTML)

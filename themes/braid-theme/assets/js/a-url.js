@@ -6,10 +6,9 @@ class Url {
 
     stringUrl;
 
-    constructor() {
-        this.endpoint = window.location.pathname.split("/")
-        this.queryString = window.location.search
+    getStringUrl() {
         this.stringUrl = window.location.origin + window.location.pathname
+        return this.stringUrl
     }
 
     stringfyQueryStringData(object) {
@@ -26,6 +25,7 @@ class Url {
     }
 
     parseQueryStringData() {
+        this.queryString = window.location.search
         const params = new URLSearchParams(this.queryString);
         const queryObject = {};
 
@@ -37,8 +37,13 @@ class Url {
     }
 
     getCurrentEndpoint() {
-        this.endpoint = this.endpoint.filter((value) => value != "" && value != "framework-php" && value != "braid")
-        this.endpoint = this.endpoint.length == 0 ? '/' : this.endpoint.join('/')
-        return this.endpoint
+        this.endpoint = window.location.pathname.split("/")
+        if (Array.isArray(this.endpoint)) {
+            this.endpoint = this.endpoint.filter((value) => value != "" && value != "framework-php" && value != "braid")
+            this.endpoint = this.endpoint.length == 0 ? '/' : this.endpoint.join('/')
+            return this.endpoint
+        }
     }
 }
+
+const url = new Url()

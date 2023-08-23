@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="<?= url("/vendor/almasaeed2010/adminlte/dist/css/adminlte.min.css") ?>">
   <!-- Braid Theme -->
   <link rel="stylesheet" href="<?= theme("assets/style.css") ?>">
+  <script src="https://kit.fontawesome.com/6427a64d8f.js" crossorigin="anonymous"></script>
 </head>
 <body class="hold-transition register-page">
   <?= $v->section('content') ?>

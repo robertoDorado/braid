@@ -1,32 +1,85 @@
-class Url{endpoint;queryString;stringUrl;constructor(){this.endpoint=window.location.pathname.split("/")
-this.queryString=window.location.search
-this.stringUrl=window.location.origin+window.location.pathname}
+function isValidEmail(value){return/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)}
+function isValidPassword(value){return/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{8,}$/.test(value)}
+function isCapitalize(value){return/[A-Z]/.test(value)}
+function isNumeric(value){return/[\d]/.test(value)}
+function isSpecialCharacter(value){return/[@#$%^&+=!]/.test(value)};class Url{endpoint;queryString;stringUrl;getStringUrl(){this.stringUrl=window.location.origin+window.location.pathname
+return this.stringUrl}
 stringfyQueryStringData(object){const params=[];for(const key in object){if(object.hasOwnProperty(key)){const value=object[key];params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)}}
 return params.join('&')}
-parseQueryStringData(){const params=new URLSearchParams(this.queryString);const queryObject={};for(const[key,value]of params){queryObject[key]=value}
+parseQueryStringData(){this.queryString=window.location.search
+const params=new URLSearchParams(this.queryString);const queryObject={};for(const[key,value]of params){queryObject[key]=value}
 return queryObject}
-getCurrentEndpoint(){this.endpoint=this.endpoint.filter((value)=>value!=""&&value!="framework-php"&&value!="braid")
+getCurrentEndpoint(){this.endpoint=window.location.pathname.split("/")
+if(Array.isArray(this.endpoint)){this.endpoint=this.endpoint.filter((value)=>value!=""&&value!="framework-php"&&value!="braid")
 this.endpoint=this.endpoint.length==0?'/':this.endpoint.join('/')
-return this.endpoint}};if(new Url().getCurrentEndpoint()=="/"){function animateCounter(selector){const target=document.querySelector(selector)
+return this.endpoint}}}
+const url=new Url();const validatePassword={'0':function(value,elem){if(value.length>=8){elem.firstChild.innerHTML="&#10004;"
+elem.firstChild.classList.remove("cross")
+elem.firstChild.classList.add("checkmark")}else{elem.firstChild.innerHTML="&#x2718;"
+elem.firstChild.classList.remove("checkmark")
+elem.firstChild.classList.add("cross")}},'1':function(value,elem){if(isCapitalize(value)){elem.firstChild.innerHTML="&#10004;"
+elem.firstChild.classList.remove("cross")
+elem.firstChild.classList.add("checkmark")}else{elem.firstChild.innerHTML="&#x2718;"
+elem.firstChild.classList.remove("checkmark")
+elem.firstChild.classList.add("cross")}},'2':function(value,elem){if(isNumeric(value)){elem.firstChild.innerHTML="&#10004;"
+elem.firstChild.classList.remove("cross")
+elem.firstChild.classList.add("checkmark")}else{elem.firstChild.innerHTML="&#x2718;"
+elem.firstChild.classList.remove("checkmark")
+elem.firstChild.classList.add("cross")}},'3':function(value,elem){if(isSpecialCharacter(value)){elem.firstChild.innerHTML="&#10004;"
+elem.firstChild.classList.remove("cross")
+elem.firstChild.classList.add("checkmark")}else{elem.firstChild.innerHTML="&#x2718;"
+elem.firstChild.classList.remove("checkmark")
+elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="/"){function animateCounter(selector){const target=document.querySelector(selector)
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}
-window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};const url=new Url()
-if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
+window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
+const email=document.getElementById("email")
+const password=document.getElementById("password")
+const confirmPassword=document.getElementById("confirmPassword")
+const conditions=document.querySelectorAll("#conditions li")
+const eyeIconPassword=document.getElementById("eyeIconPassword")
+const eyeIconConfirmPassword=document.getElementById("eyeIconConfirmPassword")
+if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
+this.classList.add("fa-eye")
+this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
+this.classList.add("fa-eye-slash")
+this.parentElement.firstElementChild.setAttribute('type','password')}})}
+if(eyeIconConfirmPassword){eyeIconConfirmPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
+this.classList.add("fa-eye")
+this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
+this.classList.add("fa-eye-slash")
+this.parentElement.firstElementChild.setAttribute('type','password')}})}
+const validateByColor={'true':'2px solid #4ae000','false':'2px solid #ff2c2c'}
+const getPassword={password:''}
+if(password){password.addEventListener('input',function(){const value=this.value
+let color=validateByColor[isValidPassword(value)]
+this.style.borderBottom=color
+conditions.forEach(function(elem,index){validatePassword[index](value,elem)})
+getPassword.password=value})}
+if(confirmPassword){confirmPassword.addEventListener('input',function(){if(this.value!=getPassword.password){this.style.borderBottom='2px solid #ff2c2c'}else{this.style.borderBottom='2px solid #4ae000'}})}
+if(email){email.addEventListener('input',function(){let color=validateByColor[isValidEmail(this.value)]
+this.style.borderBottom=color})}
+if(form){form.addEventListener('submit',function(e){e.preventDefault()
+if(!isValidPassword(this.password.value)){throw new Error("invalid password")}
+if(!isValidEmail(this.email.value)){throw new Error("invalid email")}
+if(this.confirmPassword.value!=this.password.value){throw new Error("invalid confirm password")}
+const form=new FormData(this)
+console.log(form)})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
 const form=document.getElementById("genericForms")
 const launchGenericModal=document.getElementById("launchGenericModal")
 const titleNewMembership=document.getElementById("titleNewMembership")
 let type=registerType.dataset.register
 let obs={generic:(elem)=>elem.click(),businessman:'Cadastre-se como empresa',designer:'Cadastre-se como designer'}
 window.addEventListener('load',function(){obs=typeof obs[type]=='function'?obs[type](launchGenericModal):obs[type]
-titleNewMembership.innerHTML=obs||''})
-form.addEventListener('submit',function(ev){ev.preventDefault()
+if(titleNewMembership){titleNewMembership.innerHTML=obs||''}})
+if(form){form.addEventListener('submit',function(ev){ev.preventDefault()
 let params=url.parseQueryStringData()
 obs={changeParam:(params,option)=>{params.userType=option
 return params}}
 params=obs.changeParam(params,this.option.value)
 params=url.stringfyQueryStringData(params)
-window.location.href=url.stringUrl+"?"+params})};if(new Url().getCurrentEndpoint()=="/"){function typeWrite(text){const arrayText=text.split('');document.querySelector('.background-home h1').innerHTML=' ';arrayText.forEach(function(letter,i){setTimeout(function(){document.querySelector('.background-home h1').innerHTML+=letter},75*i)})}
+window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="/"){function typeWrite(text){const arrayText=text.split('');document.querySelector('.background-home h1').innerHTML=' ';arrayText.forEach(function(letter,i){setTimeout(function(){document.querySelector('.background-home h1').innerHTML+=letter},75*i)})}
 const texts=[{title:"Potencialize seus projetos com a nossa plataforma para designers freelancers!",},{title:"Encontre projetos com a nossa plataforma para designers freelancers!",}]
 let currentIndex=0;const intervalTime=10000;typeWrite(texts[currentIndex].title);setInterval(()=>{currentIndex++;currentIndex=currentIndex>=texts.length?0:currentIndex
 typeWrite(texts[currentIndex].title)},intervalTime)}

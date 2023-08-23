@@ -358,7 +358,7 @@ footer {
     color: #888;
 }
 
-.input-container input:focus + label, .input-container input:valid + label {
+.input-container input:focus+label, .input-container input:valid+label {
     top: -20px;
     font-size: 12px;
     color: #2196F3;
@@ -377,7 +377,91 @@ footer {
 .custom-button:hover {
     background-color: #0b7dda;
 }
+
+/* Estilize o container do botão */
+.file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    background-color: #ff2c2c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Esconda o input de arquivo subjacente */
+.file-input-container input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* Estilize o texto do botão */
+.file-input-text {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* Estilize o ícone (opcional) */
+.file-input-icon::before {
+    content: "\f0c7";
+    /* Use o código Unicode do ícone desejado, por exemplo, um ícone de arquivo */
+    font-family: FontAwesome;
+    /* Use a fonte de ícones desejada (exemplo: FontAwesome) */
+    margin-right: 5px;
+}
 /* Formulario Material Final */
+
+.btn-danger-braid {
+    background-color: #ff2c2c;
+    color:#fff;
+}
+
+.btn-danger-braid:hover {
+    background-color: #e02929;
+    color:#fff;
+}
+
+.conditions {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.conditions li {
+    margin-bottom: 10px;
+    font-size:12px;
+}
+
+/* Estilos CSS para os ícones */
+.checkmark {
+    color: green;
+    margin-right: 5px;
+}
+
+.cross {
+    color: red;
+    margin-right: 5px;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.eye-icon:hover {
+    cursor:pointer;
+}
 
 @media screen and (min-width: 1200px) {
 

@@ -1,6 +1,4 @@
-const url = new Url()
 if (url.getCurrentEndpoint() == "user/register") {
-    
     const registerType = document.getElementById("registerType")
     const form = document.getElementById("genericForms")
     const launchGenericModal = document.getElementById("launchGenericModal")
@@ -15,23 +13,28 @@ if (url.getCurrentEndpoint() == "user/register") {
 
     window.addEventListener('load', function () {
         obs = typeof obs[type] == 'function' ? obs[type](launchGenericModal) : obs[type]
-        titleNewMembership.innerHTML = obs || ''
-    })
 
-    form.addEventListener('submit', function (ev) {
-        ev.preventDefault()
-        
-        let params = url.parseQueryStringData()
-
-        obs = {
-            changeParam: (params, option) => {
-                params.userType = option
-                return params
-            }
+        if (titleNewMembership) {
+            titleNewMembership.innerHTML = obs || ''
         }
-
-        params = obs['changeParam'](params, this.option.value)
-        params = url.stringfyQueryStringData(params)
-        window.location.href = url.stringUrl + "?" + params
     })
+
+    if (form) {
+        form.addEventListener('submit', function (ev) {
+            ev.preventDefault()
+            
+            let params = url.parseQueryStringData()
+    
+            obs = {
+                changeParam: (params, option) => {
+                    params.userType = option
+                    return params
+                }
+            }
+    
+            params = obs['changeParam'](params, this.option.value)
+            params = url.stringfyQueryStringData(params)
+            window.location.href = url.getStringUrl() + "?" + params
+        })
+    }
 }
