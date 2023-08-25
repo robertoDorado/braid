@@ -52,8 +52,8 @@ if (url.getCurrentEndpoint() == "user/register") {
     }
 
     const validateByColor = {
-        'true': '2px solid #4ae000',
-        'false': '2px solid #ff2c2c'
+        'true': '1px solid #63a69d',
+        'false': '1px solid #ff2c2c'
     }
 
     const getPassword = {
@@ -79,10 +79,10 @@ if (url.getCurrentEndpoint() == "user/register") {
         confirmPassword.addEventListener('input', function () {
             if (this.value != getPassword.password) {
                 this.nextElementSibling.style.color = "#ff2c2c"
-                this.style.borderBottom = '2px solid #ff2c2c'
+                this.style.borderBottom = '1px solid #ff2c2c'
             } else {
-                this.nextElementSibling.style.color = "#4ae000"
-                this.style.borderBottom = '2px solid #4ae000'
+                this.nextElementSibling.style.color = "#63a69d"
+                this.style.borderBottom = '1px solid #63a69d'
             }
         })
     }
@@ -105,12 +105,10 @@ if (url.getCurrentEndpoint() == "user/register") {
             inputs.forEach(function (elem) {
                 if (elem.dataset.required) {
                     if (elem.value == '') {
-                        elem.nextElementSibling.style.color = "#ff2c2c"
-                        elem.style.borderBottom = '2px solid #ff2c2c'
+                        elem.style.borderBottom = '1px solid #ff2c2c'
                         throw new Error(`empty data ${elem.name}`)
                     } else {
-                        elem.nextElementSibling.style.color = "#2196f3"
-                        elem.style.borderBottom = '2px solid #2196f3'
+                        elem.style.borderBottom = '1px solid #2196f3'
                     }
                 }
             })

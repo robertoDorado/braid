@@ -53,7 +53,7 @@ this.classList.add("fa-eye")
 this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
 this.classList.add("fa-eye-slash")
 this.parentElement.firstElementChild.setAttribute('type','password')}})}
-const validateByColor={'true':'2px solid #4ae000','false':'2px solid #ff2c2c'}
+const validateByColor={'true':'1px solid #63a69d','false':'1px solid #ff2c2c'}
 const getPassword={password:''}
 if(password){password.addEventListener('input',function(){const value=this.value
 let color=validateByColor[isValidPassword(value)]
@@ -63,18 +63,16 @@ this.nextElementSibling.style.color=color
 conditions.forEach(function(elem,index){validatePassword[index](value,elem)})
 getPassword.password=value})}
 if(confirmPassword){confirmPassword.addEventListener('input',function(){if(this.value!=getPassword.password){this.nextElementSibling.style.color="#ff2c2c"
-this.style.borderBottom='2px solid #ff2c2c'}else{this.nextElementSibling.style.color="#4ae000"
-this.style.borderBottom='2px solid #4ae000'}})}
+this.style.borderBottom='1px solid #ff2c2c'}else{this.nextElementSibling.style.color="#63a69d"
+this.style.borderBottom='1px solid #63a69d'}})}
 if(email){email.addEventListener('input',function(){let color=validateByColor[isValidEmail(this.value)]
 this.style.borderBottom=color
 color=color.split(" ").pop()
 this.nextElementSibling.style.color=color})}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
 const inputs=Array.from(this.getElementsByTagName('input'))
-inputs.forEach(function(elem){if(elem.dataset.required){if(elem.value==''){elem.nextElementSibling.style.color="#ff2c2c"
-elem.style.borderBottom='2px solid #ff2c2c'
-throw new Error(`empty data ${elem.name}`)}else{elem.nextElementSibling.style.color="#2196f3"
-elem.style.borderBottom='2px solid #2196f3'}}})
+inputs.forEach(function(elem){if(elem.dataset.required){if(elem.value==''){elem.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`empty data ${elem.name}`)}else{elem.style.borderBottom='1px solid #2196f3'}}})
 if(!isValidPassword(this.password.value)){throw new Error("invalid password")}
 if(!isValidEmail(this.email.value)){throw new Error("invalid email")}
 if(this.confirmPassword.value!=this.password.value){throw new Error("invalid confirm password")}

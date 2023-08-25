@@ -59,11 +59,11 @@
         <div class="social-auth-links text-center">
           <a href="#" class="btn btn-block btn-primary">
             <i class="fab fa-facebook mr-2"></i>
-            Faça login com Facebook
+            Login com Facebook
           </a>
           <a href="#" class="btn btn-block btn-danger-braid">
             <i class="fab fa-google-plus mr-2"></i>
-            Faça login com Google
+            Login com Google
           </a>
         </div>
         <span class="text-center">Já possui uma conta? <a href="<?= url("user/login") ?>" style="text-decoration:underline">Faça login</a></span>
