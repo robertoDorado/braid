@@ -40,6 +40,9 @@ const confirmPassword=document.getElementById("confirmPassword")
 const conditions=document.querySelectorAll("#conditions li")
 const eyeIconPassword=document.getElementById("eyeIconPassword")
 const eyeIconConfirmPassword=document.getElementById("eyeIconConfirmPassword")
+const photoImage=document.getElementById("photoImage")
+const photoPreview=document.getElementById("photoPreview")
+if(photoImage){photoImage.addEventListener('change',function(){const file=this.files[0];if(file){const imageUrl=URL.createObjectURL(file);photoPreview.firstElementChild.src=imageUrl;photoPreview.style.display='block'}else{photoPreview.style.display='none'}})}
 if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
 this.classList.add("fa-eye")
 this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
@@ -55,17 +58,29 @@ const getPassword={password:''}
 if(password){password.addEventListener('input',function(){const value=this.value
 let color=validateByColor[isValidPassword(value)]
 this.style.borderBottom=color
+color=color.split(" ").pop()
+this.nextElementSibling.style.color=color
 conditions.forEach(function(elem,index){validatePassword[index](value,elem)})
 getPassword.password=value})}
-if(confirmPassword){confirmPassword.addEventListener('input',function(){if(this.value!=getPassword.password){this.style.borderBottom='2px solid #ff2c2c'}else{this.style.borderBottom='2px solid #4ae000'}})}
+if(confirmPassword){confirmPassword.addEventListener('input',function(){if(this.value!=getPassword.password){this.nextElementSibling.style.color="#ff2c2c"
+this.style.borderBottom='2px solid #ff2c2c'}else{this.nextElementSibling.style.color="#4ae000"
+this.style.borderBottom='2px solid #4ae000'}})}
 if(email){email.addEventListener('input',function(){let color=validateByColor[isValidEmail(this.value)]
-this.style.borderBottom=color})}
+this.style.borderBottom=color
+color=color.split(" ").pop()
+this.nextElementSibling.style.color=color})}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
+const inputs=Array.from(this.getElementsByTagName('input'))
+inputs.forEach(function(elem){if(elem.dataset.required){if(elem.value==''){elem.nextElementSibling.style.color="#ff2c2c"
+elem.style.borderBottom='2px solid #ff2c2c'
+throw new Error(`empty data ${elem.name}`)}else{elem.nextElementSibling.style.color="#2196f3"
+elem.style.borderBottom='2px solid #2196f3'}}})
 if(!isValidPassword(this.password.value)){throw new Error("invalid password")}
 if(!isValidEmail(this.email.value)){throw new Error("invalid email")}
 if(this.confirmPassword.value!=this.password.value){throw new Error("invalid confirm password")}
-const form=new FormData(this)
-console.log(form)})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
+this.lastElementChild.lastElementChild.style.display='none'
+this.lastElementChild.firstElementChild.style.display='block'
+const form=new FormData(this)})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
 const form=document.getElementById("genericForms")
 const launchGenericModal=document.getElementById("launchGenericModal")
 const titleNewMembership=document.getElementById("titleNewMembership")

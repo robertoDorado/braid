@@ -11,27 +11,27 @@
         <p class="login-box-msg" id="titleNewMembership"></p>
 
         <div class="form-container">
-          <form id="registerForm" class="material-form">
-            <div class="input-container">
-              <input type="text" name="fullName" required>
-              <label>Nome Completo</label>
+          <form id="registerForm" action="#">
+            <div class="input-field">
+              <input type="text" name="fullName" class="validate" data-required="true">
+              <label for="fullName">Nome Completo</label>
             </div>
-            <div class="input-container">
-              <input type="text" name="userName" required>
-              <label>Nome de usuário</label>
+            <div class="input-field">
+              <input type="text" name="userName" class="validate" data-required="true">
+              <label for="userName">Nome de usuário</label>
             </div>
-            <div class="input-container">
-              <input type="text" name="email" id="email" required>
-              <label>Email</label>
+            <div class="input-field">
+              <input type="text" name="email" id="email" class="validate" data-required="true">
+              <label for="email">Email</label>
             </div>
-            <div class="input-container">
-              <input type="password" name="password" id="password" required>
-              <label>Senha</label>
+            <div class="input-field">
+              <input type="password" name="password" id="password" class="validate" data-required="true">
+              <label for="password">Senha</label>
               <i class="fas fa-eye-slash eye-icon" id="eyeIconPassword"></i>
             </div>
-            <div class="input-container">
-              <input type="password" name="confirmPassword" id="confirmPassword" required>
-              <label>Confirme a senha</label>
+            <div class="input-field">
+              <input type="password" name="confirmPassword" id="confirmPassword" class="validate" data-required="true">
+              <label for="confirmPassword">Confirme a senha</label>
               <i class="fas fa-eye-slash eye-icon" id="eyeIconConfirmPassword"></i>
             </div>
             <ul class="conditions" id="conditions">
@@ -40,24 +40,30 @@
               <li><span class="cross">&#x2718;</span>Pelo menos um caractere numérico.</li>
               <li><span class="cross">&#x2718;</span>Um caractere especial (@, #, $, %, ^, &, +, =, ou !).</li>
             </ul>
+            <div class="photo-preview" id="photoPreview" style="display:none;">
+              <img src="#" alt="foto">
+            </div>
             <div class="file-input-container">
               <span class="file-input-icon"></span>
               <span class="file-input-text">Selecione uma foto de perfil</span>
-              <input type="file" name="photoImage">
+              <input type="file" name="photoImage" id="photoImage">
             </div>
-            <input type="hidden" name="userType" value="<?= $registerType ?>" disabled>
-            <button type="submit" class="custom-button">Cadastrar</button>
+            <input type="hidden" name="userType" value="<?= $registerType ?>" disabled data-required="true">
+            <button style="width:150px;" type="submit" class="btn btn-block btn-primary">
+              <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+              <span>Cadastrar</span>
+            </button>
           </form>
         </div>
 
         <div class="social-auth-links text-center">
           <a href="#" class="btn btn-block btn-primary">
             <i class="fab fa-facebook mr-2"></i>
-            Sign up using Facebook
+            Faça login com Facebook
           </a>
           <a href="#" class="btn btn-block btn-danger-braid">
             <i class="fab fa-google-plus mr-2"></i>
-            Sign up using Google+
+            Faça login com Google
           </a>
         </div>
         <span class="text-center">Já possui uma conta? <a href="<?= url("user/login") ?>" style="text-decoration:underline">Faça login</a></span>

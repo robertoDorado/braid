@@ -316,68 +316,6 @@ footer {
     width: 250px;
 }
 
-
-/* Formulario Material Início */
-.form-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 4px;
-}
-
-.material-form {
-    text-align: center;
-}
-
-.material-form h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.input-container {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.input-container input {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-bottom: 2px solid #2196F3;
-    outline: none;
-    font-size: 16px;
-}
-
-.input-container label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 10px;
-    pointer-events: none;
-    transition: 0.2s ease all;
-    font-size: 16px;
-    color: #888;
-}
-
-.input-container input:focus+label, .input-container input:valid+label {
-    top: -20px;
-    font-size: 12px;
-    color: #2196F3;
-}
-
-.custom-button {
-    background-color: #2196F3;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.custom-button:hover {
-    background-color: #0b7dda;
-}
-
 /* Estilize o container do botão */
 .file-input-container {
     position: relative;
@@ -416,16 +354,15 @@ footer {
     /* Use a fonte de ícones desejada (exemplo: FontAwesome) */
     margin-right: 5px;
 }
-/* Formulario Material Final */
 
 .btn-danger-braid {
     background-color: #ff2c2c;
-    color:#fff;
+    color: #fff;
 }
 
 .btn-danger-braid:hover {
     background-color: #e02929;
-    color:#fff;
+    color: #fff;
 }
 
 .conditions {
@@ -439,7 +376,7 @@ footer {
 
 .conditions li {
     margin-bottom: 10px;
-    font-size:12px;
+    font-size: 12px;
 }
 
 /* Estilos CSS para os ícones */
@@ -460,7 +397,22 @@ footer {
 }
 
 .eye-icon:hover {
-    cursor:pointer;
+    cursor: pointer;
+}
+
+.photo-preview {
+    margin: 0 auto;
+    margin-bottom: 1rem;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.photo-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 @media screen and (min-width: 1200px) {
