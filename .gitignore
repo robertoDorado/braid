@@ -1,3 +1,4 @@
 source/Domain/Tests/
 vendor/
 source/Models/Backup
+Logs/

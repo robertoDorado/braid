@@ -1,4 +1,4 @@
-<button type="button" id="launchGenericModal" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" id="launchGenericModal" style="display:none;" class="btn" data-toggle="modal" data-target="#exampleModal">
   Launch modal
 </button>
 

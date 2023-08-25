@@ -2,7 +2,7 @@
 <div id="registerType" style="display:none" data-register="<?= $registerType ?>"></div>
 <?php $v->insert("utils/modal-form-register") ?>
 <div class="register-box">
-  <div class="card card-outline card-primary">
+  <div style="border-top: 3px solid #ff2c2c;" class="card card-outline card-primary">
     <div class="card-header text-center rigister-header">
       <a href="<?= url("/") ?>" class="h1"><img src="<?= theme("assets/img/logo-2-rbg.png") ?>" alt="logo"></a>
     </div>
@@ -49,7 +49,7 @@
               <input type="file" name="photoImage" id="photoImage">
             </div>
             <input type="hidden" name="userType" value="<?= $registerType ?>" disabled data-required="true">
-            <button style="width:150px;" type="submit" class="btn btn-block btn-primary">
+            <button style="width:150px;" type="submit" class="btn btn-block">
               <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
               <span>Cadastrar</span>
             </button>
@@ -57,11 +57,11 @@
         </div>
 
         <div class="social-auth-links text-center">
-          <a href="#" class="btn btn-block btn-primary">
+          <a href="#" class="btn btn-block">
             <i class="fab fa-facebook mr-2"></i>
             Login com Facebook
           </a>
-          <a href="#" class="btn btn-block btn-danger-braid">
+          <a href="#" class="btn btn-block">
             <i class="fab fa-google-plus mr-2"></i>
             Login com Google
           </a>
