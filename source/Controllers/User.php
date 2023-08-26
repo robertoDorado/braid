@@ -2,6 +2,7 @@
 namespace Source\Controllers;
 
 use Source\Core\Controller;
+use Source\Support\RequestPost;
 
 /**
  * User Source\Controllers
@@ -26,6 +27,11 @@ class User extends Controller
 
     public function register()
     {
+        if ($this->getServer('REQUEST_METHOD') == 'POST') {
+            print_r($this->getRequestPost()->getAllPostData());
+            exit;
+        }
+        
         if (!$this->has('userType')) {
             redirect("/");
         }
@@ -35,9 +41,11 @@ class User extends Controller
             redirect("/");
         }
 
+        $csrfToken = $this->getCurrentSession()->csrf_token;
         $registerType = $this->get('userType');
         echo $this->view->render("admin/register", [
-            'registerType' => $registerType
+            'registerType' => $registerType,
+            'csrfToken' =>  $csrfToken
         ]);
     }
 }

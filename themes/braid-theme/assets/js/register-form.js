@@ -95,6 +95,13 @@ if (url.getCurrentEndpoint() == "user/register") {
             this.nextElementSibling.style.color = color
         })
     }
+
+    let endpoint = {
+        "localhost": "braid/framework-php/user/register",
+        "clientes.laborcode.com.br": "user/register",
+        "braid.com.br": "user/register",
+        "www.braid.com.br": "user/register",
+    }
     
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -128,6 +135,13 @@ if (url.getCurrentEndpoint() == "user/register") {
             this.lastElementChild.lastElementChild.style.display = 'none'
             this.lastElementChild.firstElementChild.style.display = 'block'
             const form = new FormData(this)
+
+            endpoint = endpoint[url.getHostName()] || ''
+
+            fetch(url.getUrlOrigin(endpoint), { method: 'POST', body: form })
+            .then(data => data.json()).then(function (data) {
+                console.log(data)
+            })
         })
     }
 }

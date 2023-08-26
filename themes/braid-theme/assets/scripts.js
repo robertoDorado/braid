@@ -2,7 +2,13 @@ function isValidEmail(value){return/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{
 function isValidPassword(value){return/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{8,}$/.test(value)}
 function isCapitalize(value){return/[A-Z]/.test(value)}
 function isNumeric(value){return/[\d]/.test(value)}
-function isSpecialCharacter(value){return/[@#$%^&+=!]/.test(value)};class Url{endpoint;queryString;stringUrl;getStringUrl(){this.stringUrl=window.location.origin+window.location.pathname
+function isSpecialCharacter(value){return/[@#$%^&+=!]/.test(value)};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
+return this.host}
+getUrlOrigin(endpoint=''){endpoint=endpoint.split('/').filter(value=>value!='').join('/')
+endpoint=endpoint.length>0?"/"+endpoint:''
+this.urlOrigin=window.origin+endpoint
+return this.urlOrigin}
+getStringUrl(){this.stringUrl=window.location.origin+window.location.pathname
 return this.stringUrl}
 stringfyQueryStringData(object){const params=[];for(const key in object){if(object.hasOwnProperty(key)){const value=object[key];params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`)}}
 return params.join('&')}
@@ -69,6 +75,7 @@ if(email){email.addEventListener('input',function(){let color=validateByColor[is
 this.style.borderBottom=color
 color=color.split(" ").pop()
 this.nextElementSibling.style.color=color})}
+let endpoint={"localhost":"braid/framework-php/user/register","clientes.laborcode.com.br":"user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
 const inputs=Array.from(this.getElementsByTagName('input'))
 inputs.forEach(function(elem){if(elem.dataset.required){if(elem.value==''){elem.style.borderBottom='1px solid #ff2c2c'
@@ -78,7 +85,9 @@ if(!isValidEmail(this.email.value)){throw new Error("invalid email")}
 if(this.confirmPassword.value!=this.password.value){throw new Error("invalid confirm password")}
 this.lastElementChild.lastElementChild.style.display='none'
 this.lastElementChild.firstElementChild.style.display='block'
-const form=new FormData(this)})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
+const form=new FormData(this)
+endpoint=endpoint[url.getHostName()]||''
+fetch(url.getUrlOrigin(endpoint),{method:'POST',body:form}).then(data=>data.json()).then(function(data){console.log(data)})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
 const form=document.getElementById("genericForms")
 const launchGenericModal=document.getElementById("launchGenericModal")
 const titleNewMembership=document.getElementById("titleNewMembership")

@@ -31,6 +31,7 @@
             </div>
             <div class="input-field">
               <input type="password" name="confirmPassword" id="confirmPassword" class="validate" data-required="true">
+              <input type="hidden" name="csrf_token" value="<?= !empty($csrfToken) ? $csrfToken : '' ?>" data-required="true">
               <label for="confirmPassword">Confirme a senha</label>
               <i class="fas fa-eye-slash eye-icon" id="eyeIconConfirmPassword"></i>
             </div>

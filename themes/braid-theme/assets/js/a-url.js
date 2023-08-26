@@ -6,6 +6,22 @@ class Url {
 
     stringUrl;
 
+    urlOrigin;
+
+    host;
+
+    getHostName() {
+        this.host = window.location.host
+        return this.host
+    }
+
+    getUrlOrigin(endpoint='') {
+        endpoint = endpoint.split('/').filter(value => value != '').join('/')
+        endpoint = endpoint.length > 0 ? "/" + endpoint : ''
+        this.urlOrigin = window.origin + endpoint
+        return this.urlOrigin
+    }
+
     getStringUrl() {
         this.stringUrl = window.location.origin + window.location.pathname
         return this.stringUrl

@@ -37,6 +37,7 @@ $route->namespace("Source\Controllers");
 $route->group($module);
 $route->get("/login", "User:login");
 $route->get("/register", "User:register");
+$route->post("/register", "User:register");
 
 /**
  * Error
