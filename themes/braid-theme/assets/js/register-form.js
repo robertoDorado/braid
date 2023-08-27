@@ -110,13 +110,20 @@ if (url.getCurrentEndpoint() == "user/register") {
             const inputs = Array.from(this.getElementsByTagName('input'))
 
             inputs.forEach(function (elem) {
-                if (elem.dataset.required) {
-                    if (elem.value == '') {
-                        elem.style.borderBottom = '1px solid #ff2c2c'
-                        throw new Error(`empty data ${elem.name}`)
-                    } else {
-                        elem.style.borderBottom = '1px solid #2196f3'
+                try {
+                    if (elem.dataset.required) {
+                        const elementBoolean = JSON.parse(elem.dataset.required)
+                        if (elementBoolean) {
+                            if (elem.value == '') {
+                                elem.style.borderBottom = '1px solid #ff2c2c'
+                                throw new Error(`empty data ${elem.name}`)
+                            } else {
+                                elem.style.borderBottom = '1px solid #2196f3'
+                            }
+                        }
                     }
+                }catch(error) {
+                    throw new Error(`Erro ao converter dataset em booleano: ${error}`)
                 }
             })
 

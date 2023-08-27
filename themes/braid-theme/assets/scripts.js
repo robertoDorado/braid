@@ -78,8 +78,9 @@ this.nextElementSibling.style.color=color})}
 let endpoint={"localhost":"braid/framework-php/user/register","clientes.laborcode.com.br":"user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
 const inputs=Array.from(this.getElementsByTagName('input'))
-inputs.forEach(function(elem){if(elem.dataset.required){if(elem.value==''){elem.style.borderBottom='1px solid #ff2c2c'
-throw new Error(`empty data ${elem.name}`)}else{elem.style.borderBottom='1px solid #2196f3'}}})
+inputs.forEach(function(elem){try{if(elem.dataset.required){const elementBoolean=JSON.parse(elem.dataset.required)
+if(elementBoolean){if(elem.value==''){elem.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`empty data ${elem.name}`)}else{elem.style.borderBottom='1px solid #2196f3'}}}}catch(error){throw new Error(`Erro ao converter dataset em booleano: ${error}`)}})
 if(!isValidPassword(this.password.value)){throw new Error("invalid password")}
 if(!isValidEmail(this.email.value)){throw new Error("invalid email")}
 if(this.confirmPassword.value!=this.password.value){throw new Error("invalid confirm password")}

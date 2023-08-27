@@ -33,22 +33,6 @@ class User extends DDL
         $this->createTableQuery();
         $this->executeQuery();
     }
-
-    public function defineConstraintBusinessManEmail()
-    {
-        $this->setClassProperties();
-        $this->alterTable(['ADD CONSTRAINT FK_business_man_user 
-            FOREIGN KEY (email) REFERENCES business_man(email)']);
-        $this->executeQuery();
-    }
-
-    public function defineConstraintDesignerEmail()
-    {
-        $this->setClassProperties();
-        $this->alterTable(['ADD CONSTRAINT FK_designer_user 
-            FOREIGN KEY (email) REFERENCES designer(email)']);
-        $this->executeQuery();
-    }
 }
 
-(new User())->defineConstraintDesignerEmail();
+(new User())->defineTable();

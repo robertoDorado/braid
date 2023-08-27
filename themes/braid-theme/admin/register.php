@@ -31,9 +31,10 @@
             </div>
             <div class="input-field">
               <input type="password" name="confirmPassword" id="confirmPassword" class="validate" data-required="true">
-              <input type="hidden" name="csrf_token" value="<?= !empty($csrfToken) ? $csrfToken : '' ?>" data-required="true">
               <label for="confirmPassword">Confirme a senha</label>
+              <input type="hidden" name="csrfToken" value="<?= !empty($csrfToken) ? $csrfToken : '' ?>" data-required="true">
               <i class="fas fa-eye-slash eye-icon" id="eyeIconConfirmPassword"></i>
+              <input type="hidden" name="userType" value="<?= !empty($registerType) ? $registerType : '' ?>" data-required="true">
             </div>
             <ul class="conditions" id="conditions">
               <li><span class="cross">&#x2718;</span>Pelo menos 8 caracteres de comprimento.</li>
@@ -49,7 +50,6 @@
               <span class="file-input-text">Selecione uma foto de perfil</span>
               <input type="file" name="photoImage" id="photoImage">
             </div>
-            <input type="hidden" name="userType" value="<?= $registerType ?>" disabled data-required="true">
             <button style="width:150px;" type="submit" class="btn btn-block">
               <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
               <span>Cadastrar</span>
