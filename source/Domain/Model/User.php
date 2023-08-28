@@ -87,37 +87,24 @@ class User
         return true;
     }
 
-    public function register(string $name, string $document, string $email, string $pathPhoto = '', string $login, string $password, string $userType): bool
+    public function register(array $data): bool
     {
         if ($this->user instanceof ModelsUser) {
 
-            if (!$this->checkParamsNotEmpty($name, $document, $email, $login, $password, $userType)) {
+            if (!$this->checkParamsNotEmpty($data['fullName'], $data['email'], $data['userName'], $data['confirmPassword'], $data['userType'])) {
                 return false;
             }
 
-            if (!preg_match("/^[^\s@]+@[^\s@]+\.[^\s@]+$/", $email)) {
+            if (!$this->validateUserType($data['userType'])) {
                 return false;
             }
 
-            if (!$this->validateDocument($document)) {
-                return false;
-            }
-
-            if (!$this->validateUserType($userType)) {
-                return false;
-            }
-
-            if (strlen($password) < 8) {
-                return false;
-            }
-
-            $this->user->name = $name;
-            $this->user->document = $document;
-            $this->user->email = $email;
-            $this->user->path_photo = $pathPhoto;
-            $this->user->login = $login;
-            $this->user->password = password_hash($password, PASSWORD_DEFAULT);
-            $this->user->user_type = $userType;
+            $this->user->name = $data['fullName'];
+            $this->user->email = $data['email'];
+            $this->user->path_photo = $data['pathPhoto'];
+            $this->user->user_name = $data['userName'];
+            $this->user->password = $data['confirmPassword'];
+            $this->user->user_type = $data['userType'];
             if (!$this->user->save()) {
                 throw new \Exception($this->user->fail());
             }
@@ -242,14 +229,6 @@ class User
     private function validateUserType(string $userType): bool
     {
         if ($userType == 'businessman' || $userType == 'designer') {
-            return true;
-        }
-        return false;
-    }
-
-    private function validateDocument(string $document): bool
-    {
-        if (preg_match("/^\d{3}\.\d{3}\.\d{3}-\d{2}$/", $document) || preg_match("/^\d{2}\.\d{3}\.\d{3}-\d{1}$/", $document)) {
             return true;
         }
         return false;

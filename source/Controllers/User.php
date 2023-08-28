@@ -2,9 +2,7 @@
 namespace Source\Controllers;
 
 use Source\Core\Controller;
-use Source\Models\Designer;
-use Source\Models\User as ModelsUser;
-use Source\Support\RequestPost;
+use Source\Domain\Model\User as ModelUser;
 
 /**
  * User Source\Controllers
@@ -33,17 +31,13 @@ class User extends Controller
             $data = $this->getRequestPost()->setRequiredFields(["fullName", "userName", "email", 
                 "password", "confirmPassword", "csrfToken", "csrf_token", "userType"])->getAllPostData();
             
-            $user = new ModelsUser();
-            $user->name = $data['fullName'];
-            $user->login = $data['userName'];
-            $user->email = $data['email'];
-            $user->password = $data['confirmPassword'];
-            $user->document = '';
-            $user->user_type = $data['userType'];
-            $user->path_photo = '';
-            if (!$user->save()) {
-                throw new \Exception($user->fail());
-            }
+            $pathPhoto = !empty($this->getRequestFiles()->getFile('photoImage')['name']) ?
+                $this->getRequestFiles()->getFile('photoImage')['name'] : null ;
+            $data['pathPhoto'] = $pathPhoto;
+            
+            $user = new ModelUser();
+            echo $user->register($data);
+            exit;
         }
         
         if (!$this->has('userType')) {

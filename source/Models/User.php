@@ -17,17 +17,14 @@ class User extends Model
     /** @var string Nome do usuario */
     private string $name = 'name';
 
-    /** @var string Login do usuario */
-    private string $login = 'login';
+    /** @var string userName do usuario */
+    private string $user_name = 'user_name';
 
     /** @var string Email do usuario */
     private string $email = 'email';
 
     /** @var string Senha do usuario */
     private string $password = 'password';
-
-    /** @var string Cpf do usuario */
-    private string $document = 'document';
 
     /** @var string Tipo de usuario */
     private string $userType = 'user_type';
@@ -40,6 +37,6 @@ class User extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->login, $this->email, $this->password, $this->document, $this->userType, $this->pathPhoto]);
+        parent::__construct($this->tableName, ['id'], [$this->name, $this->user_name, $this->email, $this->password, $this->userType, $this->pathPhoto]);
     }
 }

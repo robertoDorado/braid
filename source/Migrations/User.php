@@ -28,8 +28,8 @@ class User extends DDL
         $this->removeProperty('table_name');
         $this->setProperty('');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL',
-        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
-        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'UNIQUE KEY email (email)']);
+        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
+        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NULL', 'UNIQUE KEY email (email)']);
         $this->createTableQuery();
         $this->executeQuery();
     }
