@@ -19,23 +19,26 @@ class BusinessMan
     /** @var string Nome do dono da empresa */
     private string $name;
 
+    /** @var string Email do dono da empresa */
+    private string $email;
+
     /** @var string Nome da empresa */
-    private string $companyName;
+    private string $companyName = '';
 
     /** @var string CNPJ da empresa */
-    private string $registerNumber;
+    private string $registerNumber = '';
 
     /** @var string Descrição da empresa */
-    private string $companyDescription;
+    private string $companyDescription = '';
 
     /** @var string Ramo da empresa */
-    private string $branchOfCompany;
+    private string $branchOfCompany = '';
 
     /** @var Contract[] Contratos */
-    private array $contracts;
+    private array $contracts = [];
 
     /** @var bool */
-    private bool $validCompany;
+    private bool $validCompany = false;
 
     /** @var ModelsBusinessMan Objeto BusinessMan */
     private ModelsBusinessMan $businessMan;
@@ -48,11 +51,12 @@ class BusinessMan
         if (is_array($getters) && is_array($isMethods)) {
             $this->businessMan = new ModelsBusinessMan();
             $this->businessMan->name = $this->getCeoName();
-            $this->businessMan->company_name = $this->getCompanyName();
-            $this->businessMan->register_number = $this->getRegisterNumber();
-            $this->businessMan->company_description = $this->getDescriptionCompany();
-            $this->businessMan->branch_of_company = $this->getBranchOfCompany();
-            $this->businessMan->valid_company = $this->isValidCompany();
+            $this->businessMan->email = $this->getEmail();
+            $this->businessMan->company_name = empty($this->getCompanyName()) ? null : $this->getCompanyName();
+            $this->businessMan->register_number = empty($this->getRegisterNumber()) ? null : $this->getRegisterNumber();
+            $this->businessMan->company_description = empty($this->getDescriptionCompany()) ? null : $this->getDescriptionCompany();
+            $this->businessMan->branch_of_company = empty($this->getBranchOfCompany()) ? null : $this->getBranchOfCompany();
+            $this->businessMan->valid_company = empty($this->isValidCompany()) ? null : $this->isValidCompany();
             if (!$this->businessMan->save()) {
                 throw new \Exception($this->businessMan->fail());
             }
@@ -80,12 +84,22 @@ class BusinessMan
         $this->name = $name;
     }
 
-    public function getCeoName(): string
+    public function getCeoName()
     {
         return $this->name;
     }
 
-    public function getCompanyName(): string
+    public function setEmail(string $email)
+    {
+        return $this->email = $email;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getCompanyName()
     {
         return $this->companyName;
     }
@@ -108,7 +122,7 @@ class BusinessMan
         $this->registerNumber = $number;
     }
 
-    public function getDescriptionCompany(): string
+    public function getDescriptionCompany()
     {
         return $this->companyDescription;
     }
@@ -118,7 +132,7 @@ class BusinessMan
         $this->companyDescription = $companyDescription;
     }
 
-    public function getBranchOfCompany(): string
+    public function getBranchOfCompany()
     {
         return $this->branchOfCompany;
     }
@@ -144,7 +158,7 @@ class BusinessMan
         $this->contracts[] = $contract;
     }
 
-    public function isValidCompany(): bool
+    public function isValidCompany()
     {
         return $this->validCompany;
     }

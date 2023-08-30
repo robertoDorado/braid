@@ -26,10 +26,9 @@ class BusinessMan extends DDL
     {
         $this->setClassProperties();
         $this->removeProperty('table_name');
-        $this->setProperty('');
-        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
-        'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 
-        'TINYINT(1) NOT NULL', 'ADD CONSTRAINT email UNIQUE (email)']);
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL UNIQUE',
+        'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 
+        'TINYINT(1) NULL']);
         $this->createTableQuery();
         $this->executeQuery();
     }

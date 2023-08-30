@@ -19,26 +19,29 @@ class Designer
     /** @var string Nome do Designer  */
     private string $name;
 
+    /** @var string E-mail do designer */
+    private string $email;
+
     /** @var string Número do CPF */
-    private string $document;
+    private string $document = '';
 
     /** @var string $biografia */
-    private string $biography;
+    private string $biography = '';
 
     /** @var string[] Objetivos */
-    private array $goals;
+    private array $goals = [];
 
     /** @var string[] Qualificações do designer */
-    private array $qualifications;
+    private array $qualifications = [];
 
     /** @var string[] Portfólio do designer */
-    private array $portfolio;
+    private array $portfolio = [];
 
     /** @var string[] Experiência do designer */
-    private array $experience;
+    private array $experience = [];
 
     /** @var Contract[] */
-    private array $contracts;
+    private array $contracts = [];
 
     /** @var ModelsDesigner Model Designer */
     private ModelsDesigner $designer;
@@ -51,12 +54,13 @@ class Designer
         if (is_array($getters) && is_array($isMethods)) {
             $this->designer = new ModelsDesigner();
             $this->designer->name = $this->getDesignerName();
-            $this->designer->document = $this->getDocument();
-            $this->designer->experience = $this->getExperienceAsString();
-            $this->designer->portfolio = $this->getPortfolioAsString();
-            $this->designer->qualifications = $this->getQualificationAsString();
-            $this->designer->biography = $this->getBiography();
-            $this->designer->goals = $this->getGoalsAsString();
+            $this->designer->email = $this->getEmail();
+            $this->designer->document = empty($this->getDocument()) ? null : $this->getDocument();
+            $this->designer->experience = empty($this->getExperienceAsString()) ? null : $this->getExperienceAsString();
+            $this->designer->portfolio = empty($this->getPortfolioAsString()) ? null : $this->getPortfolioAsString();
+            $this->designer->qualifications = empty($this->getQualificationAsString()) ? null : $this->getQualificationAsString();
+            $this->designer->biography = empty($this->getBiography()) ? null : $this->getBiography();
+            $this->designer->goals = empty($this->getGoalsAsString()) ? null : $this->getGoalsAsString();
             if (!$this->designer->save()) {
                 throw new \Exception($this->designer->fail());
             }
@@ -144,12 +148,12 @@ class Designer
         $this->qualifications = $qualifications;
     }
 
-    public function getQualifications(): array
+    public function getQualifications()
     {
         return $this->qualifications;
     }
 
-    public function getQualificationAsString(): string
+    public function getQualificationAsString()
     {
         if (!empty($this->qualifications)) {
             $qualifications = implode(";", $this->qualifications);
@@ -157,7 +161,7 @@ class Designer
         }
     }
 
-    public function getDesignerName(): string
+    public function getDesignerName()
     {
         return $this->name;
     }
@@ -167,12 +171,22 @@ class Designer
         $this->name = $name;
     }
 
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+    }
+
     public function setBiography(string $biography)
     {
         $this->biography = $biography;
     }
 
-    public function getBiography(): string
+    public function getBiography()
     {
         return $this->biography;
     }
@@ -182,12 +196,12 @@ class Designer
         $this->goals = $goals;
     }
 
-    public function getGoals(): array
+    public function getGoals()
     {
         return $this->goals;
     }
 
-    public function getGoalsAsString(): string
+    public function getGoalsAsString()
     {
         if (!empty($this->goals)) {
             $goals = implode(";", $this->goals);

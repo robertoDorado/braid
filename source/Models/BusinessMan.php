@@ -39,6 +39,6 @@ class BusinessMan extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->email, $this->companyName, $this->registerNumber, $this->companyDescription, $this->branchOfCompany, $this->validCompany]);
+        parent::__construct($this->tableName, ['id'], [$this->name, $this->email]);
     }
 }

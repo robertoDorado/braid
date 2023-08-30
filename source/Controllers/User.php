@@ -2,6 +2,8 @@
 namespace Source\Controllers;
 
 use Source\Core\Controller;
+use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Designer;
 use Source\Domain\Model\User as ModelUser;
 
 /**
@@ -31,12 +33,29 @@ class User extends Controller
             $data = $this->getRequestPost()->setRequiredFields(["fullName", "userName", "email", 
                 "password", "confirmPassword", "csrfToken", "csrf_token", "userType"])->getAllPostData();
             
-            $pathPhoto = !empty($this->getRequestFiles()->getFile('photoImage')['name']) ?
-                $this->getRequestFiles()->getFile('photoImage')['name'] : null ;
-            $data['pathPhoto'] = $pathPhoto;
+            $requestFile = $this->getRequestFiles();
+            $photoName = !empty($requestFile->getFile('photoImage')['name']) ?
+                $requestFile->getFile('photoImage')['name'] : null;
+            $data['pathPhoto'] = $photoName;
+
+            if (!empty($data['pathPhoto'])) {
+                $requestFile->uploadFile(__DIR__ . "./../upload/user", "photoImage");
+            }
             
             $user = new ModelUser();
-            echo $user->register($data);
+            if ($user->register($data)) {
+                if ($data['userType'] == "businessman") {
+                    $businessMan = new BusinessMan();
+                    $businessMan->setCeoName($data["fullName"]);
+                    $businessMan->setEmail($data['email']);
+                    $businessMan->setModelBusinessMan($businessMan);
+                }else if ($data["userType"] == "designer") {
+                    $designer = new Designer();
+                    $designer->setDesignerName($data["fullName"]);
+                    $designer->setEmail($data['email']);
+                    $designer->setModelDesigner($designer);
+                }
+            }
             exit;
         }
         
