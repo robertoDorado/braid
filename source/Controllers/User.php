@@ -43,18 +43,22 @@ class User extends Controller
             }
             
             $user = new ModelUser();
+            $businessMan = new BusinessMan();
+            $designer = new Designer();
             if ($user->register($data)) {
                 if ($data['userType'] == "businessman") {
-                    $businessMan = new BusinessMan();
                     $businessMan->setCeoName($data["fullName"]);
                     $businessMan->setEmail($data['email']);
                     $businessMan->setModelBusinessMan($businessMan);
                 }else if ($data["userType"] == "designer") {
-                    $designer = new Designer();
                     $designer->setDesignerName($data["fullName"]);
                     $designer->setEmail($data['email']);
                     $designer->setModelDesigner($designer);
                 }
+            }
+
+            if (!empty($businessMan->getId()) || !empty($designer->getId())) {
+                echo json_encode(['register_success' => true, 'url_login' => url('user/login')]);
             }
             exit;
         }

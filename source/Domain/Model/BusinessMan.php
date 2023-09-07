@@ -91,7 +91,15 @@ class BusinessMan
 
     public function setEmail(string $email)
     {
-        return $this->email = $email;
+        $emailData = (new ModelsBusinessMan())
+        ->find('email=:email', ':email=' . $email . '', 'email')
+        ->fetch();
+
+        if (!empty($emailData)) {
+            echo json_encode(['email_already_exists' => true]);
+            return;
+        }
+        $this->email = $email;
     }
 
     public function getEmail()

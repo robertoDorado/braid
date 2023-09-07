@@ -31,19 +31,9 @@ class User
     /**
      * Login constructor
      */
-    public function __construct(string $login = '', string $email = '', string $password = '', string $userType = '')
+    public function __construct()
     {
         $this->user = new ModelsUser();
-        $this->login = $login;
-        $this->email = $email;
-        $this->password = $password;
-        $this->userType = $userType;
-
-        if ($this->userType != '') {
-            if (!$this->validateUserType($this->userType)) {
-                throw new \Exception('Invalid userType');
-            }
-        }
     }
 
     public function login(string $login = '', string $email = '', string $password = '', string $userType = ''): bool
@@ -90,6 +80,15 @@ class User
     public function register(array $data): bool
     {
         if ($this->user instanceof ModelsUser) {
+
+            $email = (new ModelsUser())
+            ->find('email=:email', ':email=' . $data['email'] . '')
+            ->fetch();
+
+            if (!empty($email)) {
+                echo json_encode(['email_already_exists' => true]);
+                return false;
+            }
 
             if (!$this->checkParamsNotEmpty($data['fullName'], $data['email'], $data['userName'], $data['confirmPassword'], $data['userType'])) {
                 return false;

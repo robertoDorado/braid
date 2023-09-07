@@ -138,7 +138,7 @@ class Designer
         if (empty($this->portfolio)) {
             return null;
         }
-        
+
         $portfolio = implode(";", $this->portfolio);
         return $portfolio;
     }
@@ -178,6 +178,15 @@ class Designer
 
     public function setEmail(string $email)
     {
+        $emailData = (new ModelsDesigner())
+            ->find('email=:email', ':email=' . $email . '', 'email')
+            ->fetch();
+
+        if (!empty($emailData)) {
+            echo json_encode(['email_already_exists' => true]);
+            return;
+        }
+
         $this->email = $email;
     }
 

@@ -42,6 +42,7 @@
               <li><span class="cross">&#x2718;</span>Pelo menos um caractere numérico.</li>
               <li><span class="cross">&#x2718;</span>Um caractere especial (@, #, $, %, ^, &, +, =, ou !).</li>
             </ul>
+            <div style="display:none" class="alert alert-danger" id="errorMessage"></div>
             <div class="photo-preview" id="photoPreview" style="display:none;">
               <img src="#" alt="foto">
             </div>

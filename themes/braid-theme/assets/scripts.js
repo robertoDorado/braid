@@ -88,7 +88,11 @@ this.lastElementChild.lastElementChild.style.display='none'
 this.lastElementChild.firstElementChild.style.display='block'
 const form=new FormData(this)
 endpoint=endpoint[url.getHostName()]||''
-fetch(url.getUrlOrigin(endpoint),{method:'POST',body:form}).then(data=>data.json()).then(function(data){console.log(data)})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
+fetch(url.getUrlOrigin(endpoint),{method:'POST',body:form}).then(data=>data.json()).then(function(data){const errorMessage=document.getElementById("errorMessage")
+if(data.email_already_exists){errorMessage.style.display='block'
+errorMessage.innerHTML="E-mail já cadastrado"
+throw new Error("E-mail já cadastrado")}
+if(data.register_success){window.location.href=data.url_login}})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
 const form=document.getElementById("genericForms")
 const launchGenericModal=document.getElementById("launchGenericModal")
 const titleNewMembership=document.getElementById("titleNewMembership")
