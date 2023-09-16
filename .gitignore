@@ -2,3 +2,4 @@ vendor/
 source/Models/Backup
 Logs/
 source/upload/user
+source/Boot/Config.php
