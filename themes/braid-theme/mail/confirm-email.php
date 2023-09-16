@@ -59,7 +59,7 @@
         <h1>Confirmação de E-mail</h1>
         <p>Olá {{ name }} Obrigado por se inscrever! Seu e-mail {{ email }} precisa ser confirmado
         antes de continuar o seu login.</p>
-        <p class="confirmation-message">Apos a confirmação do e-mail 
+        <p class="confirmation-message">Após a confirmação do e-mail 
             você poderá utilizar o sistema normalmente.</p>
         <div class="btn-container">
             <a href="#" class="btn" style="color:#ffffff;">Confirmar e-mail agora mesmo!</a>

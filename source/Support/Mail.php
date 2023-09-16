@@ -16,16 +16,16 @@ class Mail
     private PHPMailer $mail;
 
     /** @var string Host smtp */
-    private const HOST = "smtp.gmail.com";
+    private const HOST = HOST;
 
     /** @var bool Autenticação smtp */
     private const SMTP_AUTH = true;
 
     /** @var string Username */
-    private const USERNAME = "robertodorado7@gmail.com";
+    private const USERNAME = USERNAME;
 
     /** @var string Password */
-    private const PASSWORD = "sfpvwkhdbdlhrdnb";
+    private const PASSWORD = PASSWORD;
 
     /** @var string Smtp Secure */
     private const SMTP_SECURE = "tls";
