@@ -32,11 +32,14 @@ class User extends Model
     /** @var string Foto do usuario */
     private string $pathPhoto = 'path_photo';
 
+    /** @var string Verifica se o usuário é válido */
+    private string $isValidUser = 'is_valid_user';
+
     /**
      * User constructor
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->user_name, $this->email, $this->password, $this->userType, $this->pathPhoto]);
+        parent::__construct($this->tableName, ['id'], [$this->name, $this->user_name, $this->email, $this->password, $this->userType, $this->pathPhoto, $this->isValidUser]);
     }
 }

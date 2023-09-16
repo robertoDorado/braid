@@ -47,7 +47,7 @@ class Home extends Controller
     {
         echo $this->view->render("error", [
             "title" => "Error",
-            "error_code" => $data['error_code']
+            "errorCode" => $data['error_code']
         ]);
     }
 }

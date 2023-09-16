@@ -1,2 +1,6 @@
 <?php $v->layout("_theme") ?>
-<h1>Error: <?= $error_code ?></h1>
+<div class="error-container">
+    <h1><?= $errorCode ?></h1>
+    <p>Desculpe, a página que você está procurando não foi encontrada.</p>
+    <p>Volte para a <a href="<?= url("/") ?>">página inicial</a>.</p>
+</div>

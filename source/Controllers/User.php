@@ -5,6 +5,7 @@ use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Designer;
 use Source\Domain\Model\User as ModelUser;
+use Source\Support\Mail;
 
 /**
  * User Source\Controllers
@@ -41,6 +42,16 @@ class User extends Controller
             if (!empty($data['pathPhoto'])) {
                 $requestFile->uploadFile(__DIR__ . "./../upload/user", "photoImage");
             }
+
+            $mail = new Mail();
+            $mail->confirmEmailData(["emailFrom" => "no-reply@braid.com", "nameFrom" => "Braid.pro",
+            "emailTo" => $data["email"], "nameTo" => $data["fullName"],
+            "body" => $mail->loadEmailTemplate([
+                "url" => __DIR__ . "./../../themes/braid-theme/mail/confirm-email.php",
+                "name" => $data["fullName"],
+                "email" => $data["email"]
+            ]),
+            "subject" => iconv("UTF-8", "ISO-8859-1//TRANSLIT", "Confirmação de e-mail")]);
             
             $user = new ModelUser();
             $businessMan = new BusinessMan();

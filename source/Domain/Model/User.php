@@ -104,6 +104,7 @@ class User
             $this->user->user_name = $data['userName'];
             $this->user->password = $data['confirmPassword'];
             $this->user->user_type = $data['userType'];
+            $this->user->is_valid_user = 0;
             if (!$this->user->save()) {
                 throw new \Exception($this->user->fail());
             }
