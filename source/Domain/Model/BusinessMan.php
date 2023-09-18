@@ -20,7 +20,7 @@ class BusinessMan
     private string $name;
 
     /** @var string Email do dono da empresa */
-    private string $email;
+    private string $email = '';
 
     /** @var string Nome da empresa */
     private string $companyName = '';

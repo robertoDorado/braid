@@ -20,7 +20,7 @@ class Designer
     private string $name;
 
     /** @var string E-mail do designer */
-    private string $email;
+    private string $email = '';
 
     /** @var string Número do CPF */
     private string $document = '';

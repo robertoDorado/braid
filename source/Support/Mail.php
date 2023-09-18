@@ -1,7 +1,7 @@
 <?php
+
 namespace Source\Support;
 
-use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
@@ -12,20 +12,8 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 class Mail
 {
-    /** @var PHPMailer */
-    private PHPMailer $mail;
-
-    /** @var string Host smtp */
-    private const HOST = HOST;
-
     /** @var bool Autenticação smtp */
     private const SMTP_AUTH = true;
-
-    /** @var string Username */
-    private const USERNAME = USERNAME;
-
-    /** @var string Password */
-    private const PASSWORD = PASSWORD;
 
     /** @var string Smtp Secure */
     private const SMTP_SECURE = "tls";
@@ -33,22 +21,7 @@ class Mail
     /** @var int Porta smtp */
     private const PORT = 587;
 
-    /**
-     * Mail constructor
-     */
-    public function __construct()
-    {
-        $this->mail = new PHPMailer();
-        $this->mail->isSMTP();
-        $this->mail->Host = self::HOST;
-        $this->mail->SMTPAuth = self::SMTP_AUTH;
-        $this->mail->Username = self::USERNAME;
-        $this->mail->Password = self::PASSWORD;
-        $this->mail->SMTPSecure = self::SMTP_SECURE;
-        $this->mail->Port = self::PORT;
-    }
-
-    public function loadEmailTemplate(array $data)
+    public static function loadEmailTemplate(array $data)
     {
         $html = file_get_contents($data["url"]);
         if (!$html) {
@@ -60,7 +33,7 @@ class Mail
         return $html;
     }
 
-    private function verifyRequiredKeys(array $array)
+    private static function verifyRequiredKeys(array $array)
     {
         $requiredKeys = ["emailFrom", "nameFrom", "emailTo", "nameTo", "body", "subject"];
         foreach ($requiredKeys as $value) {
@@ -71,26 +44,31 @@ class Mail
         return true;
     }
 
-    public function confirmEmailData(array $data)
+    public static function sendEmail(array $data)
     {
-        if ($this->mail instanceof PHPMailer) {
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = HOST;
+        $mail->SMTPAuth = self::SMTP_AUTH;
+        $mail->Username = USERNAME;
+        $mail->Password = PASSWORD;
+        $mail->SMTPSecure = self::SMTP_SECURE;
+        $mail->Port = self::PORT;
 
-            if (!$this->verifyRequiredKeys($data)) {
-                throw new \Exception("Erro nas chaves obrigatórias.");
-            }
-            
-            extract($data);
-            $this->mail->setFrom($emailFrom, $nameFrom);
-            $this->mail->addAddress($emailTo, $nameTo);
+        if (!self::verifyRequiredKeys($data)) {
+            throw new \Exception("Erro nas chaves obrigatórias.");
+        }
 
-            $this->mail->isHTML(true);
-            $this->mail->Subject = $subject;
-            $this->mail->Body = $body;
+        extract($data);
+        $mail->setFrom($emailFrom, $nameFrom);
+        $mail->addAddress($emailTo, $nameTo);
 
-            if (!$this->mail->send()) {
-                throw new \Exception("Mail Error: " . $this->mail->ErrorInfo);
-            }
-            
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+
+        if (!$mail->send()) {
+            throw new \Exception("Mail Error: " . $mail->ErrorInfo);
         }
     }
 }

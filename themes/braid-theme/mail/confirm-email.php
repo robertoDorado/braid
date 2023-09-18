@@ -62,7 +62,7 @@
         <p class="confirmation-message">Após a confirmação do e-mail 
             você poderá utilizar o sistema normalmente.</p>
         <div class="btn-container">
-            <a href="#" class="btn" style="color:#ffffff;">Confirmar e-mail agora mesmo!</a>
+            <a href="<?= url("/email-confirmed?dataMail=" . base64_encode("{{ email }}") . "") ?>" class="btn" style="color:#ffffff;">Confirmar e-mail agora mesmo!</a>
         </div>
     </div>
 </body>

@@ -23,6 +23,34 @@ class User extends Controller
         parent::__construct();
     }
 
+    public function emailConfirmed()
+    {
+        if (empty($this->get("dataMail"))) {
+            redirect("/");
+        }
+
+        $email = !empty($this->get("dataMail")) ? base64_decode($this->get("dataMail")) : '';
+        if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
+            redirect("/");
+        }
+    }
+
+    public function confirmEmail()
+    {
+        if (empty($this->get("dataMail"))) {
+            redirect("/");
+        }
+
+        $email = !empty($this->get("dataMail")) ? base64_decode($this->get("dataMail")) : '';
+        if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
+            redirect("/");
+        }
+
+        echo $this->view->render("user/confirm-email", [
+            "email" => $email
+        ]);
+    }
+
     public function login()
     {
         echo $this->view->render("admin/login", []);
@@ -42,20 +70,11 @@ class User extends Controller
             if (!empty($data['pathPhoto'])) {
                 $requestFile->uploadFile(__DIR__ . "./../upload/user", "photoImage");
             }
-
-            $mail = new Mail();
-            $mail->confirmEmailData(["emailFrom" => "no-reply@braid.com", "nameFrom" => "Braid.pro",
-            "emailTo" => $data["email"], "nameTo" => $data["fullName"],
-            "body" => $mail->loadEmailTemplate([
-                "url" => __DIR__ . "./../../themes/braid-theme/mail/confirm-email.php",
-                "name" => $data["fullName"],
-                "email" => $data["email"]
-            ]),
-            "subject" => iconv("UTF-8", "ISO-8859-1//TRANSLIT", "Confirmação de e-mail")]);
             
             $user = new ModelUser();
             $businessMan = new BusinessMan();
             $designer = new Designer();
+
             if ($user->register($data)) {
                 if ($data['userType'] == "businessman") {
                     $businessMan->setCeoName($data["fullName"]);
@@ -66,10 +85,22 @@ class User extends Controller
                     $designer->setEmail($data['email']);
                     $designer->setModelDesigner($designer);
                 }
+
+                if (!empty($businessMan->getEmail()) || !empty($designer->getEmail())) {
+                    Mail::sendEmail(["emailFrom" => "no-reply@braid.com", "nameFrom" => "Braid.pro",
+                    "emailTo" => $data["email"], "nameTo" => $data["fullName"],
+                    "body" => Mail::loadEmailTemplate([
+                        "url" => __DIR__ . "./../../themes/braid-theme/mail/confirm-email.php",
+                        "name" => $data["fullName"],
+                        "email" => $data["email"]
+                    ]),
+                    "subject" => iconv("UTF-8", "ISO-8859-1//TRANSLIT", "Confirmação de e-mail")]);
+                }
             }
 
             if (!empty($businessMan->getId()) || !empty($designer->getId())) {
-                echo json_encode(['register_success' => true, 'url_login' => url('user/login')]);
+                echo json_encode(['register_success' => true, 
+                    'url_login' => url('/user/confirm-email?dataMail='. base64_encode($data["email"]) .'')]);
             }
             exit;
         }
