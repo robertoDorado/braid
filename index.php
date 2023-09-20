@@ -42,6 +42,14 @@ $route->post("/register", "User:register");
 $route->get("/confirm-email", "User:confirmEmail");
 
 /**
+ * Cookies
+ */
+$module = "cookies";
+$route->namespace("Source\Controllers");
+$route->group($module);
+$route->post("/set-cookie", "Cookie:agree");
+
+/**
  * Error
  */
 $module = "ops";

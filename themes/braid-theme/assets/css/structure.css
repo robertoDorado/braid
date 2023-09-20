@@ -33,9 +33,11 @@ html {
 
     position: absolute;
     width: 100%;
+    z-index: 1;
 }
 
 .background-home {
+    position: relative;
     background: linear-gradient(180deg, rgba(0, 0, 0, .25) 0%, rgba(0, 0, 0, .25) 35%, rgba(0, 0, 0, .25) 100%), url(../img/background-home.jpg);
     background-attachment: fixed;
     background-size: cover;
@@ -392,8 +394,9 @@ footer {
 
 .eye-icon {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
 }
 
 .eye-icon:hover {
@@ -450,6 +453,22 @@ footer {
 
 .confirm-email-container h1 {
     text-align: center;
+}
+
+.popop-cookies {
+    position: fixed;
+    background-color: #3c4049;
+    width: 100%;
+    bottom: 0;
+}
+
+.popop-cookies p {
+    padding: 0 2%;
+    color: #ffffff;
+}
+
+.container-popop-buttons {
+    padding: .5% 2%;
 }
 
 @media screen and (min-width: 1200px) {
@@ -570,6 +589,7 @@ footer {
     .container-btn {
         margin-top: 7rem;
         position: absolute;
+        top: 50%;
         left: 0;
         right: 0;
     }
@@ -577,7 +597,8 @@ footer {
     .background-home h1 {
         font-size: 3rem;
         position: absolute;
-        top: 15rem;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     .container-login a:hover+.underline-login {

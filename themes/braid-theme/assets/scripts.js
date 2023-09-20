@@ -39,7 +39,12 @@ elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="/"){func
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}
-window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
+window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};const skipPopop=document.getElementById("skipPopop")
+if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
+this.parentElement.parentElement.style.display="none"
+try{const form=new FormData()
+form.append("cookie",JSON.parse(this.dataset.agree))
+fetch(url.getStringUrl()+"cookies/set-cookie",{method:"POST",body:form}).then(data=>data.json()).then(function(response){console.log(response)})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
 const email=document.getElementById("email")
 const password=document.getElementById("password")
 const confirmPassword=document.getElementById("confirmPassword")

@@ -85,6 +85,20 @@
             }
         }
     </script>
+    <?php if (!$cookie) : ?>
+        <div class="popop-cookies">
+            <p>
+                <strong>Aviso:</strong>
+                Este site utiliza cookies para melhorar a sua experiência de navegação.
+                Ao continuar a usar este site, você concorda com o uso de cookies de acordo com nossa Política de Privacidade.
+            </p>
+            <div class="container-popop-buttons">
+                <a href="#" class="w3-button w3-red w3-medium">Política de privacidade</a>
+                <a href="#" data-agree="true" id="skipPopop" class="w3-button w3-green w3-medium">Continuar</a>
+            </div>
+        </div>
+    <?php endif ?>
+    <script src="<?= theme("assets/scripts.js") ?>"></script>
 
 </body>
 

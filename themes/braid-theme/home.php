@@ -56,5 +56,3 @@
     <h3 class="w3-margin w3-xlarge">Você está pronto para encontrar o freelancer ideal para o seu projeto?</h3>
     <a href="<?= url("user/register?userType=generic") ?>" class="w3-button w3-black w3-padding-large w3-large">Cadastre-se agora mesmo!</a>
 </section>
-
-<script src="<?= theme("assets/scripts.js") ?>"></script>
