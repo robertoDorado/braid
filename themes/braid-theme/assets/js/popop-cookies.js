@@ -11,8 +11,6 @@ if (skipPopop) {
             fetch(url.getStringUrl() + "cookies/set-cookie", {
                 method: "POST",
                 body: form
-            }).then(data => data.json()).then(function (response) {
-                console.log(response)
             })
 
         }catch(e) {

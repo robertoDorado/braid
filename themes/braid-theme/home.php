@@ -52,6 +52,32 @@
     </div>
 </section>
 
+<section class="designers-type">
+    <h2>Encontre profissionais talentosos para...</h2>
+    <div class="grid">
+        <div class="box-1 box">
+            <p>Desenha o seu <strong>website</strong></p>
+        </div>
+        <div class="box-2 box">
+            <p>Desenhar o seu <strong>logotipo</strong></p>
+        </div>
+        <div class="box-3 box">
+            <p>Criar o seu <strong>vídeo</strong></p>
+        </div>
+    </div>
+    <div class="grid">
+        <div class="box-4 box">
+            <p>Criar o seu design de <strong>mídias</strong></p>
+        </div>
+        <div class="box-5 box">
+            <p>Criar o seu design <strong>gráfico</strong></p>
+        </div>
+        <div class="box-6 box">
+            <p>Criar o seu <strong>UX/UI</strong></p>
+        </div>
+    </div>
+</section>
+
 <section class="call-to-action">
     <h3 class="w3-margin w3-xlarge">Você está pronto para encontrar o freelancer ideal para o seu projeto?</h3>
     <a href="<?= url("user/register?userType=generic") ?>" class="w3-button w3-black w3-padding-large w3-large">Cadastre-se agora mesmo!</a>

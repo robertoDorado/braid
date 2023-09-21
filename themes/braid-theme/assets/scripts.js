@@ -44,7 +44,7 @@ if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDe
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
 form.append("cookie",JSON.parse(this.dataset.agree))
-fetch(url.getStringUrl()+"cookies/set-cookie",{method:"POST",body:form}).then(data=>data.json()).then(function(response){console.log(response)})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
+fetch(url.getStringUrl()+"cookies/set-cookie",{method:"POST",body:form})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
 const email=document.getElementById("email")
 const password=document.getElementById("password")
 const confirmPassword=document.getElementById("confirmPassword")
