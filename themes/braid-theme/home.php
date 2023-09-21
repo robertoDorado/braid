@@ -56,7 +56,7 @@
     <h2>Encontre profissionais talentosos para...</h2>
     <div class="grid">
         <div class="box-1 box">
-            <p>Desenha o seu <strong>website</strong></p>
+            <p>Desenhar o seu <strong>website</strong></p>
         </div>
         <div class="box-2 box">
             <p>Desenhar o seu <strong>logotipo</strong></p>

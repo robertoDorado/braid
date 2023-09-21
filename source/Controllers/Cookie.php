@@ -19,6 +19,11 @@ class Cookie extends Controller
         parent::__construct();
     }
 
+    public function privacyPolicy()
+    {
+        echo $this->view->render("cookies/privacy-policy", []);
+    }
+
     public function agree()
     {
         $postCookie = empty($this->getRequestPost()->getPost("cookie")) ? false : $this->getRequestPost()->getPost("cookie");

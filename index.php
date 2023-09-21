@@ -48,6 +48,7 @@ $module = "cookies";
 $route->namespace("Source\Controllers");
 $route->group($module);
 $route->post("/set-cookie", "Cookie:agree");
+$route->get("/privacy-policy", "Cookie:privacyPolicy");
 
 /**
  * Error

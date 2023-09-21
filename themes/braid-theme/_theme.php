@@ -93,7 +93,7 @@
                 Ao continuar a usar este site, você concorda com o uso de cookies de acordo com nossa Política de Privacidade.
             </p>
             <div class="container-popop-buttons">
-                <a href="#" class="w3-button w3-red w3-medium">Política de privacidade</a>
+                <a href="<?= url("/cookies/privacy-policy") ?>" class="w3-button w3-red w3-medium">Política de privacidade</a>
                 <a href="#" data-agree="true" id="skipPopop" class="w3-button w3-green w3-medium">Continuar</a>
             </div>
         </div>
