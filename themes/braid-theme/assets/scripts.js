@@ -44,7 +44,9 @@ if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDe
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
 form.append("cookie",JSON.parse(this.dataset.agree))
-fetch(url.getStringUrl()+"cookies/set-cookie",{method:"POST",body:form})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
+let endpoint={"localhost":"braid/cookies/set-cookie","clientes.laborcode.com.br":"braid/cookies/set-cookie","braid.com.br":"cookies/set-cookie","www.braid.com.br":"cookies/set-cookie",}
+endpoint=endpoint[url.getHostName()]||''
+fetch(url.getUrlOrigin(endpoint),{method:"POST",body:form})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
 const email=document.getElementById("email")
 const password=document.getElementById("password")
 const confirmPassword=document.getElementById("confirmPassword")

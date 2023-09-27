@@ -26,7 +26,9 @@ class Cookie extends Controller
 
     public function agree()
     {
-        $postCookie = empty($this->getRequestPost()->getPost("cookie")) ? false : $this->getRequestPost()->getPost("cookie");
-        $this->getCurrentSession()->set("cookie", $postCookie);
+        $postCookie = empty($this->getRequestPost()->getPost("cookie")) 
+            ? false : $this->getRequestPost()->getPost("cookie");
+
+        setcookie("privacy-policy", $postCookie, time() + 3600, "/");
     }
 }

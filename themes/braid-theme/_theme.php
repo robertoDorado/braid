@@ -85,7 +85,7 @@
             }
         }
     </script>
-    <?php if (!$cookie) : ?>
+    <?php if (!isset($_COOKIE["privacy-policy"])) : ?>
         <div class="popop-cookies">
             <p>
                 <strong>Aviso:</strong>

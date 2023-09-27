@@ -30,14 +30,10 @@ class Home extends Controller
 
         $designer = new Designer();
         $designerTotalData = $designer->getTotalData();
-
-        $cookie = empty($this->getCurrentSession()->cookie) ? 
-            false : $this->getCurrentSession()->cookie;
         
         echo $this->view->render("home", [
             'businessManTotalData' => $businessManTotalData,
-            'designerTotalData' => $designerTotalData,
-            'cookie' => $cookie
+            'designerTotalData' => $designerTotalData
         ]);
     }
 
