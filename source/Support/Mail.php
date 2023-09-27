@@ -21,7 +21,7 @@ class Mail
     /** @var int Porta smtp */
     private const PORT = 587;
 
-    public static function loadEmailTemplate(array $data)
+    public static function loadTemplateConfirmEmail(array $data)
     {
         $html = file_get_contents($data["url"]);
         if (!$html) {
@@ -30,6 +30,7 @@ class Mail
 
         $html = str_replace(['{{ name }}', '{{name}}'], $data['name'], $html);
         $html = str_replace(['{{ email }}', '{{email}}'], $data['email'], $html);
+        $html = str_replace(['{{ link }}', '{{link}}'], $data['link'], $html);
         return $html;
     }
 

@@ -36,6 +36,36 @@ class User
         $this->user = new ModelsUser();
     }
 
+    public function validateEmailFirstAccess(string $hashBase64) {
+        
+        if ($this->user instanceof ModelsUser) {
+            $email = !empty($hashBase64) ? base64_decode($hashBase64) : '';
+            if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
+                return false;
+            }
+            
+            $user = $this->user->find("full_email=:full_email", ":full_email=" . $email . "")->fetch();
+
+            if (empty($user)) {
+                return false;
+            }
+    
+            $user->full_name = $user->full_name;
+            $user->nick_name = $user->nick_name;
+            $user->full_email = $user->full_email;
+            $user->password_data = $user->password_data;
+            $user->user_type = $user->user_type;
+            $user->path_photo = $user->path_photo;
+            $user->is_valid_user = 1;
+            if (!$user->save()) {
+                return false;
+            }
+    
+            return true;
+        }
+
+    }
+
     public function login(string $login = '', string $email = '', string $password = '', string $userType = ''): bool
     {
         if (empty($this->login)) {
@@ -98,11 +128,11 @@ class User
                 return false;
             }
 
-            $this->user->name = $data['fullName'];
-            $this->user->email = $data['email'];
+            $this->user->full_name = $data['fullName'];
+            $this->user->full_email = $data['email'];
             $this->user->path_photo = $data['pathPhoto'];
-            $this->user->user_name = $data['userName'];
-            $this->user->password = $data['confirmPassword'];
+            $this->user->nick_name = $data['userName'];
+            $this->user->password_data = $data['confirmPassword'];
             $this->user->user_type = $data['userType'];
             $this->user->is_valid_user = 0;
             if (!$this->user->save()) {

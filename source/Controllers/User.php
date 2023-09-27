@@ -29,10 +29,12 @@ class User extends Controller
             redirect("/");
         }
 
-        $email = !empty($this->get("dataMail")) ? base64_decode($this->get("dataMail")) : '';
-        if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
-            redirect("/");
-        }
+        $user = new ModelUser();
+        $isValidUser = $user->validateEmailFirstAccess($this->get("dataMail"));
+
+        echo $this->view->render("user/email-confirmed", [
+            "isValidUser" => $isValidUser
+        ]);
     }
 
     public function confirmEmail()
@@ -89,10 +91,11 @@ class User extends Controller
                 if (!empty($businessMan->getEmail()) || !empty($designer->getEmail())) {
                     Mail::sendEmail(["emailFrom" => "no-reply@braid.com", "nameFrom" => "Braid.pro",
                     "emailTo" => $data["email"], "nameTo" => $data["fullName"],
-                    "body" => Mail::loadEmailTemplate([
+                    "body" => Mail::loadTemplateConfirmEmail([
                         "url" => __DIR__ . "./../../themes/braid-theme/mail/confirm-email.php",
                         "name" => $data["fullName"],
-                        "email" => $data["email"]
+                        "email" => $data["email"],
+                        "link" => url("/user/email-confirmed?dataMail=" . base64_encode($data["email"]) . "")
                     ]),
                     "subject" => iconv("UTF-8", "ISO-8859-1//TRANSLIT", "Confirmação de e-mail")]);
                 }

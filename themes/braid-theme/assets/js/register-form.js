@@ -97,8 +97,8 @@ if (url.getCurrentEndpoint() == "user/register") {
     }
 
     let endpoint = {
-        "localhost": "braid/framework-php/user/register",
-        "clientes.laborcode.com.br": "user/register",
+        "localhost": "braid/user/register",
+        "clientes.laborcode.com.br": "braid/user/register",
         "braid.com.br": "user/register",
         "www.braid.com.br": "user/register",
     }

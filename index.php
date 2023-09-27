@@ -28,7 +28,6 @@ $module = null;
 $route->namespace("Source\Controllers");
 $route->group($module);
 $route->get("/", "Home:index");
-$route->get("/email-confirmed", "Home:emailConfirmed");
 
 /**
  * Login
@@ -40,6 +39,7 @@ $route->get("/login", "User:login");
 $route->get("/register", "User:register");
 $route->post("/register", "User:register");
 $route->get("/confirm-email", "User:confirmEmail");
+$route->get("/email-confirmed", "User:emailConfirmed");
 
 /**
  * Cookies

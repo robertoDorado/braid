@@ -15,16 +15,16 @@ class User extends Model
     private string $tableName = CONF_DB_NAME . ".user";
 
     /** @var string Nome do usuario */
-    private string $name = 'name';
+    private string $fullName = 'full_name';
 
     /** @var string userName do usuario */
-    private string $user_name = 'user_name';
+    private string $nickName = 'nick_name';
 
     /** @var string Email do usuario */
-    private string $email = 'email';
+    private string $fullEmail = 'full_email';
 
     /** @var string Senha do usuario */
-    private string $password = 'password';
+    private string $passwordData = 'password_data';
 
     /** @var string Tipo de usuario */
     private string $userType = 'user_type';
@@ -40,6 +40,6 @@ class User extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->user_name, $this->email, $this->password, $this->userType, $this->pathPhoto, $this->isValidUser]);
+        parent::__construct($this->tableName, ['id'], [$this->fullName, $this->nickName, $this->fullEmail, $this->passwordData, $this->userType, $this->pathPhoto, $this->isValidUser]);
     }
 }

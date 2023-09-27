@@ -80,7 +80,7 @@ if(email){email.addEventListener('input',function(){let color=validateByColor[is
 this.style.borderBottom=color
 color=color.split(" ").pop()
 this.nextElementSibling.style.color=color})}
-let endpoint={"localhost":"braid/framework-php/user/register","clientes.laborcode.com.br":"user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
+let endpoint={"localhost":"braid/user/register","clientes.laborcode.com.br":"braid/user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
 const inputs=Array.from(this.getElementsByTagName('input'))
 inputs.forEach(function(elem){try{if(elem.dataset.required){const elementBoolean=JSON.parse(elem.dataset.required)
