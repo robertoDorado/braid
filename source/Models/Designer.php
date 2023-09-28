@@ -13,27 +13,27 @@ class Designer extends Model
 {
     private string $tableName = CONF_DB_NAME . ".designer";
 
-    private string $name = 'name';
+    private string $fullName = 'full_name';
 
-    private string $email = 'email';
+    private string $fullEmail = 'full_email';
 
-    private string $document = 'document';
+    private string $documentData = 'document_data';
 
-    private string $biography = 'biography';
+    private string $biographyData = 'biography_data';
 
-    private string $goals = 'goals';
+    private string $goalsData = 'goals_data';
 
-    private string $qualifications = 'qualifications';
+    private string $qualificationsData = 'qualifications_data';
 
-    private string $portfolio = 'portfolio';
+    private string $portfolioData = 'portfolio_data';
 
-    private string $experience = 'experience';
+    private string $experienceData = 'experience_data';
 
     /**
      * Designer constructor
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->email]);
+        parent::__construct($this->tableName, ['id'], [$this->fullName, $this->fullEmail]);
     }
 }

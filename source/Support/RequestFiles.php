@@ -32,15 +32,23 @@ class RequestFiles
             $maxSize = 5 * 1024 * 1024; // Tamanho máximo de 5 MB
 
             if ($this->files[$key]["size"] > $maxSize) {
-                throw new \Exception("Largura e altura da imagem inválida");
+                echo json_encode(['invalid_image' => true,
+                "msg" => "Largura e altura da imagem inválida"]);
+                die;
             }
 
             if (!move_uploaded_file($this->files[$key]["tmp_name"], $realPath)) {
-                throw new \Exception("Erro desconhecido ao subir o arquivo.");
+                echo json_encode(['invalid_image' => true,
+                "msg" => "Erro desconhecido ao subir o arquivo."]);
+                die;
             }
         } else {
-            throw new \Exception("Tipo de imagem inválida");
+            echo json_encode(['invalid_image' => true, 
+            "msg" => "Tipo de imagem inválida"]);
+            die;
         }
+
+        return true;
     }
 
     public function getFile($key)

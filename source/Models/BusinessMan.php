@@ -14,10 +14,10 @@ class BusinessMan extends Model
     private string $tableName = CONF_DB_NAME . ".business_man";
 
     /** @var string Nome do contratante */
-    private string $name = 'name';
+    private string $fullName = 'full_name';
 
     /** @var string Email do contratante */
-    private string $email = 'email';
+    private string $fullEmail = 'full_email';
 
     /** @var string  Nome da empresa */
     private string $companyName = 'company_name';
@@ -39,6 +39,6 @@ class BusinessMan extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->name, $this->email]);
+        parent::__construct($this->tableName, ['id'], [$this->fullName, $this->fullEmail]);
     }
 }

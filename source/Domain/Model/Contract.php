@@ -59,12 +59,12 @@ class Contract
             $this->contract = new ModelsContract();
             $this->contract->designer_id = $this->getDesigner()->getId();
             $this->contract->businessman_id = $this->getBusinessMan()->getId();
-            $this->contract->jobs = $this->getJobsAsString();
+            $this->contract->jobs_data = $this->getJobsAsString();
             $this->contract->jobs_description = $this->getJobsDescriptionAsString();
             $this->contract->timestamp_jobs = $this->getTimestampJobs();
-            $this->contract->remuneration = $this->getRemuneration();
+            $this->contract->remuneration_data = $this->getRemuneration();
             $this->contract->intellectual_property = $this->getIntellectualProperty();
-            $this->contract->confidentiality = $this->getConfidentiality();
+            $this->contract->confidentiality_data = $this->getConfidentiality();
             $this->contract->termination_of_contract = $this->getTerminationOfContract();
             $this->contract->additional_clauses = $this->getAdditionalClauses();
             $this->contract->signature_businessman = $this->getSignatureBusinessMan();

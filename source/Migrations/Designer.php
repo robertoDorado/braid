@@ -29,7 +29,7 @@ class Designer extends DDL
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL UNIQUE',
         'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL',
         'VARCHAR(255) NULL', 'VARCHAR(255) NULL']);
-        $this->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 
@@ -41,4 +41,4 @@ class Designer extends DDL
     }
 }
 
-print_r((new Designer())->defineTable());
+(new Designer())->defineTable();

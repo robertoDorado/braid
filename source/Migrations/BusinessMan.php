@@ -29,14 +29,14 @@ class BusinessMan extends DDL
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL UNIQUE',
         'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 
         'TINYINT(1) NULL']);
-        $this->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 
     public function setEmailColumn()
     {
         $this->setClassProperties();
-        $this->alterTable(['ADD email VARCHAR(255) NOT NULL', 'ADD CONSTRAINT email UNIQUE (email)']);
+        $this->alterTable(['ADD full_email VARCHAR(255) NOT NULL', 'ADD CONSTRAINT full_email UNIQUE (full_email)']);
         $this->executeQuery();
     }
 }

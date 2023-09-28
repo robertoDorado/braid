@@ -23,7 +23,7 @@ class Jobs extends Model
     private string $jobDescription = 'job_description';
 
     /** @var string Valor de remuneração */
-    private string $remuneration = 'remuneration';
+    private string $remunerationData = 'remuneration_data';
 
     /** @var string Tempo máximo para entrega */
     private string $deliveryTime = 'delivery_time';
@@ -32,6 +32,6 @@ class Jobs extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->businessManId, $this->jobName, $this->jobDescription, $this->jobDescription, $this->remuneration, $this->deliveryTime]);
+        parent::__construct($this->tableName, ['id'], [$this->businessManId, $this->jobName, $this->jobDescription, $this->jobDescription, $this->remunerationData, $this->deliveryTime]);
     }
 }

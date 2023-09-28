@@ -1,6 +1,9 @@
 <?php
 namespace Source\Domain\Model;
 
+use Source\Core\Connect;
+use Source\Models\Jobs as ModelsJobs;
+
 /**
  * Jobs Source\Domain\Model
  * @link 
@@ -9,6 +12,9 @@ namespace Source\Domain\Model;
  */
 class Jobs
 {
+    /** @var int */
+    private int $id;
+
     /** @var string Nome da tarefa/trabalho a ser realizado */
     private string $jobName;
 
@@ -23,6 +29,38 @@ class Jobs
 
     /** @var BusinessMan[] Chave de relacionamento BusinessMan */
     private array $businessman;
+
+    private ModelsJobs $jobs;
+
+    public function setModelJob(Jobs $jobs, BusinessMan $businessMan)
+    {
+        $getters = checkGettersFilled($jobs);
+        $isMethods = checkIsMethodsFilled($jobs);
+
+        if (is_array($getters) && is_array($isMethods)) {
+            $this->jobs = new ModelsJobs();
+            $this->jobs->business_man_id = $businessMan->getId();
+            $this->jobs->job_name = $this->getJobName();
+            $this->jobs->job_description = $this->getJobDescription();
+            $this->jobs->remuneration_data = $this->getRemuneration();
+            $this->jobs->delivery_time = $this->getDeliveryTime();
+            if (!$this->jobs->save()) {
+                throw new \Exception($this->jobs->fail());
+            }
+
+            $this->id = Connect::getInstance()->lastInsertId();
+        }
+    }
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function setJobName(string $jobName)
     {

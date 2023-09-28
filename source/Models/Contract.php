@@ -20,7 +20,7 @@ class Contract extends Model
     private string $businessManId = 'business_man_id';
 
     /** @var string Trabalhos a serem realizados */
-    private string $jobs = 'jobs';
+    private string $jobsData = 'jobs_data';
 
     /** @var string Descrição dos trabalhos a serem realizados */
     private string $jobsDescription = 'jobs_description';
@@ -29,13 +29,13 @@ class Contract extends Model
     private string $timestampJobs = 'timestamp_jobs';
 
     /** @var string Valor do acordo entre o contratante e o contratado */
-    private string $remuneration = 'remuneration';
+    private string $remunerationData = 'remuneration_data';
 
     /** @var string Clausula para propriedade intelectual */
     private string $intellectualProperty = 'intellectual_property';
 
     /** @var string Clausula para confidencialidade */
-    private string $confidentiality = 'confidentiality';
+    private string $confidentialityData = 'confidentiality_data';
 
     /** @var string Data de recisão do contrato */
     private string $terminationOfContract = 'termination_of_contract';
@@ -54,6 +54,6 @@ class Contract extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobs, $this->jobsDescription, $this->timestampJobs, $this->remuneration, $this->intellectualProperty, $this->confidentiality, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner]);    
+        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobsData, $this->jobsDescription, $this->timestampJobs, $this->remunerationData, $this->intellectualProperty, $this->confidentialityData, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner]);    
     }
 }

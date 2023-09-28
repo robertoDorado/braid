@@ -105,7 +105,7 @@ class User extends Controller
                 echo json_encode(['register_success' => true, 
                     'url_login' => url('/user/confirm-email?dataMail='. base64_encode($data["email"]) .'')]);
             }
-            exit;
+            die;
         }
         
         if (!$this->has('userType')) {

@@ -147,15 +147,20 @@ if (url.getCurrentEndpoint() == "user/register") {
 
             fetch(url.getUrlOrigin(endpoint), { method: 'POST', body: form })
             .then(data => data.json()).then(function (data) {
-
                 const errorMessage = document.getElementById("errorMessage")
 
                 if (data.email_already_exists) {
                     errorMessage.style.display = 'block'
-                    errorMessage.innerHTML = "E-mail já cadastrado"
-                    throw new Error("E-mail já cadastrado")
+                    errorMessage.innerHTML = data.msg
+                    throw new Error(data.msg)
                 }
 
+                if (data.invalid_image) {
+                    errorMessage.style.display = 'block'
+                    errorMessage.innerHTML = data.msg
+                    throw new Error(data.msg)
+                }
+                
                 if (data.register_success) {
                     window.location.href = data.url_login
                 }

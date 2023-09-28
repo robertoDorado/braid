@@ -17,11 +17,11 @@ class RecoverPassword extends Model
 
     private string $idUser = 'id_user';
 
-    private string $user = 'user';
+    private string $nickName = 'nick_name';
 
-    private string $email = 'email';
+    private string $fullEmail = 'full_email';
 
-    private string $hash = 'hash';
+    private string $hashData = 'hash_data';
 
     private string $isValid = 'is_valid';
 
@@ -32,6 +32,6 @@ class RecoverPassword extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->idUser, $this->user, $this->email, $this->hash, $this->isValid, $this->expiresIn]);
+        parent::__construct($this->tableName, ['id'], [$this->idUser, $this->nickName, $this->fullEmail, $this->hashData, $this->isValid, $this->expiresIn]);
     }
 }

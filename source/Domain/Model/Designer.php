@@ -17,28 +17,28 @@ class Designer
     private int $id;
 
     /** @var string Nome do Designer  */
-    private string $name;
+    private string $fullName;
 
     /** @var string E-mail do designer */
-    private string $email = '';
+    private string $fullEmail = '';
 
     /** @var string Número do CPF */
-    private string $document = '';
+    private string $documentData = '';
 
     /** @var string $biografia */
-    private string $biography = '';
+    private string $biographyData = '';
 
     /** @var string[] Objetivos */
-    private array $goals = [];
+    private array $goalsData = [];
 
     /** @var string[] Qualificações do designer */
-    private array $qualifications = [];
+    private array $qualificationsData = [];
 
     /** @var string[] Portfólio do designer */
-    private array $portfolio = [];
+    private array $portfolioData = [];
 
     /** @var string[] Experiência do designer */
-    private array $experience = [];
+    private array $experienceData = [];
 
     /** @var Contract[] */
     private array $contracts = [];
@@ -53,14 +53,14 @@ class Designer
 
         if (is_array($getters) && is_array($isMethods)) {
             $this->designer = new ModelsDesigner();
-            $this->designer->name = $this->getDesignerName();
-            $this->designer->email = $this->getEmail();
-            $this->designer->document = empty($this->getDocument()) ? null : $this->getDocument();
-            $this->designer->experience = empty($this->getExperienceAsString()) ? null : $this->getExperienceAsString();
-            $this->designer->portfolio = empty($this->getPortfolioAsString()) ? null : $this->getPortfolioAsString();
-            $this->designer->qualifications = empty($this->getQualificationAsString()) ? null : $this->getQualificationAsString();
-            $this->designer->biography = empty($this->getBiography()) ? null : $this->getBiography();
-            $this->designer->goals = empty($this->getGoalsAsString()) ? null : $this->getGoalsAsString();
+            $this->designer->full_name = $this->getDesignerName();
+            $this->designer->full_email = $this->getEmail();
+            $this->designer->document_data = empty($this->getDocument()) ? null : $this->getDocument();
+            $this->designer->experience_data = empty($this->getExperienceAsString()) ? null : $this->getExperienceAsString();
+            $this->designer->portfolio_data = empty($this->getPortfolioAsString()) ? null : $this->getPortfolioAsString();
+            $this->designer->qualifications_data = empty($this->getQualificationAsString()) ? null : $this->getQualificationAsString();
+            $this->designer->biography_data = empty($this->getBiography()) ? null : $this->getBiography();
+            $this->designer->goals_data = empty($this->getGoalsAsString()) ? null : $this->getGoalsAsString();
             if (!$this->designer->save()) {
                 throw new \Exception($this->designer->fail());
             }
@@ -81,12 +81,12 @@ class Designer
             throw new \Exception("Número de CPF Inválido");
         }
 
-        $this->document = $number;
+        $this->documentData = $number;
     }
 
     public function getDocument()
     {
-        return $this->document;
+        return $this->documentData;
     }
 
     public function getId()
@@ -99,121 +99,121 @@ class Designer
 
     public function setExperience(array $experience)
     {
-        $this->experience = $experience;
+        $this->experienceData = $experience;
     }
 
     public function getExperience()
     {
-        if (empty($this->experience)) {
+        if (empty($this->experienceData)) {
             return null;
         }
-        return $this->experience;
+        return $this->experienceData;
     }
 
     public function getExperienceAsString()
     {
-        if (empty($this->experience)) {
+        if (empty($this->experienceData)) {
             return null;
         }
 
-        $experience = implode(";", $this->experience);
+        $experience = implode(";", $this->experienceData);
         return $experience;
     }
 
     public function setPortfolio(array $portfolio)
     {
-        $this->portfolio = $portfolio;
+        $this->portfolioData = $portfolio;
     }
 
     public function getPortfolio()
     {
-        if (empty($this->portfolio)) {
+        if (empty($this->portfolioData)) {
             return null;
         }
-        return $this->portfolio;
+        return $this->portfolioData;
     }
 
     public function getPortfolioAsString()
     {
-        if (empty($this->portfolio)) {
+        if (empty($this->portfolioData)) {
             return null;
         }
 
-        $portfolio = implode(";", $this->portfolio);
+        $portfolio = implode(";", $this->portfolioData);
         return $portfolio;
     }
 
     public function setQualifications(array $qualifications)
     {
-        $this->qualifications = $qualifications;
+        $this->qualificationsData = $qualifications;
     }
 
     public function getQualifications()
     {
-        return $this->qualifications;
+        return $this->qualificationsData;
     }
 
     public function getQualificationAsString()
     {
-        if (!empty($this->qualifications)) {
-            $qualifications = implode(";", $this->qualifications);
+        if (!empty($this->qualificationsData)) {
+            $qualifications = implode(";", $this->qualificationsData);
             return $qualifications;
         }
     }
 
     public function getDesignerName()
     {
-        return $this->name;
+        return $this->fullName;
     }
 
     public function setDesignerName(string $name)
     {
-        $this->name = $name;
+        $this->fullName = $name;
     }
 
     public function getEmail()
     {
-        return $this->email;
+        return $this->fullEmail;
     }
 
     public function setEmail(string $email)
     {
         $emailData = (new ModelsDesigner())
-            ->find('email=:email', ':email=' . $email . '', 'email')
+            ->find('full_email=:full_email', ':full_email=' . $email . '', 'email')
             ->fetch();
 
         if (!empty($emailData)) {
             echo json_encode(['email_already_exists' => true]);
-            return;
+            die;
         }
 
-        $this->email = $email;
+        $this->fullEmail = $email;
     }
 
     public function setBiography(string $biography)
     {
-        $this->biography = $biography;
+        $this->biographyData = $biography;
     }
 
     public function getBiography()
     {
-        return $this->biography;
+        return $this->biographyData;
     }
 
     public function setGoals(array $goals)
     {
-        $this->goals = $goals;
+        $this->goalsData = $goals;
     }
 
     public function getGoals()
     {
-        return $this->goals;
+        return $this->goalsData;
     }
 
     public function getGoalsAsString()
     {
-        if (!empty($this->goals)) {
-            $goals = implode(";", $this->goals);
+        if (!empty($this->goalsData)) {
+            $goals = implode(";", $this->goalsData);
             return $goals;
         }
     }

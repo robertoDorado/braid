@@ -17,10 +17,10 @@ class BusinessMan
     private int $id;
 
     /** @var string Nome do dono da empresa */
-    private string $name;
+    private string $fullName;
 
     /** @var string Email do dono da empresa */
-    private string $email = '';
+    private string $fullEmail = '';
 
     /** @var string Nome da empresa */
     private string $companyName = '';
@@ -50,8 +50,8 @@ class BusinessMan
 
         if (is_array($getters) && is_array($isMethods)) {
             $this->businessMan = new ModelsBusinessMan();
-            $this->businessMan->name = $this->getCeoName();
-            $this->businessMan->email = $this->getEmail();
+            $this->businessMan->full_name = $this->getCeoName();
+            $this->businessMan->full_email = $this->getEmail();
             $this->businessMan->company_name = empty($this->getCompanyName()) ? null : $this->getCompanyName();
             $this->businessMan->register_number = empty($this->getRegisterNumber()) ? null : $this->getRegisterNumber();
             $this->businessMan->company_description = empty($this->getDescriptionCompany()) ? null : $this->getDescriptionCompany();
@@ -81,30 +81,30 @@ class BusinessMan
 
     public function setCeoName(string $name)
     {
-        $this->name = $name;
+        $this->fullName = $name;
     }
 
     public function getCeoName()
     {
-        return $this->name;
+        return $this->fullName;
     }
 
     public function setEmail(string $email)
     {
         $emailData = (new ModelsBusinessMan())
-        ->find('email=:email', ':email=' . $email . '', 'email')
+        ->find('full_email=:full_email', ':full_email=' . $email . '', 'email')
         ->fetch();
 
         if (!empty($emailData)) {
             echo json_encode(['email_already_exists' => true]);
-            return;
+            die;
         }
-        $this->email = $email;
+        $this->fullEmail = $email;
     }
 
     public function getEmail()
     {
-        return $this->email;
+        return $this->fullEmail;
     }
 
     public function getCompanyName()

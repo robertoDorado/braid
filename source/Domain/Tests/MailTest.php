@@ -14,10 +14,7 @@ require __DIR__ . "../../../../vendor/autoload.php";
  */
 class MailTest
 {
-    /**
-     * MailTest constructor
-     */
-    public function __construct()
+    public static function confirmEmail()
     {
         Mail::sendEmail([
             "emailFrom" => "no-reply@braid.com", "nameFrom" => "Braid.pro",
@@ -33,4 +30,4 @@ class MailTest
     }
 }
 
-new MailTest();
+MailTest::confirmEmail();
