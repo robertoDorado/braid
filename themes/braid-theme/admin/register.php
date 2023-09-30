@@ -27,13 +27,13 @@
             <div class="input-field">
               <input type="password" name="password" id="password" class="validate" data-required="true">
               <label for="password">Senha</label>
-              <i class="fas fa-eye-slash eye-icon" id="eyeIconPassword"></i>
+              <i class="fas fa-eye-slash eye-icon" eye-icon="eyeIconPassword"></i>
             </div>
             <div class="input-field">
               <input type="password" name="confirmPassword" id="confirmPassword" class="validate" data-required="true">
               <label for="confirmPassword">Confirme a senha</label>
               <input type="hidden" name="csrfToken" value="<?= !empty($csrfToken) ? $csrfToken : '' ?>" data-required="true">
-              <i class="fas fa-eye-slash eye-icon" id="eyeIconConfirmPassword"></i>
+              <i class="fas fa-eye-slash eye-icon" eye-icon="eyeIconConfirmPassword"></i>
               <input type="hidden" name="userType" value="<?= !empty($registerType) ? $registerType : '' ?>" data-required="true">
             </div>
             <ul class="conditions" id="conditions">

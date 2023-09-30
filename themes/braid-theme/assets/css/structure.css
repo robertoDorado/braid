@@ -294,9 +294,9 @@ footer {
 
 .form-choices {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     padding: 1rem 0;
 }
 
@@ -421,10 +421,11 @@ footer {
 
 
 .error-container {
-    padding: 200px;
+    padding: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
 }
 
 .error-container h1 {
@@ -446,14 +447,17 @@ footer {
 }
 
 .confirm-email-container {
-    padding: 200px;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
 
 .confirm-email-container h1 {
     text-align: center;
+    font-size: 1.5rem;
+    width: 90%;
 }
 
 .popop-cookies {
@@ -551,7 +555,43 @@ footer {
     text-align: center;
 }
 
+.form-check {
+    padding: 0;
+}
+
+.login-logo a img {
+    width: 250px;
+}
+
+.btn-login {
+    position: absolute;
+    right: 5.5%;
+    width: 150px;
+}
+
 @media screen and (min-width: 1200px) {
+
+    .confirm-email-container {
+        padding: 200px;
+    }
+
+    .confirm-email-container h1 {
+        font-size: 2rem;
+        margin: 0;
+    }
+
+    .form-check {
+        padding-left: 1.5rem;
+    }
+
+    .form-choices {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .error-container {
+        padding: 200px;
+    }
 
     .privacy-policy-container {
         padding: 7%;

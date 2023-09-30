@@ -4,8 +4,8 @@ if (url.getCurrentEndpoint() == "user/register") {
     const password = document.getElementById("password")
     const confirmPassword = document.getElementById("confirmPassword")
     const conditions = document.querySelectorAll("#conditions li")
-    const eyeIconPassword = document.getElementById("eyeIconPassword")
-    const eyeIconConfirmPassword = document.getElementById("eyeIconConfirmPassword")
+    const eyeIconPassword = document.querySelector("[eye-icon='eyeIconPassword']")
+    const eyeIconConfirmPassword = document.querySelector("[eye-icon='eyeIconConfirmPassword']")
     const photoImage = document.getElementById("photoImage")
     const photoPreview = document.getElementById("photoPreview")
 

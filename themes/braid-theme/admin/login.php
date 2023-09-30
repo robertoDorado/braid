@@ -1,43 +1,37 @@
 <?php $v->layout("admin/_theme") ?>
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Admin</b>LTE</a>
+    <a href="<?= url("/") ?>"><img src="<?= theme("assets/img/logo-2-rbg.png") ?>" alt="logo"></a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+      <p class="login-box-msg">Faça login na Braid.pro</p>
 
       <form action="../../index3.html" method="post">
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
-          </div>
+        <div class="input-field">
+          <input type="text" name="email" id="email" class="validate" data-required="true">
+          <label for="email">Email</label>
         </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
-          </div>
+        <div class="input-field">
+          <input type="password" name="password" id="password" class="validate" data-required="true">
+          <label for="password">Senha</label>
+          <i class="fas fa-eye-slash eye-icon" eye-icon="eyeIconPassword"></i>
         </div>
         <div class="row">
           <div class="col-8">
-            <div class="icheck-primary">
+            <div class="">
               <input type="checkbox" id="remember">
-              <label for="remember">
-                Remember Me
+              <label style="padding-left:2rem !important;" for="remember">
+                Manter Login
               </label>
             </div>
           </div>
           <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-block">Sign In</button>
-          </div>
+          <button style="width:150px;" type="submit" class="btn btn-block btn-login">
+            <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+            <span>Login</span>
+          </button>
           <!-- /.col -->
         </div>
       </form>
@@ -53,10 +47,10 @@
       <!-- /.social-auth-links -->
 
       <p class="mb-1">
-        <a href="forgot-password.html">I forgot my password</a>
+        <a href="forgot-password.html">Esqueci a minha senha</a>
       </p>
       <p class="mb-0">
-        <a href="register.html" class="text-center">Register a new membership</a>
+        <a href="<?= url("user/register?userType=generic") ?>" class="text-center">Cadastrar-me</a>
       </p>
     </div>
     <!-- /.login-card-body -->
