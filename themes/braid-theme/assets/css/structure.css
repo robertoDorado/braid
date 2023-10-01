@@ -566,7 +566,12 @@ footer {
 .btn-login {
     position: absolute;
     right: 5.5%;
+    
     width: 150px;
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 @media screen and (min-width: 1200px) {

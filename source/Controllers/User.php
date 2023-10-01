@@ -55,7 +55,10 @@ class User extends Controller
 
     public function login()
     {
-        echo $this->view->render("admin/login", []);
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+        echo $this->view->render("admin/login", [
+            "csrfToken" => $csrfToken
+        ]);
     }
 
     public function register()
