@@ -36,6 +36,7 @@ $module = "user";
 $route->namespace("Source\Controllers");
 $route->group($module);
 $route->get("/login", "User:login");
+$route->post("/login", "User:login");
 $route->get("/register", "User:register");
 $route->post("/register", "User:register");
 $route->get("/confirm-email", "User:confirmEmail");

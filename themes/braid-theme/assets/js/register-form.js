@@ -8,6 +8,7 @@ if (url.getCurrentEndpoint() == "user/register") {
     const eyeIconConfirmPassword = document.querySelector("[eye-icon='eyeIconConfirmPassword']")
     const photoImage = document.getElementById("photoImage")
     const photoPreview = document.getElementById("photoPreview")
+    const errorMessage = document.getElementById("errorMessage")
 
     if (photoImage) {
         photoImage.addEventListener('change', function () {
@@ -111,58 +112,69 @@ if (url.getCurrentEndpoint() == "user/register") {
 
             inputs.forEach(function (elem) {
                 try {
-                    if (elem.dataset.required) {
-                        const elementBoolean = JSON.parse(elem.dataset.required)
-                        if (elementBoolean) {
-                            if (elem.value == '') {
-                                elem.style.borderBottom = '1px solid #ff2c2c'
-                                throw new Error(`empty data ${elem.name}`)
-                            } else {
-                                elem.style.borderBottom = '1px solid #2196f3'
-                            }
-                        }
-                    }
+                    validateRequiredFields(elem, errorMessage)
                 }catch(error) {
-                    throw new Error(`Erro ao converter dataset em booleano: ${error}`)
+                    throw new Error(error.message)
                 }
             })
 
-            if (!isValidPassword(this.password.value)) {
-                throw new Error("invalid password")
+            if (!isValidEmail(this.email.value)) {
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = `Campo ${this.email.dataset.error} inválido`
+                this.email.style.borderBottom = '1px solid #ff2c2c'
+                throw new Error(`invalid ${this.email.name}`)
             }
 
-            if (!isValidEmail(this.email.value)) {
-                throw new Error("invalid email")
+            if (!isValidPassword(this.password.value)) {
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = `Campo ${this.password.dataset.error} inválido`
+                this.password.style.borderBottom = '1px solid #ff2c2c'
+                throw new Error(`invalid ${this.password.name}`)
             }
 
             if (this.confirmPassword.value != this.password.value) {
-                throw new Error("invalid confirm password")
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = `Campo ${this.confirmPassword.dataset.error} inválido`
+                this.confirmPassword.style.borderBottom = '1px solid #ff2c2c'
+                throw new Error(`invalid ${this.confirmPassword.name}`)
             }
 
-            this.lastElementChild.lastElementChild.style.display = 'none'
-            this.lastElementChild.firstElementChild.style.display = 'block'
-            const form = new FormData(this)
+            const btnSubmit = this.lastElementChild.lastElementChild
+            const loaderImage = this.lastElementChild.firstElementChild
 
+            const form = new FormData(this)
             endpoint = endpoint[url.getHostName()] || ''
 
             fetch(url.getUrlOrigin(endpoint), { method: 'POST', body: form })
             .then(data => data.json()).then(function (data) {
-                const errorMessage = document.getElementById("errorMessage")
 
                 if (data.email_already_exists) {
                     errorMessage.style.display = 'block'
                     errorMessage.innerHTML = data.msg
+                    setTimeout(() => {
+                        window.location.href = window.location.href
+                    }, 1000)
                     throw new Error(data.msg)
                 }
 
                 if (data.invalid_image) {
                     errorMessage.style.display = 'block'
                     errorMessage.innerHTML = data.msg
+                    setTimeout(() => {
+                        window.location.href = window.location.href
+                    }, 1000)
                     throw new Error(data.msg)
                 }
                 
                 if (data.register_success) {
-                    window.location.href = data.url_login
+                    btnSubmit.style.display = 'none'
+                    loaderImage.style.display = 'block'
+                    if (errorMessage.style.display == 'block') {
+                        errorMessage.style.display = 'none'
+                    }
+                    setTimeout(() => {
+                        window.location.href = data.url_login
+                    }, 1000)
                 }
             })
         })

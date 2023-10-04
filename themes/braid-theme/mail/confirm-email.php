@@ -18,6 +18,7 @@
             padding: 20px;
             background-color: #ffffff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #000000;
             border-radius: 5px;
             text-align: center;
         }
@@ -42,20 +43,25 @@
         .btn {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #ff2c2c;
             color: #fff;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 1px;
             transition: background-color 0.3s;
         }
 
+        .logo {
+            width: 250px;
+        }
+
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #000000;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <img src="https://clientes.laborcode.com.br/braid/themes/braid-theme/assets/img/logo-2-rbg.png" alt="logo" class="logo">
         <h1>Confirmação de E-mail</h1>
         <p>Olá {{ name }} Obrigado por se inscrever! Seu e-mail {{ email }} precisa ser confirmado
         antes de continuar o seu login.</p>

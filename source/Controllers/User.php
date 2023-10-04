@@ -55,6 +55,13 @@ class User extends Controller
 
     public function login()
     {
+        if ($this->getServer('REQUEST_METHOD') == 'POST') {
+            $post = $this->getRequestPost()->setRequiredFields(["email", "password",
+            "csrf_token", "csrfToken"])->getAllPostData();
+            
+            echo json_encode($post);
+            die;
+        }
         $csrfToken = $this->getCurrentSession()->csrf_token;
         echo $this->view->render("admin/login", [
             "csrfToken" => $csrfToken
