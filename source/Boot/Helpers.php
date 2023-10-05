@@ -1,5 +1,23 @@
 <?php
 
+function isEmail(string $email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+function isValidPassword(string $password) {
+    if (!preg_match("/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{8,}$/", $password)) {
+        return false;
+    }
+    return true;
+}
+
+function isValidEmail(string $email) {
+    if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
+        return false;
+    }
+    return true;
+}
+
 function transformCamelCaseToSnakeCase(array $args)
 {
     foreach($args as &$originalString) {

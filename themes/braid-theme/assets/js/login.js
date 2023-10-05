@@ -1,22 +1,8 @@
 if (url.getCurrentEndpoint() == 'user/login') {
     const form = document.getElementById("loginForm")
     const eyeIconPassword = document.querySelector("[eye-icon='eyeIconPassword']")
-    const email = document.getElementById("email")
+    const userName = document.getElementById("username")
     const errorMessage = document.getElementById("errorMessage")
-
-    const validateByColor = {
-        'true': '1px solid #63a69d',
-        'false': '1px solid #ff2c2c'
-    }
-
-    if (email) {
-        email.addEventListener('input', function () {
-            let color = validateByColor[isValidEmail(this.value)]
-            this.style.borderBottom = color
-            color = color.split(" ").pop()
-            this.nextElementSibling.style.color = color
-        })
-    }
 
     if (eyeIconPassword) {
         eyeIconPassword.addEventListener('click', function () {
@@ -44,22 +30,18 @@ if (url.getCurrentEndpoint() == 'user/login') {
             }
         })
 
-        if (!isValidEmail(this.email.value)) {
-            errorMessage.style.display = 'block'
-            errorMessage.innerHTML = `Campo ${this.email.dataset.error} inválido`
-            throw new Error(`${this.email.dataset.error} inválido`)
-        }
-
         if (!isValidPassword(this.password.value)) {
             errorMessage.style.display = 'block'
             errorMessage.innerHTML = `Campo ${this.password.dataset.error} inválido`
             this.password.style.borderBottom = '1px solid #ff2c2c'
             throw new Error(`invalid ${this.password.name}`)
         }
-        
-        if (errorMessage.style.display == 'block') {
-            errorMessage.style.display = 'none'
-        }
+
+        const loaderImage = this.getElementsByTagName("button")[0].firstElementChild
+        const btnSubmitLogin = this.getElementsByTagName("button")[0].lastElementChild
+
+        loaderImage.style.display = 'block'
+        btnSubmitLogin.style.display = 'none'
 
         let endpoint = {
             "localhost": "braid/user/login",
@@ -70,13 +52,39 @@ if (url.getCurrentEndpoint() == 'user/login') {
 
         endpoint = endpoint[url.getHostName()] || ''
         const form = new FormData(this)
+        const requestUrl = url.getUrlOrigin(endpoint)
 
-        fetch(url.getUrlOrigin(endpoint), { method: 'POST', body: form })
+        fetch(requestUrl, { method: 'POST', body: form })
         .then(data => data.json()).then(function (data) {
-            console.log(data)
-        })
 
-        const loaderImage = this.getElementsByTagName("button")[0].firstElementChild
-        loaderImage.style.display = 'block'
+            if (data.invalid_email) {
+                loaderImage.style.display = 'none'
+                btnSubmitLogin.style.display = 'block'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = data.msg
+                throw new Error(data.msg)
+            }
+
+            if (data.invalid_password) {
+                loaderImage.style.display = 'none'
+                btnSubmitLogin.style.display = 'block'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = data.msg
+                throw new Error(data.msg)
+            }
+            
+            if (data.access_denied) {
+                loaderImage.style.display = 'none'
+                btnSubmitLogin.style.display = 'block'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = data.msg
+                throw new Error(data.msg)
+            }
+
+            if (data.success_login) {
+                errorMessage.style.display = 'none'
+                console.log(data)
+            }
+        })
     })
 }

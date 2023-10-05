@@ -10,8 +10,8 @@
 
       <form method="post" id="loginForm">
         <div class="input-field">
-          <input type="text" name="email" id="email" data-error="E-mail" class="validate" data-required="true">
-          <label for="email">E-mail</label>
+          <input type="text" name="userName" id="username" data-error="Usuário ou E-mail" class="validate" data-required="true">
+          <label for="username">E-mail ou nome de usuário</label>
         </div>
         <div class="input-field">
           <input type="password" name="password" id="password" data-error="Senha" class="validate" data-required="true">
@@ -52,7 +52,7 @@
         <a href="forgot-password.html">Esqueci a minha senha</a>
       </p>
       <p class="mb-0">
-        <a href="<?= url("user/register?userType=generic") ?>" class="text-center">Cadastrar-me</a>
+        <a href="<?= url("user/register?userType=generic") ?>" class="text-center">Cadastre-se</a>
       </p>
     </div>
     <!-- /.login-card-body -->

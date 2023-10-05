@@ -22,7 +22,7 @@
               <input type="radio" class="with-gap" id="designer" name="option" value="designer">
               <label class="form-check-label" for="designer">Designer</label>
             </div>
-            <button type="submit" class="btn btn-danger mt-3">Enviar</button>
+            <button type="submit" class="btn btn-danger mt-3 red">Enviar</button>
           </div>
         </form>
       </div>

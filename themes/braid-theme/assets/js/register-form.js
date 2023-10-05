@@ -96,13 +96,6 @@ if (url.getCurrentEndpoint() == "user/register") {
             this.nextElementSibling.style.color = color
         })
     }
-
-    let endpoint = {
-        "localhost": "braid/user/register",
-        "clientes.laborcode.com.br": "braid/user/register",
-        "braid.com.br": "user/register",
-        "www.braid.com.br": "user/register",
-    }
     
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -117,6 +110,13 @@ if (url.getCurrentEndpoint() == "user/register") {
                     throw new Error(error.message)
                 }
             })
+
+            const userName = this.userName.value.trim().split(" ")
+            if (userName.length > 1) {
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = `Campo ${this.userName.dataset.error} não pode ter espaço`
+                throw new Error(`invalid ${this.userName.name}`)
+            }
 
             if (!isValidEmail(this.email.value)) {
                 errorMessage.style.display = 'block'
@@ -142,33 +142,48 @@ if (url.getCurrentEndpoint() == "user/register") {
             const btnSubmit = this.lastElementChild.lastElementChild
             const loaderImage = this.lastElementChild.firstElementChild
 
+            btnSubmit.style.display = 'none'
+            loaderImage.style.display = 'block'
+
+            let endpoint = {
+                "localhost": "braid/user/register",
+                "clientes.laborcode.com.br": "braid/user/register",
+                "braid.com.br": "user/register",
+                "www.braid.com.br": "user/register",
+            }
+
             const form = new FormData(this)
             endpoint = endpoint[url.getHostName()] || ''
+            const requestUrl = url.getUrlOrigin(endpoint)
 
-            fetch(url.getUrlOrigin(endpoint), { method: 'POST', body: form })
+            fetch(requestUrl, { method: 'POST', body: form })
             .then(data => data.json()).then(function (data) {
 
                 if (data.email_already_exists) {
+                    btnSubmit.style.display = 'block'
+                    loaderImage.style.display = 'none'
                     errorMessage.style.display = 'block'
                     errorMessage.innerHTML = data.msg
-                    setTimeout(() => {
-                        window.location.href = window.location.href
-                    }, 1000)
+                    throw new Error(data.msg)
+                }
+
+                if (data.nickname_already_exists) {
+                    btnSubmit.style.display = 'block'
+                    loaderImage.style.display = 'none'
+                    errorMessage.style.display = 'block'
+                    errorMessage.innerHTML = data.msg
                     throw new Error(data.msg)
                 }
 
                 if (data.invalid_image) {
+                    btnSubmit.style.display = 'block'
+                    loaderImage.style.display = 'none'
                     errorMessage.style.display = 'block'
                     errorMessage.innerHTML = data.msg
-                    setTimeout(() => {
-                        window.location.href = window.location.href
-                    }, 1000)
                     throw new Error(data.msg)
                 }
                 
                 if (data.register_success) {
-                    btnSubmit.style.display = 'none'
-                    loaderImage.style.display = 'block'
                     if (errorMessage.style.display == 'block') {
                         errorMessage.style.display = 'none'
                     }

@@ -2,7 +2,12 @@ function isValidEmail(value){return/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{
 function isValidPassword(value){return/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{8,}$/.test(value)}
 function isCapitalize(value){return/[A-Z]/.test(value)}
 function isNumeric(value){return/[\d]/.test(value)}
-function isSpecialCharacter(value){return/[@#$%^&+=!]/.test(value)};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
+function isSpecialCharacter(value){return/[@#$%^&+=!]/.test(value)}
+function validateRequiredFields(elem,errorMessage){if(elem.dataset.required){const elementBoolean=JSON.parse(elem.dataset.required)
+if(elementBoolean){if(elem.value==''){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${elem.dataset.error} não pode estar vazio`
+elem.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`Campo ${elem.name} não pode estar vazio`)}else{elem.style.borderBottom='1px solid #2196f3'}}}};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
 return this.host}
 getUrlOrigin(endpoint=''){endpoint=endpoint.split('/').filter(value=>value!='').join('/')
 endpoint=endpoint.length>0?"/"+endpoint:''
@@ -39,7 +44,47 @@ elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="/"){func
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}
-window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};const skipPopop=document.getElementById("skipPopop")
+window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=='user/login'){const form=document.getElementById("loginForm")
+const eyeIconPassword=document.querySelector("[eye-icon='eyeIconPassword']")
+const userName=document.getElementById("username")
+const errorMessage=document.getElementById("errorMessage")
+if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
+this.classList.add("fa-eye")
+this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
+this.classList.add("fa-eye-slash")
+this.parentElement.firstElementChild.setAttribute('type','password')}})}
+form.addEventListener('submit',function(event){event.preventDefault()
+const inputs=Array.from(this.getElementsByTagName("input"))
+inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+if(!isValidPassword(this.password.value)){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.password.dataset.error} inválido`
+this.password.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.password.name}`)}
+const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
+const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
+loaderImage.style.display='block'
+btnSubmitLogin.style.display='none'
+let endpoint={"localhost":"braid/user/login","clientes.laborcode.com.br":"braid/user/login","braid.com.br":"user/login","www.braid.com.br":"user/login",}
+endpoint=endpoint[url.getHostName()]||''
+const form=new FormData(this)
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_email){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.invalid_password){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.access_denied){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.success_login){errorMessage.style.display='none'
+console.log(data)}})})};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
@@ -51,10 +96,11 @@ const email=document.getElementById("email")
 const password=document.getElementById("password")
 const confirmPassword=document.getElementById("confirmPassword")
 const conditions=document.querySelectorAll("#conditions li")
-const eyeIconPassword=document.getElementById("eyeIconPassword")
-const eyeIconConfirmPassword=document.getElementById("eyeIconConfirmPassword")
+const eyeIconPassword=document.querySelector("[eye-icon='eyeIconPassword']")
+const eyeIconConfirmPassword=document.querySelector("[eye-icon='eyeIconConfirmPassword']")
 const photoImage=document.getElementById("photoImage")
 const photoPreview=document.getElementById("photoPreview")
+const errorMessage=document.getElementById("errorMessage")
 if(photoImage){photoImage.addEventListener('change',function(){const file=this.files[0];if(file){const imageUrl=URL.createObjectURL(file);photoPreview.firstElementChild.src=imageUrl;photoPreview.style.display='block'}else{photoPreview.style.display='none'}})}
 if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
 this.classList.add("fa-eye")
@@ -82,24 +128,41 @@ if(email){email.addEventListener('input',function(){let color=validateByColor[is
 this.style.borderBottom=color
 color=color.split(" ").pop()
 this.nextElementSibling.style.color=color})}
-let endpoint={"localhost":"braid/user/register","clientes.laborcode.com.br":"braid/user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
 const inputs=Array.from(this.getElementsByTagName('input'))
-inputs.forEach(function(elem){try{if(elem.dataset.required){const elementBoolean=JSON.parse(elem.dataset.required)
-if(elementBoolean){if(elem.value==''){elem.style.borderBottom='1px solid #ff2c2c'
-throw new Error(`empty data ${elem.name}`)}else{elem.style.borderBottom='1px solid #2196f3'}}}}catch(error){throw new Error(`Erro ao converter dataset em booleano: ${error}`)}})
-if(!isValidPassword(this.password.value)){throw new Error("invalid password")}
-if(!isValidEmail(this.email.value)){throw new Error("invalid email")}
-if(this.confirmPassword.value!=this.password.value){throw new Error("invalid confirm password")}
-this.lastElementChild.lastElementChild.style.display='none'
-this.lastElementChild.firstElementChild.style.display='block'
+inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+if(!isValidEmail(this.email.value)){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.email.dataset.error} inválido`
+this.email.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.email.name}`)}
+if(!isValidPassword(this.password.value)){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.password.dataset.error} inválido`
+this.password.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.password.name}`)}
+if(this.confirmPassword.value!=this.password.value){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.confirmPassword.dataset.error} inválido`
+this.confirmPassword.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.confirmPassword.name}`)}
+const btnSubmit=this.lastElementChild.lastElementChild
+const loaderImage=this.lastElementChild.firstElementChild
+btnSubmit.style.display='none'
+loaderImage.style.display='block'
+let endpoint={"localhost":"braid/user/register","clientes.laborcode.com.br":"braid/user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
 const form=new FormData(this)
 endpoint=endpoint[url.getHostName()]||''
-fetch(url.getUrlOrigin(endpoint),{method:'POST',body:form}).then(data=>data.json()).then(function(data){const errorMessage=document.getElementById("errorMessage")
-if(data.email_already_exists){errorMessage.style.display='block'
-errorMessage.innerHTML="E-mail já cadastrado"
-throw new Error("E-mail já cadastrado")}
-if(data.register_success){window.location.href=data.url_login}})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.email_already_exists){btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.invalid_image){btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.register_success){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
+setTimeout(()=>{window.location.href=data.url_login},1000)}})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
 const form=document.getElementById("genericForms")
 const launchGenericModal=document.getElementById("launchGenericModal")
 const titleNewMembership=document.getElementById("titleNewMembership")

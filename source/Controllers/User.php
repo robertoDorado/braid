@@ -55,13 +55,55 @@ class User extends Controller
 
     public function login()
     {
+        $user = new ModelUser();
         if ($this->getServer('REQUEST_METHOD') == 'POST') {
-            $post = $this->getRequestPost()->setRequiredFields(["email", "password",
-            "csrf_token", "csrfToken"])->getAllPostData();
-            
-            echo json_encode($post);
+            $post = $this->getRequestPost()->setHashPassword(false)
+            ->setRequiredFields(["userName", "password",
+            "csrf_token", "csrfToken"])->configureDataPost()->getAllPostData();
+
+            $loginInput = $post["userName"];
+            $remember = empty($post["remember"]) ? 'off' : $post["remember"];
+            $password = $post["password"];
+
+            if (!isValidPassword($password)) {
+                echo json_encode(['invalid_password' => true, 
+                'msg' => 'Tipo de senha inválido']);
+                die;
+            }
+
+            if (isEmail($loginInput)) {
+                if (isValidEmail($loginInput)) {
+                    $user = $user->login('', $loginInput, $password);
+
+                    if (empty($user)) {
+                        echo json_encode(['access_denied' => true, 
+                        'msg' => 'Usuário ou senha inválido']);
+                        die;
+                    }
+
+                    echo json_encode(['success_login' => true]);
+                    die;
+                }else {
+                    echo json_encode(['invalid_email' => true, 
+                    'msg' => 'Tipo de e-mail inválido']);
+                    die;
+                }
+            }else {
+                $user = $user->login($loginInput, '', $password);
+
+                if (empty($user)) {
+                    echo json_encode(['access_denied' => true, 
+                    'msg' => 'Usuário ou senha inválido']);
+                    die;
+                }
+
+                echo json_encode(['success_login' => true]);
+                die;
+            }
+
             die;
         }
+        
         $csrfToken = $this->getCurrentSession()->csrf_token;
         echo $this->view->render("admin/login", [
             "csrfToken" => $csrfToken
@@ -71,8 +113,10 @@ class User extends Controller
     public function register()
     {
         if ($this->getServer('REQUEST_METHOD') == 'POST') {
-            $data = $this->getRequestPost()->setRequiredFields(["fullName", "userName", "email", 
-                "password", "confirmPassword", "csrfToken", "csrf_token", "userType"])->getAllPostData();
+            $data = $this->getRequestPost()
+            ->setRequiredFields(["fullName", "userName", "email", 
+            "password", "confirmPassword", "csrfToken", "csrf_token", "userType"])
+            ->configureDataPost()->getAllPostData();
             
             $requestFile = $this->getRequestFiles();
             $photoName = !empty($requestFile->getFile('photoImage')['name']) ?

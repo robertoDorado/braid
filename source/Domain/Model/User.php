@@ -66,7 +66,7 @@ class User
 
     }
 
-    public function login(string $login = '', string $email = '', string $password = '', string $userType = ''): bool
+    public function login(string $login = '', string $email = '', string $password = '')
     {
         if (empty($this->login)) {
             $this->login = $login;
@@ -80,48 +80,46 @@ class User
             $this->password = $password;
         }
 
-        if (empty($this->userType)) {
-            $this->userType = $userType;
-        }
-
-        if (!$this->validateUserType($this->userType)) {
-            throw new \Exception('Invalid userType');
-        }
-
         $user = $this->getUserByLogin($this->login, $this->email);
 
-        if (empty($user)) {
-            return false;
+        if ($user->is_valid_user == 0) {
+            return null;
         }
-
-        $user = $user->find('user_type=:user_type', ':user_type=' . $this->userType . '')->fetch();
 
         if (empty($user)) {
-            return false;
+            return null;
         }
 
-        if (!password_verify($this->password, $user->password)) {
-            return false;
+        if (!password_verify($this->password, $user->password_data)) {
+            return null;
         }
 
-        return true;
+        return $user;
     }
 
     public function register(array $data)
     {
         if ($this->user instanceof ModelsUser) {
-
             $email = (new ModelsUser())
-            ->find('full_email=:full_email', ':full_email=' . $data['email'] . '')
-            ->fetch();
+            ->find('full_email=:full_email', ':full_email=' . $data['email'] . '')->fetch();
 
             if (!empty($email)) {
                 echo json_encode(['email_already_exists' => true,
-                "msg" => "E-mail já cadastrado"]);
+                "msg" => "E-mail já foi cadastrado"]);
                 die;
             }
 
-            if (!$this->checkParamsNotEmpty($data['fullName'], $data['email'], $data['userName'], $data['confirmPassword'], $data['userType'])) {
+            $nickName = (new ModelsUser())->find('nick_name=:nick_name', 
+            ':nick_name=' . $data['userName'] . '')->fetch();
+
+            if (!empty($nickName)) {
+                echo json_encode(['nickname_already_exists' => true,
+                'msg' => 'Nome de usuário já foi cadastrado']);
+                die;
+            }
+
+            if (!$this->checkParamsNotEmpty($data['fullName'], $data['email'],
+            $data['userName'], $data['confirmPassword'], $data['userType'])) {
                 return false;
             }
 
@@ -243,18 +241,14 @@ class User
      */
     private function getUserByLogin(string $login = '', string $email = '')
     {
-        if ($this->user instanceof ModelsUser) {
-            $user = $this->user->find('nick_name=:nick_name', ':nick_name=' . $login . '')->fetch();
+        $user = $this->user->find('nick_name=:nick_name', ':nick_name=' . $login . '')->fetch();
 
-            if (empty($user)) {
-                $this->user = new ModelsUser();
-                $user = $this->user->find('full_email=:full_email', ':full_email=' . $email . '')->fetch();
-            }
-
-            return $user;
+        if (empty($user)) {
+            $this->user = new ModelsUser();
+            $user = $this->user->find('full_email=:full_email', ':full_email=' . $email . '')->fetch();
         }
 
-        return null;
+        return $user;
     }
 
     private function validateUserType(string $userType): bool
