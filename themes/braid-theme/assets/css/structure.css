@@ -574,6 +574,21 @@ footer {
     justify-content: center;
 }
 
+.container-logo {
+    position: relative;
+    width: 100%;
+    height: 50px;
+}
+
+.container-logo img {
+    width: 150px;
+    opacity: .8;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 @media screen and (min-width: 1200px) {
 
     .confirm-email-container {

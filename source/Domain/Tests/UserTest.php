@@ -20,25 +20,25 @@ class UserTest extends TestCase
     public function testFailLoginA()
     {
         $this->user = new User();
-        $this->assertFalse($this->user->login('percyDorado', '', 'Rob@182829', 'businessman'));
+        $this->assertNull($this->user->login('percyDorado', '', 'Rob@182829', 'businessman'));
     }
 
     public function testFailLoginB()
     {
         $this->user = new User();
-        $this->assertFalse($this->user->login('', 'percy@gmail.com', 'Rob@182829', 'businessman'));
+        $this->assertNull($this->user->login('', 'percy@gmail.com', 'Rob@182829', 'businessman'));
     }
 
     public function testFailLoginC()
     {
         $this->user = new User();
-        $this->assertFalse($this->user->login('', 'robertodorado7@gmail.com', '-----', 'businessman'));
+        $this->assertNull($this->user->login('', 'robertodorado7@gmail.com', '-----', 'businessman'));
     }
 
     public function testFailLoginD()
     {
         $this->user = new User();
-        $this->assertFalse($this->user->login('', 'robertodorado7@gmail.com', 'Rob@182829', 'designer'));
+        $this->assertNull($this->user->login('', 'robertodorado7@gmail.com', 'Rob@182829', 'designer'));
     }
 
     public function testRequestRecoverPassword()

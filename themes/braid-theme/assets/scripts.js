@@ -84,7 +84,7 @@ errorMessage.style.display='block'
 errorMessage.innerHTML=data.msg
 throw new Error(data.msg)}
 if(data.success_login){errorMessage.style.display='none'
-console.log(data)}})})};const skipPopop=document.getElementById("skipPopop")
+window.location.href=data.url}})})};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
@@ -131,6 +131,10 @@ this.nextElementSibling.style.color=color})}
 if(form){form.addEventListener('submit',function(e){e.preventDefault()
 const inputs=Array.from(this.getElementsByTagName('input'))
 inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+const userName=this.userName.value.trim().split(" ")
+if(userName.length>1){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.userName.dataset.error} não pode ter espaço em branco`
+throw new Error(`invalid ${this.userName.name}`)}
 if(!isValidEmail(this.email.value)){errorMessage.style.display='block'
 errorMessage.innerHTML=`Campo ${this.email.dataset.error} inválido`
 this.email.style.borderBottom='1px solid #ff2c2c'
@@ -152,6 +156,11 @@ const form=new FormData(this)
 endpoint=endpoint[url.getHostName()]||''
 const requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.email_already_exists){btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.nickname_already_exists){btnSubmit.style.display='block'
 loaderImage.style.display='none'
 errorMessage.style.display='block'
 errorMessage.innerHTML=data.msg

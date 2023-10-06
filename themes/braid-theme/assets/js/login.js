@@ -83,7 +83,7 @@ if (url.getCurrentEndpoint() == 'user/login') {
 
             if (data.success_login) {
                 errorMessage.style.display = 'none'
-                console.log(data)
+                window.location.href = data.url
             }
         })
     })

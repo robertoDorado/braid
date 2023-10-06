@@ -81,7 +81,15 @@ class User extends Controller
                         die;
                     }
 
-                    echo json_encode(['success_login' => true]);
+                    $this->getCurrentSession()->set("login_user", [
+                        "fullName" => $user->full_name,
+                        "nickName" => $user->nick_name,
+                        "fullEmail" => $user->full_email,
+                        "userType" => $user->user_type,
+                        "pathPhoto" => $user->path_photo
+                    ]);
+
+                    echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
                     die;
                 }else {
                     echo json_encode(['invalid_email' => true, 
@@ -97,8 +105,15 @@ class User extends Controller
                     die;
                 }
 
-                echo json_encode(['success_login' => true]);
-                die;
+                $this->getCurrentSession()->set("login_user", [
+                    "fullName" => $user->full_name,
+                    "nickName" => $user->nick_name,
+                    "fullEmail" => $user->full_email,
+                    "userType" => $user->user_type,
+                    "pathPhoto" => $user->path_photo
+                ]);
+
+                echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
             }
 
             die;
@@ -124,7 +139,7 @@ class User extends Controller
             $data['pathPhoto'] = $photoName;
 
             if (!empty($data['pathPhoto'])) {
-                $requestFile->uploadFile(__DIR__ . "./../upload/user", "photoImage");
+                $requestFile->uploadFile(__DIR__ . "./../../themes/braid-theme/assets/img/user", "photoImage");
             }
             
             $user = new ModelUser();

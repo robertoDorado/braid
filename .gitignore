@@ -1,6 +1,6 @@
 vendor/
 source/Models/Backup
 Logs/
-source/upload/user
+themes/braid-theme/assets/img/user
 source/Boot/Config.php
 .vscode

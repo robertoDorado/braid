@@ -19,10 +19,18 @@ error_reporting(E_ALL & (~E_NOTICE | ~E_USER_NOTICE));
 ini_set('error_log', $path);
 ini_set('log_errors', true);
 
+$realPath = __DIR__ . "/themes/braid-theme/assets/img/user";
+
+if (!file_exists($realPath)) {
+    if (!mkdir($realPath, 0777, true)) {
+        throw new \Exception("Erro ao criar a pasta de upload");
+    }
+}
+
 $route = new MyRouter(url(), ":");
 
 /**
- * Home
+ * Site
  */
 $module = null;
 $route->namespace("Source\Controllers");
@@ -41,6 +49,16 @@ $route->get("/register", "User:register");
 $route->post("/register", "User:register");
 $route->get("/confirm-email", "User:confirmEmail");
 $route->get("/email-confirmed", "User:emailConfirmed");
+
+/**
+ * Admin
+ */
+$module = "braid-system";
+$route->namespace("Source\Controllers");
+$route->group($module);
+$route->get("/", "Admin:index");
+$route->post("/exit", "Admin:exit");
+
 
 /**
  * Cookies

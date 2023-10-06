@@ -114,7 +114,7 @@ if (url.getCurrentEndpoint() == "user/register") {
             const userName = this.userName.value.trim().split(" ")
             if (userName.length > 1) {
                 errorMessage.style.display = 'block'
-                errorMessage.innerHTML = `Campo ${this.userName.dataset.error} não pode ter espaço`
+                errorMessage.innerHTML = `Campo ${this.userName.dataset.error} não pode ter espaço em branco`
                 throw new Error(`invalid ${this.userName.name}`)
             }
 
