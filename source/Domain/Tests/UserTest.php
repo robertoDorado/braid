@@ -38,7 +38,7 @@ class UserTest extends TestCase
     public function testFailLoginD()
     {
         $this->user = new User();
-        $this->assertNull($this->user->login('', 'robertodorado7@gmail.com', 'Rob@182829', 'designer'));
+        $this->assertNull($this->user->login('', 'robertodorado7@gmail.com', '-----', 'designer'));
     }
 
     public function testRequestRecoverPassword()
@@ -59,24 +59,24 @@ class UserTest extends TestCase
         $this->assertFalse($this->user->recoverPassword('robertoDorado', '', 'Rob@11111', 'Rob@22222'));
     }
 
-    public function testGetRecoverPasswordByLoginA()
+    public function testgetRecoverPasswordByHashA()
     {
         $this->user = new User();
         $reflection = new ReflectionClass('Source\Domain\Model\User');
 
-        $privateMethod = $reflection->getMethod('getRecoverPasswordByLogin');
+        $privateMethod = $reflection->getMethod('getRecoverPasswordByHash');
         $privateMethod->setAccessible(true);
 
         $result = $privateMethod->invoke($this->user, '', 'robertodorado7@gmail.comm');
         $this->assertNull($result);
     }
 
-    public function testGetRecoverPasswordByLoginD()
+    public function testgetRecoverPasswordByHashD()
     {
         $this->user = new User();
         $reflection = new ReflectionClass('Source\Domain\Model\User');
 
-        $privateMethod = $reflection->getMethod('getRecoverPasswordByLogin');
+        $privateMethod = $reflection->getMethod('getRecoverPasswordByHash');
         $privateMethod->setAccessible(true);
 
         $result = $privateMethod->invoke($this->user, 'robertoDoradoo', '');

@@ -44,9 +44,14 @@ elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="/"){func
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}
-window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=='user/login'){const form=document.getElementById("loginForm")
+window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=='braid-system'){const exit=document.getElementById("exit")
+exit.addEventListener('click',function(event){event.preventDefault()
+let endpoint={"localhost":"/braid/braid-system/exit","clientes.laborcode.com.br":"/braid/braid-system/exit","braid.com.br":"/braid-system/exit","www.braid.com.br":"/braid-system/exit",}
+endpoint=endpoint[url.getHostName()]||''
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:"POST",body:JSON.stringify({action:"logout"}),headers:{"Content-Type":"application/json"}}).then(data=>data.json()).then(function(data){if(!data.logout_success){throw new Error("Erro geral ao tentar sair do sistema.")}
+if(data.logout_success){window.location.href=data.url}}).catch(error=>{console.error("Erro na requisição: ",error)})})};if(url.getCurrentEndpoint()=='user/login'){const form=document.getElementById("loginForm")
 const eyeIconPassword=document.querySelector("[eye-icon='eyeIconPassword']")
-const userName=document.getElementById("username")
 const errorMessage=document.getElementById("errorMessage")
 if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
 this.classList.add("fa-eye")
@@ -64,7 +69,7 @@ const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
 const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
 loaderImage.style.display='block'
 btnSubmitLogin.style.display='none'
-let endpoint={"localhost":"braid/user/login","clientes.laborcode.com.br":"braid/user/login","braid.com.br":"user/login","www.braid.com.br":"user/login",}
+let endpoint={"localhost":"/braid/user/login","clientes.laborcode.com.br":"/braid/user/login","braid.com.br":"/user/login","www.braid.com.br":"/user/login",}
 endpoint=endpoint[url.getHostName()]||''
 const form=new FormData(this)
 const requestUrl=url.getUrlOrigin(endpoint)
@@ -83,15 +88,91 @@ btnSubmitLogin.style.display='block'
 errorMessage.style.display='block'
 errorMessage.innerHTML=data.msg
 throw new Error(data.msg)}
-if(data.success_login){errorMessage.style.display='none'
+if(data.success_login){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
 window.location.href=data.url}})})};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
 form.append("cookie",JSON.parse(this.dataset.agree))
-let endpoint={"localhost":"braid/cookies/set-cookie","clientes.laborcode.com.br":"braid/cookies/set-cookie","braid.com.br":"cookies/set-cookie","www.braid.com.br":"cookies/set-cookie",}
+let endpoint={"localhost":"/braid/cookies/set-cookie","clientes.laborcode.com.br":"/braid/cookies/set-cookie","braid.com.br":"/cookies/set-cookie","www.braid.com.br":"/cookies/set-cookie",}
 endpoint=endpoint[url.getHostName()]||''
-fetch(url.getUrlOrigin(endpoint),{method:"POST",body:form})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
+fetch(url.getUrlOrigin(endpoint),{method:"POST",body:form})}catch(e){throw new Error(e)}})};if(url.getCurrentEndpoint()=="user/recover-password-form"){const formRecoverPassword=document.getElementById("formRecoverPassword")
+const errorMessage=document.getElementById("errorMessage")
+const eyeIconPassword=document.querySelector("[eye-icon='eyeIconPassword']")
+const eyeIconConfirmPassword=document.querySelector("[eye-icon='eyeIconConfirmPassword']")
+if(eyeIconConfirmPassword){eyeIconConfirmPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
+this.classList.add("fa-eye")
+this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
+this.classList.add("fa-eye-slash")
+this.parentElement.firstElementChild.setAttribute('type','password')}})}
+if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
+this.classList.add("fa-eye")
+this.parentElement.firstElementChild.setAttribute('type','text')}else{this.classList.remove("fa-eye")
+this.classList.add("fa-eye-slash")
+this.parentElement.firstElementChild.setAttribute('type','password')}})}
+formRecoverPassword.addEventListener('submit',function(event){event.preventDefault()
+const inputs=Array.from(this.getElementsByTagName("input"))
+inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+if(!isValidPassword(this.password.value)){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.password.dataset.error} inválido`
+this.password.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.password.name}`)}
+if(!isValidPassword(this.confirmPassword.value)){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.confirmPassword.dataset.error} inválido`
+this.confirmPassword.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.confirmPassword.name}`)}
+const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
+const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
+loaderImage.style.display='block'
+btnSubmitLogin.style.display='none'
+let endpoint={"localhost":"/braid/user/recover-password-form","clientes.laborcode.com.br":"/braid/user/recover-password-form","braid.com.br":"/user/recover-password-form","www.braid.com.br":"/user/recover-password-form",}
+endpoint=endpoint[url.getHostName()]||''
+const form=new FormData(this)
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_passwords_value){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.expired_link){window.location.href=data.url}
+if(data.invalid_password_value){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.success_password_change){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
+window.location.href=data.url}})})};if(url.getCurrentEndpoint()=="user/recover-password"){const recoverPassword=document.getElementById("recoverPassword")
+const errorMessage=document.getElementById("errorMessage")
+recoverPassword.addEventListener("submit",function(event){event.preventDefault()
+if(!isValidEmail(this.userEmail.value)){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.userEmail.dataset.error} inválido`
+this.userEmail.style.borderBottom='1px solid #ff2c2c'
+throw new Error(`invalid ${this.userEmail.name}`)}
+let endpoint={"localhost":"/braid/user/recover-password","clientes.laborcode.com.br":"/braid/user/recover-password","braid.com.br":"/user/recover-password","www.braid.com.br":"/user/recover-password",}
+const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
+const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
+loaderImage.style.display='block'
+btnSubmitLogin.style.display='none'
+endpoint=endpoint[url.getHostName()]||''
+const form=new FormData(this)
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.email_does_not_exist){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.invalid_email_value){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.invalid_recover_password_data){loaderImage.style.display='none'
+btnSubmitLogin.style.display='block'
+errorMessage.style.display='block'
+errorMessage.innerHTML=data.msg
+throw new Error(data.msg)}
+if(data.recover_success){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
+window.location.href=data.url}})})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
 const email=document.getElementById("email")
 const password=document.getElementById("password")
 const confirmPassword=document.getElementById("confirmPassword")
@@ -151,7 +232,7 @@ const btnSubmit=this.lastElementChild.lastElementChild
 const loaderImage=this.lastElementChild.firstElementChild
 btnSubmit.style.display='none'
 loaderImage.style.display='block'
-let endpoint={"localhost":"braid/user/register","clientes.laborcode.com.br":"braid/user/register","braid.com.br":"user/register","www.braid.com.br":"user/register",}
+let endpoint={"localhost":"/braid/user/register","clientes.laborcode.com.br":"/braid/user/register","braid.com.br":"/user/register","www.braid.com.br":"/user/register",}
 const form=new FormData(this)
 endpoint=endpoint[url.getHostName()]||''
 const requestUrl=url.getUrlOrigin(endpoint)
