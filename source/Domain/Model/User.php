@@ -36,6 +36,38 @@ class User
         $this->user = new ModelsUser();
     }
 
+    public function getFullNameByEmail(string $email)
+    {
+        if ($this->user instanceof ModelsUser) {
+            $user = $this->user->find("full_email=:full_email", ":full_email=" . $email . "", "full_name")
+            ->fetch();
+
+            if (empty($user)) {
+                echo json_encode(['email_does_not_exist' => true,
+                'msg' => 'Este e-mail não está cadastrado']);
+                die;
+            }
+
+            return $user->full_name;
+        }
+    }
+
+    public function getNickNameByEmail(string $email)
+    {
+        if ($this->user instanceof ModelsUser) {
+            $user = $this->user->find("full_email=:full_email", ":full_email=" . $email . "", "nick_name")
+            ->fetch();
+
+            if (empty($user)) {
+                echo json_encode(['email_does_not_exist' => true,
+                'msg' => 'Este e-mail não está cadastrado']);
+                die;
+            }
+
+            return $user->nick_name;
+        }
+    }
+
     public function validateEmailFirstAccess(string $hashBase64) {
         
         if ($this->user instanceof ModelsUser) {
@@ -144,8 +176,9 @@ class User
         return false;
     }
 
-    public function requestRecoverPassword(string $login, string $email): bool
+    public function requestRecoverPassword(string $login, string $email)
     {
+        date_default_timezone_set("America/Sao_Paulo");
         $user = $this->getUserByLogin($login, $email);
 
         if (empty($user)) {
@@ -155,19 +188,28 @@ class User
         $hash = md5(uniqid(rand(), true));
         $recoverPassword = new RecoverPassword();
         $recoverPassword->id_user = $user->id;
-        $recoverPassword->nick_name = $user->login;
-        $recoverPassword->full_email = $user->email;
+        $recoverPassword->nick_name = $user->nick_name;
+        $recoverPassword->full_email = $user->full_email;
         $recoverPassword->hash_data = $hash;
         $recoverPassword->is_valid = 1;
-        $recoverPassword->expires_in = date('Y-m-d H:i:s', strtotime('+10 minute', time()));
+        $recoverPassword->expires_in = date('Y-m-d H:i:s', strtotime('+5 minute', time()));
         if (!$recoverPassword->save()) {
             throw new \Exception($recoverPassword->fail());
         }
 
-        return true;
+        $data = $recoverPassword->find("hash_data=:hash_data", ":hash_data=" . $hash . "")
+        ->fetch();
+
+        if (empty($data)) {
+            echo json_encode(['invalid_recover_password_data' => true,
+            "msg" => "Erro na tentaiva de recuperar a senha"]);
+            die;
+        }
+
+        return base64_encode($data->hash_data . "+" . $data->nick_name . "+" . $data->full_email);
     }
 
-    public function recoverPassword(string $login, string $email, string $newPassword, string $confirmPassword): bool
+    public function recoverPassword(string $login, string $email, string $hash, string $confirmPassword): bool
     {
         $user = $this->getUserByLogin($login, $email);
 
@@ -175,37 +217,54 @@ class User
             return false;
         }
 
-        if ($newPassword != $confirmPassword) {
+        $recoverPassword = $this->getRecoverPasswordByHash($hash);
+
+        if ($recoverPassword->is_valid == 0) {
             return false;
         }
 
-        $recover = $this->getRecoverPasswordByLogin($user->nick_name, $user->full_email);
+        $confirmPassword = password_hash($confirmPassword, PASSWORD_DEFAULT);
+        $user->password_data = $confirmPassword;
+        $recoverPassword->is_valid = 0;
 
-        if (!$this->isValidHash($recover->hash_data)) {
-            $recover->is_valid = 0;
+        if (!$recoverPassword->save()) {
+            throw new \Exception($recoverPassword->fail());
         }
-
-        if ($recover->is_valid) {
-            $confirmPassword = password_hash($confirmPassword, PASSWORD_DEFAULT);
-            $user->password = $confirmPassword;
-            if (!$user->save()) {
-                throw new \Exception($user->fail());
-            }
-
-            $recover->is_valid = 0;
-        }
-
-        if (!$recover->save()) {
-            throw new \Exception($recover->fail());
+        
+        if (!$user->save()) {
+            throw new \Exception($user->fail());
         }
 
         return true;
     }
 
-    private function isValidHash(string $hash): bool
+    public function setInvalidHash($hash)
     {
         $recoverPassword = new RecoverPassword();
-        $expires = $recoverPassword->find('hash_data=:hash_data', ':hash_data=' . $hash . '', 'expires_in')->fetch();
+        $recoverPassword = $recoverPassword->find("hash_data=:hash_data",
+        ":hash_data=" . $hash . "")->fetch();
+
+        if (empty($recoverPassword)) {
+            throw new \Exception("Dado de recuperação de senha não encontrado");
+        }
+
+        $recoverPassword->id_user = $recoverPassword->id_user;
+        $recoverPassword->nick_name = $recoverPassword->nick_name;
+        $recoverPassword->full_email = $recoverPassword->full_email;
+        $recoverPassword->hash_data = $recoverPassword->hash_data;
+        $recoverPassword->is_valid = 0;
+        $recoverPassword->expires_in = $recoverPassword->expires_in;
+        if (!$recoverPassword->save()) {
+            throw new \Exception("Error ao atualizar o registro");
+        }
+    }
+
+    public function isValidHash(string $hash): bool
+    {
+        $recoverPassword = new RecoverPassword();
+        $expires = $recoverPassword->find('hash_data=:hash_data',
+        ':hash_data=' . $hash . '', 'expires_in')
+        ->fetch();
 
         if (empty($expires)) {
             throw new \Exception('invalid hash to recover password');
@@ -221,15 +280,11 @@ class User
      * @param string $email
      * @return object|null
      */
-    private function getRecoverPasswordByLogin(string $login, string $email)
+    private function getRecoverPasswordByHash(string $hash)
     {
         $recoverPassword = new RecoverPassword();
-        $recover = $recoverPassword->find('nick_name=:nick_name', ':nick_name=' . $login . '')->order('id', true)->fetch();
-
-        if (empty($recover)) {
-            $recoverPassword = new RecoverPassword();
-            $recover = $recoverPassword->find('full_email=:full_email', ':full_email=' . $email . '')->order('id', true)->fetch();
-        }
+        $recover = $recoverPassword->find("hash_data=:hash_data", ":hash_data=" . $hash . "")
+        ->fetch();
 
         return $recover;
     }
@@ -241,11 +296,13 @@ class User
      */
     private function getUserByLogin(string $login = '', string $email = '')
     {
-        $user = $this->user->find('nick_name=:nick_name', ':nick_name=' . $login . '')->fetch();
+        $user = $this->user->find('nick_name=:nick_name',
+        ':nick_name=' . $login . '')->fetch();
 
         if (empty($user)) {
             $this->user = new ModelsUser();
-            $user = $this->user->find('full_email=:full_email', ':full_email=' . $email . '')->fetch();
+            $user = $this->user->find('full_email=:full_email',
+            ':full_email=' . $email . '')->fetch();
         }
 
         return $user;

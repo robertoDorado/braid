@@ -446,7 +446,7 @@ footer {
     font-weight: bold;
 }
 
-.confirm-email-container {
+.container-message {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -454,7 +454,7 @@ footer {
     margin: 0;
 }
 
-.confirm-email-container h1 {
+.container-message h1 {
     text-align: center;
     font-size: 1.5rem;
     width: 90%;
@@ -591,11 +591,11 @@ footer {
 
 @media screen and (min-width: 1200px) {
 
-    .confirm-email-container {
+    .container-message {
         padding: 200px;
     }
 
-    .confirm-email-container h1 {
+    .container-message h1 {
         font-size: 2rem;
         margin: 0;
     }

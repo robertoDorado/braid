@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperação de senha Braid.pro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #000000;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #777;
+        }
+
+        .confirmation-message {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff2c2c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 1px;
+            transition: background-color 0.3s;
+        }
+
+        .logo {
+            width: 250px;
+        }
+
+        .btn:hover {
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://clientes.laborcode.com.br/braid/themes/braid-theme/assets/img/logo-2-rbg.png" alt="logo" class="logo">
+        <h1>Recuperação de senha</h1>
+        <p>Olá {{ name }} recebemos a sua solicitação para recuperar a sua senha para o e-mail {{ email }}</p>
+        <p class="confirmation-message">No link abaixo você consegue recuperar a sua senha</p>
+        <div class="btn-container">
+            <a href="{{ link }}" class="btn" style="color:#ffffff;">Recupere a sua senha agora mesmo!</a>
+        </div>
+    </div>
+</body>
+</html>

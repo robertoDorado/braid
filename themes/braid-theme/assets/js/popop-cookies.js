@@ -9,10 +9,10 @@ if (skipPopop) {
             form.append("cookie", JSON.parse(this.dataset.agree))
 
             let endpoint = {
-                "localhost": "braid/cookies/set-cookie",
-                "clientes.laborcode.com.br": "braid/cookies/set-cookie",
-                "braid.com.br": "cookies/set-cookie",
-                "www.braid.com.br": "cookies/set-cookie",
+                "localhost": "/braid/cookies/set-cookie",
+                "clientes.laborcode.com.br": "/braid/cookies/set-cookie",
+                "braid.com.br": "/cookies/set-cookie",
+                "www.braid.com.br": "/cookies/set-cookie",
             }
 
             endpoint = endpoint[url.getHostName()] || ''

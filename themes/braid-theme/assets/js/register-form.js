@@ -146,10 +146,10 @@ if (url.getCurrentEndpoint() == "user/register") {
             loaderImage.style.display = 'block'
 
             let endpoint = {
-                "localhost": "braid/user/register",
-                "clientes.laborcode.com.br": "braid/user/register",
-                "braid.com.br": "user/register",
-                "www.braid.com.br": "user/register",
+                "localhost": "/braid/user/register",
+                "clientes.laborcode.com.br": "/braid/user/register",
+                "braid.com.br": "/user/register",
+                "www.braid.com.br": "/user/register",
             }
 
             const form = new FormData(this)

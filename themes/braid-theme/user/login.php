@@ -49,7 +49,7 @@
       <!-- /.social-auth-links -->
 
       <p class="mb-1">
-        <a href="forgot-password.html">Esqueci a minha senha</a>
+        <a href="<?= url("user/recover-password") ?>">Esqueci a minha senha</a>
       </p>
       <p class="mb-0">
         <a href="<?= url("user/register?userType=generic") ?>" class="text-center">Cadastre-se</a>

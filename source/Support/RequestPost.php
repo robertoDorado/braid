@@ -90,7 +90,9 @@ class RequestPost
 
         if (!empty($this->password) && !empty($this->confirmPassword)) {
             if ($this->password != $this->confirmPassword) {
-                throw new \Exception("Campos de autenticação estão divergentes.");
+                echo json_encode(["invalid_passwords_value" => true,
+                "msg" => "Campo senha e confirme a sua senha são diferentes"]);
+                die;
             }
         }
 

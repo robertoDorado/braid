@@ -5,6 +5,7 @@ use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Designer;
 use Source\Domain\Model\User as ModelUser;
+use Source\Models\RecoverPassword;
 use Source\Support\Mail;
 
 /**
@@ -21,6 +22,132 @@ class User extends Controller
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public function successChangePassword()
+    {
+        echo $this->view->render("user/success-change-password", []);
+    }
+
+    public function expiredLinkRecoverPassword()
+    {
+        echo $this->view->render("user/expired-link-recover-password", []);
+    }
+
+    public function recoverPasswordForm()
+    {
+        if ($this->getServer("REQUEST_METHOD") == "GET") {
+            if (empty($this->get("dataRecover"))) {
+                redirect("user/recover-password");
+            }
+        }
+        
+        $user = new ModelUser();
+        $data = base64_decode($this->get("dataRecover"));
+        $data = explode("+", $data);
+
+        if ($this->getServer("REQUEST_METHOD") == "GET") {
+            $recoverPassword = (new RecoverPassword())
+            ->find("hash_data=:hash_data", ":hash_data=" . $data[0] . "")->fetch();
+    
+            if (empty($recoverPassword)) {
+                throw new \Exception("Hash inválida");
+            }
+
+            if ($recoverPassword->is_valid == 0) {
+                redirect("/user/expired-link-recover-password");
+            }
+        }
+        
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            $post = $this->getRequestPost()
+            ->setHashPassword(false)
+            ->setRequiredFields(["csrf_token", "csrfToken", "password", 
+            "confirmPassword", "nickName", "userEmail", "hash"])
+            ->configureDataPost()
+            ->getAllPostData();
+
+            if (!isValidPassword($post["confirmPassword"])) {
+                echo json_encode(["invalid_password_value" => true,
+                "msg" => "Tipo de senha inválida"]);
+                die;
+            }
+
+            if (!$user->recoverPassword($post["nickName"], $post["userEmail"], $post["hash"], $post["confirmPassword"])) {
+                echo json_encode(["expired_link" => true,
+                "url" => url("/user/expired-link-recover-password")]);
+                die;
+            }
+
+            echo json_encode(["success_password_change" => true,
+            "url" => url("/user/success-change-password")]);
+            die;
+        }
+        
+        if (!$user->isValidHash($data[0])) {
+            $user->setInvalidHash($data[0]);
+            redirect("/user/expired-link-recover-password");
+        }
+
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+        echo $this->view->render("user/recover-password-form", [
+            "hash" => $recoverPassword->hash_data,
+            "nickName" => $data[1],
+            "userEmail" => $data[2],
+            "csrfToken" => $csrfToken
+        ]);
+    }
+
+    public function recoverPasswordMessage()
+    {
+        if (empty($this->get("dataMail"))) {
+            redirect("user/recover-password");
+        }
+
+        $userEmail = base64_decode($this->get("dataMail"));
+        echo $this->view->render("user/recover-password-message", [
+            "userEmail" => $userEmail
+        ]);
+    }
+
+    public function recoverPassword()
+    {
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            $userEmail = $this->getRequestPost()->setRequiredFields(["csrf_token", "csrfToken", "userEmail"])
+            ->configureDataPost()->getPost("userEmail");
+
+            if (!isValidEmail($userEmail)) {
+                echo json_encode(['invalid_email_value' => true,
+                "msg" => "Tipo de e-mail inválido"]);
+                die;
+            }
+
+            $user = new ModelUser();
+            $nickName = $user->getNickNameByEmail($userEmail);
+            $fullName = $user->getFullNameByEmail($userEmail);
+
+            $dataRecover = $user->requestRecoverPassword($nickName, $userEmail);
+            $link = url("/user/recover-password-form") . "?dataRecover=" . $dataRecover;
+
+            Mail::sendEmail(["emailFrom" => "no-reply@braid.com", "nameFrom" => "Braid.pro",
+            "emailTo" => $userEmail, "nameTo" => $fullName,
+            "body" => Mail::loadTemplateConfirmEmail([
+                "url" => __DIR__ . "./../../themes/braid-theme/mail/recover-password.php",
+                "name" => $fullName,
+                "email" => $userEmail,
+                "link" => $link
+            ]),
+            "subject" => iconv("UTF-8", "ISO-8859-1//TRANSLIT", "Recuperação de senha")]);
+            
+            echo json_encode(["recover_success" => true,
+            "url" => url("/user/recover-password-message?dataMail=" . base64_encode($userEmail))]);
+            die;
+        }
+
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+        echo $this->view->render("user/recover-password", [
+            "csrfToken" => $csrfToken
+        ]);
     }
 
     public function emailConfirmed()
@@ -120,7 +247,7 @@ class User extends Controller
         }
         
         $csrfToken = $this->getCurrentSession()->csrf_token;
-        echo $this->view->render("admin/login", [
+        echo $this->view->render("user/login", [
             "csrfToken" => $csrfToken
         ]);
     }
@@ -188,7 +315,7 @@ class User extends Controller
 
         $csrfToken = $this->getCurrentSession()->csrf_token;
         $registerType = $this->get('userType');
-        echo $this->view->render("admin/register", [
+        echo $this->view->render("user/register", [
             'registerType' => $registerType,
             'csrfToken' =>  $csrfToken
         ]);

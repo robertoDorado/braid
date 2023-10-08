@@ -38,7 +38,7 @@ $route->group($module);
 $route->get("/", "Home:index");
 
 /**
- * Login
+ * User
  */
 $module = "user";
 $route->namespace("Source\Controllers");
@@ -49,6 +49,13 @@ $route->get("/register", "User:register");
 $route->post("/register", "User:register");
 $route->get("/confirm-email", "User:confirmEmail");
 $route->get("/email-confirmed", "User:emailConfirmed");
+$route->get("/recover-password", "User:recoverPassword");
+$route->post("/recover-password", "User:recoverPassword");
+$route->get("/recover-password-message", "User:recoverPasswordMessage");
+$route->get("/recover-password-form", "User:recoverPasswordForm");
+$route->post("/recover-password-form", "User:recoverPasswordForm");
+$route->get("/expired-link-recover-password", "User:expiredLinkRecoverPassword");
+$route->get("/success-change-password", "User:successChangePassword");
 
 /**
  * Admin

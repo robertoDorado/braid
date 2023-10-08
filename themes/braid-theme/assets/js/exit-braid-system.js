@@ -5,13 +5,15 @@ if (url.getCurrentEndpoint() == 'braid-system') {
         event.preventDefault()
 
         let endpoint = {
-            "localhost": "braid-system/exit",
-            "clientes.laborcode.com.br": "braid-system/exit",
-            "braid.com.br": "braid-system/exit",
-            "www.braid.com.br": "braid-system/exit",
+            "localhost": "/braid/braid-system/exit",
+            "clientes.laborcode.com.br": "/braid/braid-system/exit",
+            "braid.com.br": "/braid-system/exit",
+            "www.braid.com.br": "/braid-system/exit",
         }
 
-        const requestUrl = endpoint[url.getHostName()] || ''
+        endpoint = endpoint[url.getHostName()] || ''
+        const requestUrl = url.getUrlOrigin(endpoint)
+        
         fetch(requestUrl, { 
             method: "POST", 
             body: JSON.stringify({ action: "logout" }),
