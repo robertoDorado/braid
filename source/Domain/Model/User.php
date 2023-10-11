@@ -286,6 +286,10 @@ class User
         $recover = $recoverPassword->find("hash_data=:hash_data", ":hash_data=" . $hash . "")
         ->fetch();
 
+        if (empty($recover)) {
+            throw new \Exception("Hash inválida");
+        }
+
         return $recover;
     }
 

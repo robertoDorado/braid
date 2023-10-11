@@ -150,7 +150,9 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="<?= theme("assets/img/user/" . $pathPhoto . "") ?>" class="img-circle elevation-2" alt="User Image">
+          <img src="<?= empty($pathPhoto) ?
+          theme("assets/img/user/default.png") :
+          theme("assets/img/user/" . $pathPhoto . "") ?>" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">Olá <?= $nickName ?></a>

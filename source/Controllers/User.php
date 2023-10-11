@@ -208,6 +208,11 @@ class User extends Controller
                         die;
                     }
 
+                    if ($remember == 'on') {
+                        setcookie("user_login", $loginInput, time() + 3600, url("user/login"));
+                        setcookie("user_password", $password, time() + 3600, url("user/login"));
+                    }
+
                     $this->getCurrentSession()->set("login_user", [
                         "fullName" => $user->full_name,
                         "nickName" => $user->nick_name,
@@ -232,6 +237,11 @@ class User extends Controller
                     die;
                 }
 
+                if ($remember == 'on') {
+                    setcookie("user_login", $loginInput, time() + 3600, url("user/login"));
+                    setcookie("user_password", $password, time() + 3600, url("user/login"));
+                }
+
                 $this->getCurrentSession()->set("login_user", [
                     "fullName" => $user->full_name,
                     "nickName" => $user->nick_name,
@@ -245,10 +255,20 @@ class User extends Controller
 
             die;
         }
+
+        $userLogin = "";
+        $userPassword = "";
+
+        if (!empty($_COOKIE["user_login"]) && !empty($_COOKIE["user_password"])) {
+            $userLogin = $_COOKIE["user_login"];
+            $userPassword = $_COOKIE["user_password"];
+        }
         
         $csrfToken = $this->getCurrentSession()->csrf_token;
         echo $this->view->render("user/login", [
-            "csrfToken" => $csrfToken
+            "csrfToken" => $csrfToken,
+            "userLogin" => $userLogin,
+            "userPassword" => $userPassword
         ]);
     }
 

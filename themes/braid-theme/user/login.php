@@ -10,11 +10,11 @@
 
       <form method="post" id="loginForm">
         <div class="input-field">
-          <input type="text" name="userName" id="username" data-error="Usuário ou E-mail" class="validate" data-required="true">
+          <input type="text" name="userName" value="<?= $userLogin ?>" id="username" data-error="Usuário ou E-mail" class="validate" data-required="true">
           <label for="username">E-mail ou nome de usuário</label>
         </div>
         <div class="input-field">
-          <input type="password" name="password" id="password" data-error="Senha" class="validate" data-required="true">
+          <input type="password" name="password" value="<?= $userPassword ?>" id="password" data-error="Senha" class="validate" data-required="true">
           <input type="hidden" name="csrfToken" data-error="Token" value="<?= !empty($csrfToken) ? $csrfToken : '' ?>" data-required="true">
           <label for="password">Senha</label>
           <i class="fas fa-eye-slash eye-icon" eye-icon="eyeIconPassword"></i>
@@ -25,7 +25,7 @@
             <div class="checkbox-login">
               <input type="checkbox" name="remember" id="remember">
               <label style="padding-left:2rem !important;" for="remember">
-                Manter Login
+                Lembrar-me
               </label>
             </div>
           </div>
