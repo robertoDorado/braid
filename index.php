@@ -63,7 +63,7 @@ $route->get("/success-change-password", "User:successChangePassword");
 $module = "braid-system";
 $route->namespace("Source\Controllers");
 $route->group($module);
-$route->get("/", "Admin:index");
+$route->get("/", "Admin:perfil");
 $route->post("/exit", "Admin:exit");
 
 

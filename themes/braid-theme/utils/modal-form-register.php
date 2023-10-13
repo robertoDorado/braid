@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body">
         <div class="logo-title">
-          <img src="<?= theme("assets/img/logo.png") ?>" alt="logo">
+          <img src="<?= theme("assets/img/logo-2-rbg.png") ?>" alt="logo">
         </div>
         <form action="#" id="genericForms" method="post">
           <div class="form-choices">

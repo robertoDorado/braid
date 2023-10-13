@@ -15,7 +15,7 @@
 
 <body>
     <!-- Navbar -->
-    <div class="top-nav">
+    <div class="top-nav w3-top">
         <div class="w3-bar w3-card w3-white w3-left-align w3-large menu-bar">
             <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
             <a href="<?= url("/") ?>" class="w3-bar-item w3-padding-large"><img class="logo-braid" style="width:100px" src="<?= theme("assets/img/logo-rbg.png") ?>" alt="logo"></a>

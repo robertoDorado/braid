@@ -22,13 +22,14 @@
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/6427a64d8f.js" crossorigin="anonymous"></script>
   <?php if (empty($isSystemArea)) : ?>
-      <!-- Compiled Materialize and minified CSS -->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <!-- Compiled Materialize and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
   <?php endif ?>
 </head>
 
 <body class="hold-transition register-page">
-  <?= $v->section('content') ?>
+  <?= $v->section("content") ?>
+  
   <!-- Braid js -->
   <script src="<?= theme("assets/scripts.js") ?>"></script>
   <!-- Bootstrap 4 -->

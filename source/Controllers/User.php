@@ -214,11 +214,7 @@ class User extends Controller
                     }
 
                     $this->getCurrentSession()->set("login_user", [
-                        "fullName" => $user->full_name,
-                        "nickName" => $user->nick_name,
                         "fullEmail" => $user->full_email,
-                        "userType" => $user->user_type,
-                        "pathPhoto" => $user->path_photo
                     ]);
 
                     echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
@@ -243,11 +239,7 @@ class User extends Controller
                 }
 
                 $this->getCurrentSession()->set("login_user", [
-                    "fullName" => $user->full_name,
-                    "nickName" => $user->nick_name,
                     "fullEmail" => $user->full_email,
-                    "userType" => $user->user_type,
-                    "pathPhoto" => $user->path_photo
                 ]);
 
                 echo json_encode(['success_login' => true, "url" => url("/braid-system")]);

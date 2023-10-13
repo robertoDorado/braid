@@ -2,6 +2,7 @@
 namespace Source\Controllers;
 
 use Source\Core\Controller;
+use Source\Domain\Model\User;
 
 /**
  * Admin Controllers
@@ -32,21 +33,30 @@ class Admin extends Controller
         }
     }
 
-    public function index()
+    public function perfil()
     {
         if (empty($this->getCurrentSession()->login_user)) {
             redirect("/user/login");
         }
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         
         $isSystemArea = $this->getServer('REQUEST_URI') == '/braid/braid-system' ? 
         $this->getServer('REQUEST_URI') : null;
 
-        echo $this->view->render("admin/index", [
+        $endpoint = $this->getServer("REQUEST_URI");
+
+        echo $this->view->render("admin/perfil", [
             "isSystemArea" => $isSystemArea,
-            "fullName" => $this->getCurrentSession()->login_user->fullName,
-            "nickName" => $this->getCurrentSession()->login_user->nickName,
-            "pathPhoto" => $this->getCurrentSession()->login_user->pathPhoto,
-            "userType" => $this->getCurrentSession()->login_user->userType
+            "endpoint" => $endpoint,
+            "breadCrumbTitle" => "Meu Perfil",
+            "user" => [],
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
         ]);
     }
 }

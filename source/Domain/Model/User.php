@@ -36,6 +36,25 @@ class User
         $this->user = new ModelsUser();
     }
 
+    public function getUserByEmail(string $email)
+    {
+        if ($this->user instanceof ModelsUser) {
+
+            if (empty($email)){
+                throw new \Exception("Valor email não pode estar vazia");
+            }
+
+            $user = $this->user->find("full_email=:full_email", ":full_email=" . $email . "")
+            ->fetch();
+
+            if (empty($user)) {
+                throw new \Exception("Usuário não existe.");
+            }
+
+            return $user;
+        }
+    }
+
     public function getFullNameByEmail(string $email)
     {
         if ($this->user instanceof ModelsUser) {
