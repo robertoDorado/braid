@@ -3,7 +3,7 @@
 <div class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col">
         <div class="card card-primary">
           <div class="card-header bg-danger">
             <h3 class="card-title">Editar Perfil</h3>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="card-footer">
-              <button type="submit" class="btn btn-danger">Aterar</button>
+              <button type="submit" class="btn btn-danger">Alterar</button>
             </div>
           </form>
         </div>
