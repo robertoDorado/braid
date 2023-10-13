@@ -66,6 +66,13 @@ if (url.getCurrentEndpoint() == "braid-system") {
                 if (data.update_success) {
                     window.location.href = window.location.href
                 }
+            }).catch(error => {
+                btnSubmit.style.display = 'block'
+                loaderImage.style.display = 'none'
+                const msg = "Erro geral ao tentar alterar o perfil do usuário"
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = msg
+                throw new Error(msg)
             })
     })
 }
