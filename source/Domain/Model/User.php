@@ -36,6 +36,29 @@ class User
         $this->user = new ModelsUser();
     }
 
+    public function updateUserByEmail(array $post)
+    {
+        if ($this->user instanceof ModelsUser) {
+
+            $user = $this->user
+            ->find("full_email=:full_email", ":full_email=" . $post["fullEmail"] . "")
+            ->fetch();
+
+            if (empty($user)) {
+                throw new \Exception("Usuário não encontrado");
+            }
+
+            $user->full_name = $post["fullName"];
+            $user->nick_name = $post["userName"];
+            $user->path_photo = $post["pathPhoto"];
+            if (!$user->save()) {
+                throw new \Exception($user->fail());
+            }
+
+            return true;
+        }
+    }
+
     public function getUserByEmail(string $email)
     {
         if ($this->user instanceof ModelsUser) {

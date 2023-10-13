@@ -64,6 +64,7 @@ $module = "braid-system";
 $route->namespace("Source\Controllers");
 $route->group($module);
 $route->get("/", "Admin:perfil");
+$route->post("/", "Admin:perfil");
 $route->post("/exit", "Admin:exit");
 
 
