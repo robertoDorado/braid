@@ -65,6 +65,7 @@ $route->namespace("Source\Controllers");
 $route->group($module);
 $route->get("/", "Admin:perfil");
 $route->post("/", "Admin:perfil");
+$route->get("/client-report", "Admin:clientReport");
 $route->post("/exit", "Admin:exit");
 
 

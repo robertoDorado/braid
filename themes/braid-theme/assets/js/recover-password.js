@@ -20,10 +20,10 @@ if (url.getCurrentEndpoint() == "user/recover-password") {
         }
 
         const loaderImage = this.getElementsByTagName("button")[0].firstElementChild
-        const btnSubmitLogin = this.getElementsByTagName("button")[0].lastElementChild
+        const btnSubmit = this.getElementsByTagName("button")[0].lastElementChild
 
         loaderImage.style.display = 'block'
-        btnSubmitLogin.style.display = 'none'
+        btnSubmit.style.display = 'none'
 
         endpoint = endpoint[url.getHostName()] || ''
         const form = new FormData(this)
@@ -33,26 +33,14 @@ if (url.getCurrentEndpoint() == "user/recover-password") {
         .then(data => data.json()).then(function (data) {
             
             if (data.email_does_not_exist) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
             if (data.invalid_email_value) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
             if (data.invalid_recover_password_data) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
@@ -62,6 +50,17 @@ if (url.getCurrentEndpoint() == "user/recover-password") {
                 }
                 window.location.href = data.url
             }
+        }).catch(function(error) {
+            error = error.toString().replace("Error: ", "")
+            btnSubmit.style.display = 'block'
+            loaderImage.style.display = 'none'
+            errorMessage.style.display = 'block'
+            errorMessage.innerHTML = error
+        }).finally(() => {
+            btnSubmit.style.display = 'block'
+            loaderImage.style.display = 'none'
+            errorMessage.style.display = 'block'
+            errorMessage.innerHTML = "Erro geral ao tentar recuperar a senha"
         })
     })
 }

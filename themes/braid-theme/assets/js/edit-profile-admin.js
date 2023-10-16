@@ -56,23 +56,23 @@ if (url.getCurrentEndpoint() == "braid-system") {
             .then(data => data.json()).then(function (data) {
 
                 if (data.invalid_image) {
-                    btnSubmit.style.display = 'block'
-                    loaderImage.style.display = 'none'
-                    errorMessage.style.display = 'block'
-                    errorMessage.innerHTML = data.msg
                     throw new Error(data.msg)
                 }
                 
                 if (data.update_success) {
                     window.location.href = window.location.href
                 }
-            }).catch(error => {
+            }).catch(function(error) {
+                error = error.toString().replace("Error: ", "")
                 btnSubmit.style.display = 'block'
                 loaderImage.style.display = 'none'
-                const msg = "Erro geral ao tentar alterar o perfil do usuário"
                 errorMessage.style.display = 'block'
-                errorMessage.innerHTML = msg
-                throw new Error(msg)
+                errorMessage.innerHTML = error
+            }).finally(() => {
+                btnSubmit.style.display = 'block'
+                loaderImage.style.display = 'none'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = "Erro geral ao alterar o perfil do usuário"
             })
     })
 }

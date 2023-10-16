@@ -20,6 +20,32 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function clientReport()
+    {
+        $isSystemArea = $this->getServer('REQUEST_URI') == '/braid/braid-system/client-report' ? 
+        $this->getServer('REQUEST_URI') : null;
+
+        $endpoint = $this->getServer("REQUEST_URI");
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $breadCrumbTitle = $userData->user_type == "businessman" ? "Freelancers disponíveis"
+        : "Trabalhos disponíveis";
+
+        echo $this->view->render("admin/client-report", [
+            "isSystemArea" => $isSystemArea,
+            "endpoint" => $endpoint,
+            "csrfToken" => $csrfToken,
+            "breadCrumbTitle" => $breadCrumbTitle,
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function exit()
     {
         if ($this->getServer('REQUEST_METHOD') == "POST") {

@@ -1,4 +1,4 @@
-if (url.getCurrentEndpoint() == 'braid-system') {
+if (/braid-system/.test(url.getCurrentEndpoint())) {
     const exit = document.getElementById("exit")
 
     exit.addEventListener('click', function (event) {
@@ -32,8 +32,8 @@ if (url.getCurrentEndpoint() == 'braid-system') {
                 window.location.href = data.url
             }
         })
-        .catch(error => {
-            console.error("Erro na requisição: ", error)
+        .catch(function(error) {
+            console.error(error.toString())
         })
 
     })

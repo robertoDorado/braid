@@ -57,26 +57,14 @@ if (url.getCurrentEndpoint() == 'user/login') {
         .then(data => data.json()).then(function (data) {
 
             if (data.invalid_email) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
             if (data.invalid_password) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
             
             if (data.access_denied) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
@@ -86,6 +74,18 @@ if (url.getCurrentEndpoint() == 'user/login') {
                 }
                 window.location.href = data.url
             }
+
+        }).catch(function(error) {
+            error = error.toString().replace("Error: ", "")
+            btnSubmitLogin.style.display = 'block'
+            loaderImage.style.display = 'none'
+            errorMessage.style.display = 'block'
+            errorMessage.innerHTML = error
+        }).finally(() => {
+            btnSubmitLogin.style.display = 'block'
+            loaderImage.style.display = 'none'
+            errorMessage.style.display = 'block'
+            errorMessage.innerHTML = "Erro geral ao tentar fazer o login"
         })
     })
 }

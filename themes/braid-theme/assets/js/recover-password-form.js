@@ -59,10 +59,10 @@ if (url.getCurrentEndpoint() == "user/recover-password-form") {
         }
 
         const loaderImage = this.getElementsByTagName("button")[0].firstElementChild
-        const btnSubmitLogin = this.getElementsByTagName("button")[0].lastElementChild
+        const btnSubmit = this.getElementsByTagName("button")[0].lastElementChild
 
         loaderImage.style.display = 'block'
-        btnSubmitLogin.style.display = 'none'
+        btnSubmit.style.display = 'none'
 
         let endpoint = {
             "localhost": "/braid/user/recover-password-form",
@@ -79,10 +79,6 @@ if (url.getCurrentEndpoint() == "user/recover-password-form") {
         .then(data => data.json()).then(function (data) {
 
             if (data.invalid_passwords_value) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
@@ -91,10 +87,6 @@ if (url.getCurrentEndpoint() == "user/recover-password-form") {
             }
 
             if (data.invalid_password_value) {
-                loaderImage.style.display = 'none'
-                btnSubmitLogin.style.display = 'block'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = data.msg
                 throw new Error(data.msg)
             }
 
@@ -104,6 +96,17 @@ if (url.getCurrentEndpoint() == "user/recover-password-form") {
                 }
                 window.location.href = data.url
             }
+        }).catch(function(error) {
+            error = error.toString().replace("Error: ", "")
+            btnSubmit.style.display = 'block'
+            loaderImage.style.display = 'none'
+            errorMessage.style.display = 'block'
+            errorMessage.innerHTML = error
+        }).finally(() => {
+            btnSubmit.style.display = 'block'
+            loaderImage.style.display = 'none'
+            errorMessage.style.display = 'block'
+            errorMessage.innerHTML = "Erro geral ao tentar recuperar a senha"
         })
     })
 }

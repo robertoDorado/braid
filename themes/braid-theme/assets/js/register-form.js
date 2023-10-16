@@ -160,26 +160,14 @@ if (url.getCurrentEndpoint() == "user/register") {
             .then(data => data.json()).then(function (data) {
 
                 if (data.email_already_exists) {
-                    btnSubmit.style.display = 'block'
-                    loaderImage.style.display = 'none'
-                    errorMessage.style.display = 'block'
-                    errorMessage.innerHTML = data.msg
                     throw new Error(data.msg)
                 }
 
                 if (data.nickname_already_exists) {
-                    btnSubmit.style.display = 'block'
-                    loaderImage.style.display = 'none'
-                    errorMessage.style.display = 'block'
-                    errorMessage.innerHTML = data.msg
                     throw new Error(data.msg)
                 }
 
                 if (data.invalid_image) {
-                    btnSubmit.style.display = 'block'
-                    loaderImage.style.display = 'none'
-                    errorMessage.style.display = 'block'
-                    errorMessage.innerHTML = data.msg
                     throw new Error(data.msg)
                 }
                 
@@ -191,6 +179,17 @@ if (url.getCurrentEndpoint() == "user/register") {
                         window.location.href = data.url_login
                     }, 1000)
                 }
+            }).catch(function(error) {
+                error = error.toString().replace("Error: ", "")
+                btnSubmit.style.display = 'block'
+                loaderImage.style.display = 'none'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = error
+            }).finally(() => {
+                btnSubmit.style.display = 'block'
+                loaderImage.style.display = 'none'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = "Erro geral ao criar o perfil do usuário"
             })
         })
     }

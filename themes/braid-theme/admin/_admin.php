@@ -51,11 +51,21 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
-                        <a href="#" class="nav-link <?= !empty($enpoint) && $endpoint == "/braid/braid-system" ? "active" : "" ?> bg-danger">
+                        <a href="<?= url("/braid-system") ?>" class="nav-link <?= $endpoint == "/braid/braid-system" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-user"></i>
                             <p>
                                 Meu Perfil
                             </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= url("/braid-system/client-report") ?>" class="nav-link <?= $endpoint == "/braid/braid-system/client-report" ? "bg-danger" : "" ?>">
+                            <i class="nav-icon fas fa-file"></i>
+                            <?php if ($userType == "businessman") : ?>
+                                <p>Freelancers disponíveis</p>
+                            <?php elseif ($userType == "designer"):?>
+                                <p>Trabalhos disponíveis</p>
+                            <?php endif ?>
                         </a>
                     </li>
                 </ul>
