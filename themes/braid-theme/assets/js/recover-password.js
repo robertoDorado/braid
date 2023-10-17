@@ -56,11 +56,6 @@ if (url.getCurrentEndpoint() == "user/recover-password") {
             loaderImage.style.display = 'none'
             errorMessage.style.display = 'block'
             errorMessage.innerHTML = error
-        }).finally(() => {
-            btnSubmit.style.display = 'block'
-            loaderImage.style.display = 'none'
-            errorMessage.style.display = 'block'
-            errorMessage.innerHTML = "Erro geral ao tentar recuperar a senha"
         })
     })
 }

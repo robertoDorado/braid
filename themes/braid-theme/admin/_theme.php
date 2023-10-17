@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="<?= theme("assets/style.css") ?>">
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/6427a64d8f.js" crossorigin="anonymous"></script>
-  <?php if (empty($isSystemArea)) : ?>
+  <?php if (empty($menuSelected)) : ?>
     <!-- Compiled Materialize and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
   <?php endif ?>
@@ -36,7 +36,7 @@
   <script src="<?= url("/vendor/almasaeed2010/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js") ?>"></script>
   <!-- AdminLTE App -->
   <script src="<?= url("/vendor/almasaeed2010/adminlte/dist/js/adminlte.min.js") ?>"></script>
-  <?php if (empty($isSystemArea)) : ?>
+  <?php if (empty($menuSelected)) : ?>
     <!-- Compiled Materialize and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <?php endif ?>

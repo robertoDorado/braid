@@ -66,6 +66,8 @@ $route->group($module);
 $route->get("/", "Admin:perfil");
 $route->post("/", "Admin:perfil");
 $route->get("/client-report", "Admin:clientReport");
+$route->get("/client-report-form", "Admin:clientReportForm");
+$route->post("/client-report-form", "Admin:clientReportForm");
 $route->post("/exit", "Admin:exit");
 
 

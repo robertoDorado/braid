@@ -43,7 +43,7 @@ class User
             $user = $this->user
             ->find("full_email=:full_email", ":full_email=" . $post["fullEmail"] . "")
             ->fetch();
-
+            
             if (empty($user)) {
                 throw new \Exception("Usuário não encontrado");
             }
@@ -52,7 +52,9 @@ class User
             $user->nick_name = $post["userName"];
             $user->path_photo = $post["pathPhoto"];
             if (!$user->save()) {
-                throw new \Exception($user->fail());
+                echo json_encode(["general_error" => true,
+                "msg" => "Erro geral ao tentar alterar o perfil do usuário"]);
+                die;
             }
 
             return true;
@@ -209,7 +211,9 @@ class User
             $this->user->user_type = $data['userType'];
             $this->user->is_valid_user = 0;
             if (!$this->user->save()) {
-                throw new \Exception($this->user->fail());
+                echo json_encode(["general_error" => true,
+                "msg" => "Erro geral ao tentar criar o perfil do usuário"]);
+                die;
             }
 
             return true;
@@ -270,11 +274,15 @@ class User
         $recoverPassword->is_valid = 0;
 
         if (!$recoverPassword->save()) {
-            throw new \Exception($recoverPassword->fail());
+            echo json_encode(["general_error" => true,
+            "msg" => "Erro geral ao tentar recuperar o perfil do usuário"]);
+            die;
         }
         
         if (!$user->save()) {
-            throw new \Exception($user->fail());
+            echo json_encode(["general_error" => true,
+            "msg" => "Erro geral ao tentar recuperar o perfil do usuário"]);
+            die;
         }
 
         return true;

@@ -167,6 +167,10 @@ if (url.getCurrentEndpoint() == "user/register") {
                     throw new Error(data.msg)
                 }
 
+                if (data.general_error) {
+                    throw new Error(data.msg)
+                }
+
                 if (data.invalid_image) {
                     throw new Error(data.msg)
                 }
@@ -185,11 +189,6 @@ if (url.getCurrentEndpoint() == "user/register") {
                 loaderImage.style.display = 'none'
                 errorMessage.style.display = 'block'
                 errorMessage.innerHTML = error
-            }).finally(() => {
-                btnSubmit.style.display = 'block'
-                loaderImage.style.display = 'none'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = "Erro geral ao criar o perfil do usuário"
             })
         })
     }

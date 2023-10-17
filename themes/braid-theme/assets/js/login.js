@@ -81,11 +81,6 @@ if (url.getCurrentEndpoint() == 'user/login') {
             loaderImage.style.display = 'none'
             errorMessage.style.display = 'block'
             errorMessage.innerHTML = error
-        }).finally(() => {
-            btnSubmitLogin.style.display = 'block'
-            loaderImage.style.display = 'none'
-            errorMessage.style.display = 'block'
-            errorMessage.innerHTML = "Erro geral ao tentar fazer o login"
         })
     })
 }

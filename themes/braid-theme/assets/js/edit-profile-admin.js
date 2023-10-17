@@ -58,6 +58,10 @@ if (url.getCurrentEndpoint() == "braid-system") {
                 if (data.invalid_image) {
                     throw new Error(data.msg)
                 }
+
+                if (data.general_error) {
+                    throw new Error(data.msg)
+                }
                 
                 if (data.update_success) {
                     window.location.href = window.location.href
@@ -68,11 +72,6 @@ if (url.getCurrentEndpoint() == "braid-system") {
                 loaderImage.style.display = 'none'
                 errorMessage.style.display = 'block'
                 errorMessage.innerHTML = error
-            }).finally(() => {
-                btnSubmit.style.display = 'block'
-                loaderImage.style.display = 'none'
-                errorMessage.style.display = 'block'
-                errorMessage.innerHTML = "Erro geral ao alterar o perfil do usuário"
             })
     })
 }

@@ -86,6 +86,10 @@ if (url.getCurrentEndpoint() == "user/recover-password-form") {
                 window.location.href = data.url
             }
 
+            if (data.general_error) {
+                throw new Error(data.msg)
+            }
+
             if (data.invalid_password_value) {
                 throw new Error(data.msg)
             }
@@ -102,11 +106,6 @@ if (url.getCurrentEndpoint() == "user/recover-password-form") {
             loaderImage.style.display = 'none'
             errorMessage.style.display = 'block'
             errorMessage.innerHTML = error
-        }).finally(() => {
-            btnSubmit.style.display = 'block'
-            loaderImage.style.display = 'none'
-            errorMessage.style.display = 'block'
-            errorMessage.innerHTML = "Erro geral ao tentar recuperar a senha"
         })
     })
 }

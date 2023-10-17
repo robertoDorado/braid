@@ -20,12 +20,48 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function clientReportForm()
+    {
+        $menuSelected = explode("/", $this->getServer("REQUEST_URI"));
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        if ($userData->user_type != "businessman") {
+            redirect("/braid-system/client-report");
+        }
+        $breadCrumbTitle = $userData->user_type == "businessman" ? "Freelancers disponíveis"
+        : "Trabalhos disponíveis";
+
+        echo $this->view->render("admin/client-report-form", [
+            "menuSelected" => $menuSelected,
+            "csrfToken" => $csrfToken,
+            "breadCrumbTitle" => $breadCrumbTitle,
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function clientReport()
     {
-        $isSystemArea = $this->getServer('REQUEST_URI') == '/braid/braid-system/client-report' ? 
-        $this->getServer('REQUEST_URI') : null;
-
-        $endpoint = $this->getServer("REQUEST_URI");
+        $menuSelected = explode("/", $this->getServer("REQUEST_URI"));
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
         $csrfToken = $this->getCurrentSession()->csrf_token;
 
         $user = new User();
@@ -34,8 +70,7 @@ class Admin extends Controller
         : "Trabalhos disponíveis";
 
         echo $this->view->render("admin/client-report", [
-            "isSystemArea" => $isSystemArea,
-            "endpoint" => $endpoint,
+            "menuSelected" => $menuSelected,
             "csrfToken" => $csrfToken,
             "breadCrumbTitle" => $breadCrumbTitle,
             "fullName" => $userData->full_name,
@@ -103,16 +138,18 @@ class Admin extends Controller
         }
 
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        
-        $isSystemArea = $this->getServer('REQUEST_URI') == '/braid/braid-system' ? 
-        $this->getServer('REQUEST_URI') : null;
-
-        $endpoint = $this->getServer("REQUEST_URI");
+        $menuSelected = explode("/", $this->getServer("REQUEST_URI"));
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
         $csrfToken = $this->getCurrentSession()->csrf_token;
 
         echo $this->view->render("admin/perfil", [
-            "isSystemArea" => $isSystemArea,
-            "endpoint" => $endpoint,
+            "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Meu Perfil",
             "csrfToken" => $csrfToken,
             "fullName" => $userData->full_name,
