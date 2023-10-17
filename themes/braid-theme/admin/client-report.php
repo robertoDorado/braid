@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col">
             <div class="card-body">
-                <a href="<?= url("/braid-system/client-report-form") ?>" class="btn btn-danger">Criar uma tarefa</a>
+                <a href="<?= url("/braid-system/client-report-form") ?>" class="btn btn-danger">Nova tarefa</a>
             </div>
         </div>
     </div>

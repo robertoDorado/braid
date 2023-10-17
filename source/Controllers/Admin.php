@@ -34,9 +34,13 @@ class Admin extends Controller
 
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        if ($userData->user_type != "businessman") {
-            redirect("/braid-system/client-report");
+        
+        if ($this->getServer("REQUEST_METHOD") == "GET") {
+            if ($userData->user_type != "businessman") {
+                redirect("/braid-system/client-report");
+            }
         }
+        
         $breadCrumbTitle = $userData->user_type == "businessman" ? "Freelancers disponíveis"
         : "Trabalhos disponíveis";
 
