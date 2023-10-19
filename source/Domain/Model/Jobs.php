@@ -13,7 +13,7 @@ use Source\Models\Jobs as ModelsJobs;
 class Jobs
 {
     /** @var int */
-    private int $id;
+    private int $id = 0;
 
     /** @var string Nome da tarefa/trabalho a ser realizado */
     private string $jobName;
@@ -52,9 +52,25 @@ class Jobs
         }
     }
 
-    public function setId(int $id)
+    public function getJobsByBusinessManId(int $id)
     {
-        $this->id = $id;
+        $this->jobs = new ModelsJobs();
+        $jobs = $this->jobs->find("business_man_id=:business_man_id", ":business_man_id=" . $id . "")->fetch(true);
+        return $jobs;
+    }
+
+    public function convertCurrencyRealToFloat(string $value)
+    {
+        if (empty($value)) {
+            throw new \Exception("Valor a ser convertido não pode estar vazio.");
+        }
+
+        $value = str_replace("&nbsp;", "", $value);
+        $value = str_replace(["R$", "."], "", $value);
+        $value = str_replace(",", ".", $value);
+        $value = floatval($value);
+
+        return $value;
     }
 
     public function getId()

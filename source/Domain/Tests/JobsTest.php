@@ -60,4 +60,46 @@ class JobsTest extends TestCase
             $this->assertInstanceOf(BusinessMan::class, $businessMan);
         }
     }
+
+    public function testConverStringCurrencyToFloatA()
+    {
+        $this->jobs = new Jobs();
+        $value = $this->jobs->convertCurrencyRealToFloat("R$ 2.455,22");
+        $this->assertIsFloat($value);
+    }
+
+    public function testConverStringCurrencyToFloatB()
+    {
+        $this->jobs = new Jobs();
+        $value = $this->jobs->convertCurrencyRealToFloat("2.455,22");
+        $this->assertIsFloat($value);
+    }
+
+    public function testConverStringCurrencyToFloatC()
+    {
+        $this->jobs = new Jobs();
+        $value = $this->jobs->convertCurrencyRealToFloat("2455.22");
+        $this->assertIsFloat($value);
+    }
+
+    public function testConverStringCurrencyToFloatD()
+    {
+        $this->jobs = new Jobs();
+        $value = $this->jobs->convertCurrencyRealToFloat("   2455.22    ");
+        $this->assertIsFloat($value);
+    }
+
+    public function testConverStringCurrencyToFloatE()
+    {
+        $this->jobs = new Jobs();
+        $value = $this->jobs->convertCurrencyRealToFloat("2455,22");
+        $this->assertIsFloat($value);
+    }
+
+    public function testConverStringCurrencyToFloatF()
+    {
+        $this->jobs = new Jobs();
+        $value = $this->jobs->convertCurrencyRealToFloat("   2455,22   ");
+        $this->assertIsFloat($value);
+    }
 }

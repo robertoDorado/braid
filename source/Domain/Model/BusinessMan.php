@@ -65,10 +65,33 @@ class BusinessMan
         }
     }
 
+    public function getBusinessManByEmail(string $email)
+    {
+        if (empty($email)) {
+            throw new \Exception("Parâmetro e-mail não pode estar vazio.");
+        }
+
+        $this->businessMan = new ModelsBusinessMan();
+        $businessMan = $this->businessMan
+        ->find("full_email=:full_email", ":full_email=" . $email . "")
+        ->fetch();
+
+        if (empty($businessMan)) {
+            throw new \Exception("Objeto businessMan não existe");
+        }
+
+        return $businessMan;
+    }
+
     public function getTotalData()
     {
         $this->businessMan = new ModelsBusinessMan();
         return $this->businessMan->find('')->count();
+    }
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
     }
 
     public function getId()

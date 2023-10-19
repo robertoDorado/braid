@@ -1,7 +1,10 @@
 <?php
 namespace Source\Controllers;
 
+use DateTime;
 use Source\Core\Controller;
+use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Jobs;
 use Source\Domain\Model\User;
 
 /**
@@ -22,6 +25,47 @@ class Admin extends Controller
 
     public function clientReportForm()
     {
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            date_default_timezone_set("America/Sao_Paulo");
+            $post = $this->getRequestPost()
+            ->setRequiredFields(["jobName", "jobDescription", "remunerationData", "deliveryTime"])
+            ->configureDataPost()->getAllPostData();
+
+            $post["deliveryTime"] = str_replace("T", " ", $post["deliveryTime"]);
+            if (strtotime($post["deliveryTime"]) < time()) {
+                echo json_encode(["invalid_datetime" => true,
+                "msg" => "Data de entrega não pode ser inferior a data de hoje"]);
+                die;
+            }
+
+            $jobs = new Jobs();
+            if (!empty($post["remunerationData"])) {
+                $post["remunerationData"] = $jobs->convertCurrencyRealToFloat($post["remunerationData"]);
+            }
+
+            $businessMan = new BusinessMan();
+            $objBusinessMan = $businessMan
+            ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+            if (empty($objBusinessMan)) {
+                echo json_encode(["general_error" => true,
+                "msg" => "Erro geral ao tentar criar uma tarefa"]);
+                die;
+            }
+
+            $businessMan->setId($objBusinessMan->id);
+            $jobs->setBusinessMan($businessMan);
+            $jobs->setJobName($post["jobName"]);
+            $jobs->setJobDescription($post["jobDescription"]);
+            $jobs->setRemuneration($post["remunerationData"]);
+            $jobs->setDeliveryTime($post["deliveryTime"]);
+            $jobs->setModelJob($jobs, $businessMan);
+
+            echo json_encode(["success_create_job" => true,
+            "url" => url("braid-system/client-report")]);
+            die;
+        }
+
         $menuSelected = explode("/", $this->getServer("REQUEST_URI"));
         $menuSelected = array_filter($menuSelected, function ($item) {
             if (!empty($item)) {
@@ -68,12 +112,20 @@ class Admin extends Controller
         $menuSelected = $menuSelected[count($menuSelected) - 1];
         $csrfToken = $this->getCurrentSession()->csrf_token;
 
+        $businessMan = new BusinessMan();
+        $businessMan = $businessMan
+        ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        $jobs = new Jobs();
+        $jobs = $jobs->getJobsByBusinessManId($businessMan->id);
+
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         $breadCrumbTitle = $userData->user_type == "businessman" ? "Freelancers disponíveis"
         : "Trabalhos disponíveis";
 
         echo $this->view->render("admin/client-report", [
+            "jobs" => $jobs,
             "menuSelected" => $menuSelected,
             "csrfToken" => $csrfToken,
             "breadCrumbTitle" => $breadCrumbTitle,

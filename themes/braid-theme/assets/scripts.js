@@ -40,17 +40,68 @@ elem.firstChild.classList.add("cross")}},'3':function(value,elem){if(isSpecialCh
 elem.firstChild.classList.remove("cross")
 elem.firstChild.classList.add("checkmark")}else{elem.firstChild.innerHTML="&#x2718;"
 elem.firstChild.classList.remove("checkmark")
-elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="/"){function animateCounter(selector){const target=document.querySelector(selector)
+elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="braid-system/client-report-form"){const remunerationData=document.getElementById("remunerationData")
+const clientReportForm=document.getElementById("clientReportForm")
+const errorMessage=document.getElementById("errorMessage")
+const mask={money:function(value){value=value.replace(/\D/g,'')
+value=parseFloat((value/100).toFixed(2))
+value=value.toLocaleString('pt-BR',{style:'currency',currency:"BRL"})
+return value}}
+remunerationData.addEventListener("input",function(){this.value=mask[this.dataset.mask](this.value)})
+clientReportForm.addEventListener("submit",function(event){event.preventDefault()
+const inputs=Array.from(this.querySelectorAll(".form-control"))
+inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+const btnSubmit=this.getElementsByTagName("button")[0].lastElementChild
+const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
+loaderImage.style.display='block'
+btnSubmit.style.display='none'
+let endpoint={"localhost":"/braid/braid-system/client-report-form","clientes.laborcode.com.br":"/braid/braid-system/client-report-form","braid.com.br":"/braid-system/client-report-form","www.braid.com.br":"/braid-system/client-report-form",}
+endpoint=endpoint[url.getHostName()]||''
+const form=new FormData(this)
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.invalid_datetime){throw new Error(data.msg)}
+if(data.general_error){throw new Error(data.msg)}
+if(data.success_create_job){window.location.href=data.url}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="/"){function animateCounter(selector){const target=document.querySelector(selector)
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}
-window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=='braid-system'){const exit=document.getElementById("exit")
+window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=="braid-system"){const formAlterProfile=document.getElementById("formAlterProfile")
+const errorMessage=document.getElementById("errorMessage")
+const photoImage=document.getElementById("photoImage")
+const photoPreview=document.getElementById("photoPreview")
+photoImage.addEventListener('change',function(){const file=this.files[0];if(file){const imageUrl=URL.createObjectURL(file);photoPreview.firstElementChild.src=imageUrl;photoPreview.style.display='block'}else{photoPreview.style.display='none'}})
+formAlterProfile.addEventListener("submit",function(event){event.preventDefault()
+const inputs=Array.from(this.getElementsByTagName("input"))
+inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+const userName=this.userName.value.trim().split(" ")
+if(userName.length>1){errorMessage.style.display='block'
+errorMessage.innerHTML=`Campo ${this.userName.dataset.error} não pode ter espaço em branco`
+throw new Error(`invalid ${this.userName.name}`)}
+const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
+const btnSubmit=this.getElementsByTagName("button")[0].lastElementChild
+loaderImage.style.display='block'
+btnSubmit.style.display='none'
+let endpoint={"localhost":"/braid/braid-system","clientes.laborcode.com.br":"/braid/braid-system","braid.com.br":"/braid-system","www.braid.com.br":"/braid-system",}
+endpoint=endpoint[url.getHostName()]||''
+const form=new FormData(this)
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.invalid_image){throw new Error(data.msg)}
+if(data.general_error){throw new Error(data.msg)}
+if(data.update_success){window.location.href=window.location.href}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})};if(/braid-system/.test(url.getCurrentEndpoint())){const exit=document.getElementById("exit")
 exit.addEventListener('click',function(event){event.preventDefault()
 let endpoint={"localhost":"/braid/braid-system/exit","clientes.laborcode.com.br":"/braid/braid-system/exit","braid.com.br":"/braid-system/exit","www.braid.com.br":"/braid-system/exit",}
 endpoint=endpoint[url.getHostName()]||''
 const requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl,{method:"POST",body:JSON.stringify({action:"logout"}),headers:{"Content-Type":"application/json"}}).then(data=>data.json()).then(function(data){if(!data.logout_success){throw new Error("Erro geral ao tentar sair do sistema.")}
-if(data.logout_success){window.location.href=data.url}}).catch(error=>{console.error("Erro na requisição: ",error)})})};if(url.getCurrentEndpoint()=='user/login'){const form=document.getElementById("loginForm")
+if(data.logout_success){window.location.href=data.url}}).catch(function(error){console.error(error.toString())})})};if(url.getCurrentEndpoint()=='user/login'){const form=document.getElementById("loginForm")
 const eyeIconPassword=document.querySelector("[eye-icon='eyeIconPassword']")
 const errorMessage=document.getElementById("errorMessage")
 if(eyeIconPassword){eyeIconPassword.addEventListener('click',function(){if(this.classList.contains("fa-eye-slash")){this.classList.remove("fa-eye-slash")
@@ -73,23 +124,15 @@ let endpoint={"localhost":"/braid/user/login","clientes.laborcode.com.br":"/brai
 endpoint=endpoint[url.getHostName()]||''
 const form=new FormData(this)
 const requestUrl=url.getUrlOrigin(endpoint)
-fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_email){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
-if(data.invalid_password){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
-if(data.access_denied){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
+fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_email){throw new Error(data.msg)}
+if(data.invalid_password){throw new Error(data.msg)}
+if(data.access_denied){throw new Error(data.msg)}
 if(data.success_login){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
-window.location.href=data.url}})})};const skipPopop=document.getElementById("skipPopop")
+window.location.href=data.url}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmitLogin.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
@@ -122,26 +165,23 @@ errorMessage.innerHTML=`Campo ${this.confirmPassword.dataset.error} inválido`
 this.confirmPassword.style.borderBottom='1px solid #ff2c2c'
 throw new Error(`invalid ${this.confirmPassword.name}`)}
 const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
-const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
+const btnSubmit=this.getElementsByTagName("button")[0].lastElementChild
 loaderImage.style.display='block'
-btnSubmitLogin.style.display='none'
+btnSubmit.style.display='none'
 let endpoint={"localhost":"/braid/user/recover-password-form","clientes.laborcode.com.br":"/braid/user/recover-password-form","braid.com.br":"/user/recover-password-form","www.braid.com.br":"/user/recover-password-form",}
 endpoint=endpoint[url.getHostName()]||''
 const form=new FormData(this)
 const requestUrl=url.getUrlOrigin(endpoint)
-fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_passwords_value){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
+fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_passwords_value){throw new Error(data.msg)}
 if(data.expired_link){window.location.href=data.url}
-if(data.invalid_password_value){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
+if(data.general_error){throw new Error(data.msg)}
+if(data.invalid_password_value){throw new Error(data.msg)}
 if(data.success_password_change){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
-window.location.href=data.url}})})};if(url.getCurrentEndpoint()=="user/recover-password"){const recoverPassword=document.getElementById("recoverPassword")
+window.location.href=data.url}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="user/recover-password"){const recoverPassword=document.getElementById("recoverPassword")
 const errorMessage=document.getElementById("errorMessage")
 recoverPassword.addEventListener("submit",function(event){event.preventDefault()
 if(!isValidEmail(this.userEmail.value)){errorMessage.style.display='block'
@@ -150,29 +190,21 @@ this.userEmail.style.borderBottom='1px solid #ff2c2c'
 throw new Error(`invalid ${this.userEmail.name}`)}
 let endpoint={"localhost":"/braid/user/recover-password","clientes.laborcode.com.br":"/braid/user/recover-password","braid.com.br":"/user/recover-password","www.braid.com.br":"/user/recover-password",}
 const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
-const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
+const btnSubmit=this.getElementsByTagName("button")[0].lastElementChild
 loaderImage.style.display='block'
-btnSubmitLogin.style.display='none'
+btnSubmit.style.display='none'
 endpoint=endpoint[url.getHostName()]||''
 const form=new FormData(this)
 const requestUrl=url.getUrlOrigin(endpoint)
-fetch(requestUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.email_does_not_exist){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
-if(data.invalid_email_value){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
-if(data.invalid_recover_password_data){loaderImage.style.display='none'
-btnSubmitLogin.style.display='block'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
+fetch(requestUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.email_does_not_exist){throw new Error(data.msg)}
+if(data.invalid_email_value){throw new Error(data.msg)}
+if(data.invalid_recover_password_data){throw new Error(data.msg)}
 if(data.recover_success){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
-window.location.href=data.url}})})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
+window.location.href=data.url}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="user/register"){const form=document.getElementById("registerForm")
 const email=document.getElementById("email")
 const password=document.getElementById("password")
 const confirmPassword=document.getElementById("confirmPassword")
@@ -236,23 +268,16 @@ let endpoint={"localhost":"/braid/user/register","clientes.laborcode.com.br":"/b
 const form=new FormData(this)
 endpoint=endpoint[url.getHostName()]||''
 const requestUrl=url.getUrlOrigin(endpoint)
-fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.email_already_exists){btnSubmit.style.display='block'
-loaderImage.style.display='none'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
-if(data.nickname_already_exists){btnSubmit.style.display='block'
-loaderImage.style.display='none'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
-if(data.invalid_image){btnSubmit.style.display='block'
-loaderImage.style.display='none'
-errorMessage.style.display='block'
-errorMessage.innerHTML=data.msg
-throw new Error(data.msg)}
+fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.email_already_exists){throw new Error(data.msg)}
+if(data.nickname_already_exists){throw new Error(data.msg)}
+if(data.general_error){throw new Error(data.msg)}
+if(data.invalid_image){throw new Error(data.msg)}
 if(data.register_success){if(errorMessage.style.display=='block'){errorMessage.style.display='none'}
-setTimeout(()=>{window.location.href=data.url_login},1000)}})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
+setTimeout(()=>{window.location.href=data.url_login},1000)}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})}};if(url.getCurrentEndpoint()=="user/register"){const registerType=document.getElementById("registerType")
 const form=document.getElementById("genericForms")
 const launchGenericModal=document.getElementById("launchGenericModal")
 const titleNewMembership=document.getElementById("titleNewMembership")

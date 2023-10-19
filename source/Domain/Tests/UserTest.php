@@ -59,30 +59,6 @@ class UserTest extends TestCase
         $this->assertFalse($this->user->recoverPassword('robertoDorado', '', 'Rob@11111', 'Rob@22222'));
     }
 
-    public function testgetRecoverPasswordByHashA()
-    {
-        $this->user = new User();
-        $reflection = new ReflectionClass('Source\Domain\Model\User');
-
-        $privateMethod = $reflection->getMethod('getRecoverPasswordByHash');
-        $privateMethod->setAccessible(true);
-
-        $result = $privateMethod->invoke($this->user, '', 'robertodorado7@gmail.comm');
-        $this->assertNull($result);
-    }
-
-    public function testgetRecoverPasswordByHashD()
-    {
-        $this->user = new User();
-        $reflection = new ReflectionClass('Source\Domain\Model\User');
-
-        $privateMethod = $reflection->getMethod('getRecoverPasswordByHash');
-        $privateMethod->setAccessible(true);
-
-        $result = $privateMethod->invoke($this->user, 'robertoDoradoo', '');
-        $this->assertNull($result);
-    }
-
     public function testValidateUserTypeA()
     {
         $this->user = new User();

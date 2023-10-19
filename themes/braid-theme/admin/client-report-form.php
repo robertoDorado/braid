@@ -28,7 +28,10 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn bg-danger">Cadastrar</button>
+                            <button type="submit" class="btn bg-danger">
+                            <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+                                <span>Cadastrar</span>
+                            </button>
                         </div>
                         <div style="text-align:center;display:none;" class="alert alert-danger" id="errorMessage"></div>
                     </form>
