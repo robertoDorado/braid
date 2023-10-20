@@ -13,7 +13,7 @@
                 </div>
             <?php endforeach ?>
         <?php else : ?>
-            <p>Não há dados para exibir</p>
+            <p style="padding: 0 1rem;">Não há dados para exibir</p>
         <?php endif ?>
     </div>
 </div>

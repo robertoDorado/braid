@@ -52,11 +52,22 @@ class Jobs
         }
     }
 
-    public function getJobsByBusinessManId(int $id)
+    public function getJobsByBusinessManId(int $id, int $limitValue = 0, int $offsetValue = 0)
     {
         $this->jobs = new ModelsJobs();
-        $jobs = $this->jobs->find("business_man_id=:business_man_id", ":business_man_id=" . $id . "")->fetch(true);
-        return $jobs;
+
+        $jobs = $this->jobs->find("business_man_id=:business_man_id",
+        ":business_man_id=" . $id . "");
+
+        if (!empty($limitValue)) {
+            $jobs->limit($limitValue);
+        }
+
+        if (!empty($offsetValue)) {
+            $jobs->offset($offsetValue);
+        }
+        
+        return $jobs->fetch(true);
     }
 
     public function convertCurrencyRealToFloat(string $value)

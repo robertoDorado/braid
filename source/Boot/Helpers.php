@@ -1,17 +1,29 @@
 <?php
 
-function isEmail(string $email) {
+function removeLastStringOcurrence(string $haystack, string $needle)
+{
+    $pos = strrpos($haystack, $needle);
+    if ($pos !== false) {
+        $haystack = substr($haystack, 0, $pos);
+    }
+    return $haystack;
+}
+
+function isEmail(string $email)
+{
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function isValidPassword(string $password) {
+function isValidPassword(string $password)
+{
     if (!preg_match("/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{8,}$/", $password)) {
         return false;
     }
     return true;
 }
 
-function isValidEmail(string $email) {
+function isValidEmail(string $email)
+{
     if (!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)) {
         return false;
     }
@@ -20,7 +32,7 @@ function isValidEmail(string $email) {
 
 function transformCamelCaseToSnakeCase(array $args)
 {
-    foreach($args as &$originalString) {
+    foreach ($args as &$originalString) {
         $transformedString = preg_replace('/([a-z])([A-Z])/', '$1_$2', $originalString);
         $originalString = strtolower($transformedString);
     }

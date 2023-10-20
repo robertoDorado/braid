@@ -7,7 +7,8 @@ function validateRequiredFields(elem,errorMessage){if(elem.dataset.required){con
 if(elementBoolean){if(elem.value==''){errorMessage.style.display='block'
 errorMessage.innerHTML=`Campo ${elem.dataset.error} não pode estar vazio`
 elem.style.borderBottom='1px solid #ff2c2c'
-throw new Error(`Campo ${elem.name} não pode estar vazio`)}else{elem.style.borderBottom='1px solid #2196f3'}}}};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
+throw new Error(`Campo ${elem.name} não pode estar vazio`)}else{elem.style.borderBottom='1px solid #2196f3'}}}}
+function isAtBottomPage(){const documentHeight=document.documentElement.scrollHeight;const windowHeight=window.innerHeight||document.documentElement.clientHeight;const scrollY=window.scrollY;return documentHeight-(scrollY+windowHeight)<10};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
 return this.host}
 getUrlOrigin(endpoint=''){endpoint=endpoint.split('/').filter(value=>value!='').join('/')
 endpoint=endpoint.length>0?"/"+endpoint:''
@@ -132,7 +133,7 @@ window.location.href=data.url}}).catch(function(error){error=error.toString().re
 btnSubmitLogin.style.display='block'
 loaderImage.style.display='none'
 errorMessage.style.display='block'
-errorMessage.innerHTML=error})})};const skipPopop=document.getElementById("skipPopop")
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){window.addEventListener("scroll",function(){console.log(isAtBottomPage())})};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()

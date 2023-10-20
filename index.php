@@ -56,6 +56,7 @@ $route->get("/recover-password-form", "User:recoverPasswordForm");
 $route->post("/recover-password-form", "User:recoverPasswordForm");
 $route->get("/expired-link-recover-password", "User:expiredLinkRecoverPassword");
 $route->get("/success-change-password", "User:successChangePassword");
+$route->post("/token", "User:token");
 
 /**
  * Admin
@@ -69,6 +70,7 @@ $route->get("/client-report", "Admin:clientReport");
 $route->get("/client-report-form", "Admin:clientReportForm");
 $route->post("/client-report-form", "Admin:clientReportForm");
 $route->post("/exit", "Admin:exit");
+$route->get("/charge-on-demand/{page}/{max}/{id}", "Admin:chargeOnDemand");
 
 
 /**

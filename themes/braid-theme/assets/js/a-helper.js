@@ -33,3 +33,10 @@ function validateRequiredFields(elem, errorMessage) {
         }
     }
 }
+
+function isAtBottomPage() {
+    const documentHeight = document.documentElement.scrollHeight;
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    const scrollY = window.scrollY;
+    return documentHeight - (scrollY + windowHeight) < 10;
+}
