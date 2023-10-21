@@ -18,7 +18,7 @@
     </div>
 </div>
 <?php if ($totalJobs > 3) : ?>
-    <div class="row">
+    <div class="row" style="padding:1rem 0;">
         <div class="col">
             <div class="card-body">
                 <a href="#" id="loadNewProjects" class="btn btn-danger load-new-projects">

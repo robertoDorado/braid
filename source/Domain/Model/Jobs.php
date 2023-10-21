@@ -52,6 +52,33 @@ class Jobs
         }
     }
 
+    public function countTotalJobs()
+    {
+        $this->jobs = new ModelsJobs();
+        $totalJobs = $this->jobs->find("")->count();
+        return $totalJobs;
+    }
+
+    public function getAllJobs(int $limit = 0, int $offsetValue = 0, bool $orderBy = false)
+    {
+        $this->jobs = new ModelsJobs();
+        $allJobs = $this->jobs->find("");
+
+        if (!empty($limit)) {
+            $allJobs->limit($limit);
+        }
+
+        if (!empty($offsetValue)) {
+            $allJobs->offset($offsetValue);
+        }
+
+        if ($orderBy) {
+            $allJobs->order("id", $orderBy);
+        }
+
+        return $allJobs->fetch(true);
+    }
+
     public function countTotalJobsByBusinessManId(int $id)
     {
         $this->jobs = new ModelsJobs();
@@ -62,7 +89,7 @@ class Jobs
         return $totalRegisters;
     }
 
-    public function getJobsByBusinessManId(int $id, int $limitValue = 0, int $offsetValue = 0)
+    public function getJobsByBusinessManId(int $id, int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false)
     {
         $this->jobs = new ModelsJobs();
 
@@ -75,6 +102,10 @@ class Jobs
 
         if (!empty($offsetValue)) {
             $jobs->offset($offsetValue);
+        }
+
+        if ($orderBy) {
+            $jobs->order("id", $orderBy);
         }
         
         return $jobs->fetch(true);

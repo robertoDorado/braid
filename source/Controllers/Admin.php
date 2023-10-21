@@ -6,6 +6,7 @@ use DateTime;
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Credentials;
+use Source\Domain\Model\Designer;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\User;
 
@@ -70,14 +71,12 @@ class Admin extends Controller
 
         if (empty($data["page"])) {
             header("HTTP/1.1 500 Internal Server Error");
-            echo json_encode($errorMessage);
-            die;
+            throw new \Exception(json_encode($errorMessage));
         }
 
         if (empty($data["max"])) {
             header("HTTP/1.1 500 Internal Server Error");
-            echo json_encode($errorMessage);
-            die;
+            throw new \Exception(json_encode($errorMessage));
         }
 
         foreach ($data as $key => $value) {
@@ -85,14 +84,12 @@ class Admin extends Controller
             if ($key == "page" || $key == "max") {
                 if (!preg_match("/^[\d]+$/", $value)) {
                     header("HTTP/1.1 500 Internal Server Error");
-                    echo json_encode($errorMessage);
-                    die;
+                    throw new \Exception(json_encode($errorMessage));
                 }
 
                 if ($value < 0) {
                     header("HTTP/1.1 500 Internal Server Error");
-                    echo json_encode($errorMessage);
-                    die;
+                    throw new \Exception(json_encode($errorMessage));
                 }
             }
 
@@ -105,20 +102,27 @@ class Admin extends Controller
 
         if (empty($credentials)) {
             $this->getCurrentSession()->unset("login_user");
-            echo json_encode(["invalid_token_data" => true, "url" => url("user/login")]);
-            die;
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
         }
 
-        $businessMan = new BusinessMan();
-        $businessMan = $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
-
-        $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         $jobs = new Jobs();
-        $jobs = $jobs->getJobsByBusinessManId($businessMan->id, $data["max"], $offsetValue);
+        $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
+
+        if ($userData->user_type == "businessman") {
+            $businessMan = new BusinessMan();
+            $businessMan = $businessMan->getBusinessManByEmail($userData->full_email);
+
+            $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, $data["max"], $offsetValue, true);
+        }else {
+            $jobsData = $jobs->getAllJobs(3, $offsetValue, true);
+        }
+
         $jobArray = [];
 
-        if (!empty($jobs)) {
-            foreach ($jobs as $job) {
+        if (!empty($jobsData)) {
+            foreach ($jobsData as $job) {
                 $jobData = get_object_vars($job->data());
                 $jobArray[] = $jobData;
             }
@@ -243,18 +247,24 @@ class Admin extends Controller
         $menuSelected = $menuSelected[count($menuSelected) - 1];
         $csrfToken = $this->getCurrentSession()->csrf_token;
 
-        $businessMan = new BusinessMan();
-        $businessMan = $businessMan
-            ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
-
-        $jobs = new Jobs();
-        $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, 3);
-        $totalJobs = $jobs->countTotalJobsByBusinessManId($businessMan->id);
-
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $jobs = new Jobs();
+
+        if ($userData->user_type == "businessman") {
+            $businessMan = new BusinessMan();
+            $businessMan = $businessMan
+            ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+    
+            $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, 3, 0, true);
+            $totalJobs = $jobs->countTotalJobsByBusinessManId($businessMan->id);
+        }else {
+            $jobsData = $jobs->getAllJobs(3, 0, true);
+            $totalJobs = $jobs->countTotalJobs();
+        }
+
         $breadCrumbTitle = $userData->user_type == "businessman" ? "Lista de projetos"
-            : "Trabalhos disponíveis";
+            : "Projetos disponíveis";
 
         echo $this->view->render("admin/client-report", [
             "totalJobs" => $totalJobs,
