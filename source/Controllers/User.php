@@ -86,7 +86,7 @@ class User extends Controller
                     "credentials_label" => $credentialsLabel,
                     "description_credentials" => $descriptionCredentials,
                     "json_credentials" => $jsonCredentials
-                ], true);
+                ]);
 
                 if (empty($credentialsData)) {
                     $credentials->setCredentialsFromUser([
@@ -100,11 +100,15 @@ class User extends Controller
                         "credentials_label" => $credentialsLabel,
                         "description_credentials" => $descriptionCredentials,
                         "json_credentials" => $jsonCredentials
-                    ], true);
+                    ]);
                 }
 
-                echo $credentialsData;
-                die;
+                $this->getCurrentSession()->set("login_user", [
+                    "fullEmail" => $credentialsData["fullEmail"],
+                    "tokenData" => $credentialsData["tokenData"],
+                ]);
+
+                echo json_encode($credentialsData);
 
             } else {
                 echo json_encode([
@@ -137,7 +141,7 @@ class User extends Controller
                 "credentials_label" => $credentialsLabel,
                 "description_credentials" => $descriptionCredentials,
                 "json_credentials" => $jsonCredentials
-            ], true);
+            ]);
 
             if (empty($credentialsData)) {
                 $credentials->setCredentialsFromUser([
@@ -151,11 +155,15 @@ class User extends Controller
                     "credentials_label" => $credentialsLabel,
                     "description_credentials" => $descriptionCredentials,
                     "json_credentials" => $jsonCredentials
-                ], true);
+                ]);
             }
 
-            echo $credentialsData;
-            die;
+            $this->getCurrentSession()->set("login_user", [
+                "fullEmail" => $credentialsData["fullEmail"],
+                "tokenData" => $credentialsData["tokenData"],
+            ]);
+
+            echo json_encode($credentialsData);
         }
     }
 
@@ -368,10 +376,6 @@ class User extends Controller
                         setcookie("user_password", $password, time() + 3600, url("user/login"));
                     }
 
-                    $this->getCurrentSession()->set("login_user", [
-                        "fullEmail" => $user->full_email,
-                    ]);
-
                     echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
                     die;
                 } else {
@@ -396,10 +400,6 @@ class User extends Controller
                     setcookie("user_login", $loginInput, time() + 3600, url("user/login"));
                     setcookie("user_password", $password, time() + 3600, url("user/login"));
                 }
-
-                $this->getCurrentSession()->set("login_user", [
-                    "fullEmail" => $user->full_email,
-                ]);
 
                 echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
             }

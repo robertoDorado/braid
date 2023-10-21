@@ -63,9 +63,9 @@
                         <?= $menuSelected == "client-report" || $menuSelected == "client-report-form" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-file"></i>
                             <?php if ($userType == "businessman") : ?>
-                                <p>Freelancers disponíveis</p>
+                                <p>Lista de projetos</p>
                             <?php elseif ($userType == "designer"):?>
-                                <p>Trabalhos disponíveis</p>
+                                <p>Projetos disponíveis</p>
                             <?php endif ?>
                         </a>
                     </li>

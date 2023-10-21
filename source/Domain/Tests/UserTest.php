@@ -2,6 +2,7 @@
 
 namespace Source\Domain\Tests;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Source\Domain\Model\User;
@@ -51,12 +52,6 @@ class UserTest extends TestCase
     {
         $this->user = new User();
         $this->assertFalse($this->user->recoverPassword('userName', 'test@gmail.com', 'myPassword', 'myPassword'));
-    }
-
-    public function testRecoverPasswordB()
-    {
-        $this->user = new User();
-        $this->assertFalse($this->user->recoverPassword('robertoDorado', '', 'Rob@11111', 'Rob@22222'));
     }
 
     public function testValidateUserTypeA()

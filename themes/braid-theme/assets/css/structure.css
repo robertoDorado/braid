@@ -589,6 +589,13 @@ footer {
     transform: translate(-50%, -50%);
 }
 
+.load-new-projects {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 @media screen and (min-width: 1200px) {
 
     .container-message {

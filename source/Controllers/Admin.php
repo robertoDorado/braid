@@ -5,6 +5,7 @@ namespace Source\Controllers;
 use DateTime;
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Credentials;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\User;
 
@@ -24,6 +25,18 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function getLoginTokenData()
+    {
+        header("Content-Type: application/json");
+        if (empty($this->getCurrentSession()->login_user)) {
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode(["invalid_request" => "acesso negado"]);
+            die;
+        }
+
+        echo json_encode(["tokenData" => $this->getCurrentSession()->login_user->tokenData]);
+    }
+
     public function chargeOnDemand(array $data = [])
     {
         header('Content-Type: application/json');
@@ -32,7 +45,14 @@ class Admin extends Controller
             echo json_encode(["error" => "Cabeçalho de autorização ausente"]);
             die;
         }
+        
+        $tokenData = str_replace("Bearer: ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $data = base64_decode($data["hash"], true);
+        if (!$data) {
+            throw new \Exception("Hash base64 inválida");
+        }
 
+        $data = json_decode($data, true);
         $origin = $this->getServer("SERVER_NAME");
         $allowOrigin = ["clientes.laborcode.com.br", "braid.com.br"];
 
@@ -49,31 +69,52 @@ class Admin extends Controller
         ];
 
         if (empty($data["page"])) {
+            header("HTTP/1.1 500 Internal Server Error");
             echo json_encode($errorMessage);
             die;
         }
 
         if (empty($data["max"])) {
+            header("HTTP/1.1 500 Internal Server Error");
             echo json_encode($errorMessage);
             die;
         }
 
-        foreach ($data as $value) {
+        foreach ($data as $key => $value) {
 
-            if (!preg_match("/^[\d]+$/", $value)) {
-                echo json_encode($errorMessage);
-                die;
+            if ($key == "page" || $key == "max") {
+                if (!preg_match("/^[\d]+$/", $value)) {
+                    header("HTTP/1.1 500 Internal Server Error");
+                    echo json_encode($errorMessage);
+                    die;
+                }
+
+                if ($value < 0) {
+                    header("HTTP/1.1 500 Internal Server Error");
+                    echo json_encode($errorMessage);
+                    die;
+                }
             }
 
-            if ($value < 0) {
-                echo json_encode($errorMessage);
-                die;
-            }
         }
+        
+        $credentials = new Credentials();
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            $this->getCurrentSession()->unset("login_user");
+            echo json_encode(["invalid_token_data" => true, "url" => url("user/login")]);
+            die;
+        }
+
+        $businessMan = new BusinessMan();
+        $businessMan = $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
         $jobs = new Jobs();
-        $jobs = $jobs->getJobsByBusinessManId($data["id"], $data["max"], $offsetValue);
+        $jobs = $jobs->getJobsByBusinessManId($businessMan->id, $data["max"], $offsetValue);
         $jobArray = [];
 
         if (!empty($jobs)) {
@@ -81,6 +122,11 @@ class Admin extends Controller
                 $jobData = get_object_vars($job->data());
                 $jobArray[] = $jobData;
             }
+        }
+
+        if (empty($jobArray)) {
+            echo json_encode(["empty_projects" => true]);
+            die;
         }
 
         echo json_encode($jobArray);
@@ -103,9 +149,25 @@ class Admin extends Controller
                 die;
             }
 
+            if (strlen($post["jobName"]) > 255) {
+                echo json_encode(["invalid_length_job_name_field" => true,
+                "msg" => "Campo nome do projeto excede o limite de caracteres"]);
+                die;
+            }
+            
+            if (strlen($post["jobDescription"]) > 255) {
+                echo json_encode(["invalid_length_description_field" => true,
+                "msg" => "Campo descrição do projeto excede o limite de caracteres"]);
+                die;
+            }
+
             $jobs = new Jobs();
-            if (!empty($post["remunerationData"])) {
-                $post["remunerationData"] = $jobs->convertCurrencyRealToFloat($post["remunerationData"]);
+            $post["remunerationData"] = $jobs->convertCurrencyRealToFloat($post["remunerationData"]);
+            
+            if (empty($post["remunerationData"])) {
+                echo json_encode(["invalid_remuneration_data" => true, 
+                "msg" => "Valor de remuneração inválido"]);
+                die;
             }
 
             $businessMan = new BusinessMan();
@@ -154,7 +216,7 @@ class Admin extends Controller
             }
         }
 
-        $breadCrumbTitle = $userData->user_type == "businessman" ? "Freelancers disponíveis"
+        $breadCrumbTitle = $userData->user_type == "businessman" ? "Criar novo projeto"
             : "Trabalhos disponíveis";
 
         echo $this->view->render("admin/client-report-form", [
@@ -186,15 +248,17 @@ class Admin extends Controller
             ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         $jobs = new Jobs();
-        $jobs = $jobs->getJobsByBusinessManId($businessMan->id, 3);
+        $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, 3);
+        $totalJobs = $jobs->countTotalJobsByBusinessManId($businessMan->id);
 
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        $breadCrumbTitle = $userData->user_type == "businessman" ? "Freelancers disponíveis"
+        $breadCrumbTitle = $userData->user_type == "businessman" ? "Lista de projetos"
             : "Trabalhos disponíveis";
 
         echo $this->view->render("admin/client-report", [
-            "jobs" => $jobs,
+            "totalJobs" => $totalJobs,
+            "jobs" => $jobsData,
             "menuSelected" => $menuSelected,
             "csrfToken" => $csrfToken,
             "breadCrumbTitle" => $breadCrumbTitle,

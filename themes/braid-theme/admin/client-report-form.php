@@ -5,17 +5,17 @@
             <div class="col">
                 <div class="card card-primary">
                     <div class="card-header bg-danger">
-                        <h3 class="card-title">Nova tarefa</h3>
+                        <h3 class="card-title">Novo projeto</h3>
                     </div>
                     <form id="clientReportForm">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="jobName">Nome da tarefa</label>
-                                <input type="text" name="jobName" class="form-control" data-required="true" data-error="Nome da tarefa" id="jobName" placeholder="Nome da tarefa">
+                                <label for="jobName">Título do projeto</label>
+                                <input type="text" name="jobName" class="form-control" data-required="true" data-error="Título do projeto" id="jobName" placeholder="Título do projeto">
                             </div>
                             <div class="form-group">
-                                <label for="jobDescription">Descrição da tarefa</label>
-                                <textarea type="text" name="jobDescription" class="form-control" data-required="true" data-error="Descrição da tarefa" id="jobDescription" placeholder="Descrição da tarefa"></textarea>
+                                <label for="jobDescription">Descrição do projeto</label>
+                                <textarea type="text" name="jobDescription" class="form-control" data-required="true" data-error="Descrição do projeto" id="jobDescription" placeholder="Descrição do projeto"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="remunerationData">Valor de remuneração</label>

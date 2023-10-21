@@ -1,3 +1,4 @@
+function formatDate(stringDate){const date=new Date(stringDate);let day=date.getDate();let month=date.getMonth()+1;let year=date.getFullYear();let hour=date.getHours();let minute=date.getMinutes();if(day<10)day="0"+day;if(month<10)month="0"+month;if(hour<10)hour="0"+hour;if(minute<10)minute="0"+minute;return{day,month,year,hour,minute}}
 function isValidEmail(value){return/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)}
 function isValidPassword(value){return/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[@#$%^&+=!]).{8,}$/.test(value)}
 function isCapitalize(value){return/[A-Z]/.test(value)}
@@ -8,7 +9,9 @@ if(elementBoolean){if(elem.value==''){errorMessage.style.display='block'
 errorMessage.innerHTML=`Campo ${elem.dataset.error} não pode estar vazio`
 elem.style.borderBottom='1px solid #ff2c2c'
 throw new Error(`Campo ${elem.name} não pode estar vazio`)}else{elem.style.borderBottom='1px solid #2196f3'}}}}
-function isAtBottomPage(){const documentHeight=document.documentElement.scrollHeight;const windowHeight=window.innerHeight||document.documentElement.clientHeight;const scrollY=window.scrollY;return documentHeight-(scrollY+windowHeight)<10};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
+function createNewElement(elementName){const element=document.createElement(elementName)
+return element}
+function setAttributesToElement(attributeName,attributeValue,element){element.setAttribute(attributeName,attributeValue)};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
 return this.host}
 getUrlOrigin(endpoint=''){endpoint=endpoint.split('/').filter(value=>value!='').join('/')
 endpoint=endpoint.length>0?"/"+endpoint:''
@@ -62,6 +65,9 @@ const form=new FormData(this)
 const requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.invalid_datetime){throw new Error(data.msg)}
 if(data.general_error){throw new Error(data.msg)}
+if(data.invalid_length_description_field){throw new Error(data.msg)}
+if(data.invalid_length_job_name_field){throw new Error(data.msg)}
+if(data.invalid_remuneration_data){throw new Error(data.msg)}
 if(data.success_create_job){window.location.href=data.url}}).catch(function(error){error=error.toString().replace("Error: ","")
 btnSubmit.style.display='block'
 loaderImage.style.display='none'
@@ -121,10 +127,15 @@ const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
 const btnSubmitLogin=this.getElementsByTagName("button")[0].lastElementChild
 loaderImage.style.display='block'
 btnSubmitLogin.style.display='none'
-let endpoint={"localhost":"/braid/user/login","clientes.laborcode.com.br":"/braid/user/login","braid.com.br":"/user/login","www.braid.com.br":"/user/login",}
+let endpoint={"localhost":"/braid/user/token","clientes.laborcode.com.br":"/braid/user/token","braid.com.br":"/user/token","www.braid.com.br":"/user/token",}
+endpoint=endpoint[url.getHostName()]||''
+let requestUrl=url.getUrlOrigin(endpoint)
+const bodyData=JSON.stringify({username:this.userName.value,password:this.password.value})
+fetch(requestUrl,{method:"POST",body:bodyData})
+endpoint={"localhost":"/braid/user/login","clientes.laborcode.com.br":"/braid/user/login","braid.com.br":"/user/login","www.braid.com.br":"/user/login",}
 endpoint=endpoint[url.getHostName()]||''
 const form=new FormData(this)
-const requestUrl=url.getUrlOrigin(endpoint)
+requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl,{method:'POST',body:form}).then(data=>data.json()).then(function(data){if(data.invalid_email){throw new Error(data.msg)}
 if(data.invalid_password){throw new Error(data.msg)}
 if(data.access_denied){throw new Error(data.msg)}
@@ -133,7 +144,50 @@ window.location.href=data.url}}).catch(function(error){error=error.toString().re
 btnSubmitLogin.style.display='block'
 loaderImage.style.display='none'
 errorMessage.style.display='block'
-errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){window.addEventListener("scroll",function(){console.log(isAtBottomPage())})};const skipPopop=document.getElementById("skipPopop")
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const loadNewProjects=document.getElementById("loadNewProjects")
+const rows=Array.from(document.querySelectorAll(".row"))
+let page=1
+loadNewProjects.addEventListener("click",function(event){event.preventDefault()
+const loaderButton=this
+const loaderImage=this.firstElementChild
+const loaderLabel=this.lastElementChild
+loaderImage.style.display="block"
+loaderLabel.style.display="none"
+page++;let endpoint={"localhost":"/braid/braid-system/token","clientes.laborcode.com.br":"/braid/braid-system/token","braid.com.br":"/braid-system/token","www.braid.com.br":"/braid-system/token",}
+endpoint=endpoint[url.getHostName()]||''
+let requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl).then(function(response){if(!response.ok){throw new Error("Erro na requisição do token")}
+return response.json()}).then(function(response){if(!response.tokenData){throw new Error("Erro ao retornar o token do usuário")}
+response.page=page
+response.max=3
+endpoint={"localhost":"/braid/braid-system/charge-on-demand","clientes.laborcode.com.br":"/braid/braid-system/charge-on-demand","braid.com.br":"/braid-system/charge-on-demand","www.braid.com.br":"/braid-system/charge-on-demand",}
+endpoint=endpoint[url.getHostName()]||''
+requestUrl=url.getUrlOrigin(endpoint)
+const stringBase64=btoa(JSON.stringify(response))
+fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer: "+response.tokenData}}).then(function(response){if(!response.ok){throw new Error("Erro na requisição de carregamento")}
+return response.json()}).then(function(response){loaderImage.style.display="none"
+loaderLabel.style.display="block"
+const wrapElement=rows[1].firstElementChild
+response=Array.from(response)
+response.forEach(function(item){const cardBodyElement=createNewElement("div")
+setAttributesToElement("class","card-body",cardBodyElement)
+const callOutInfoElement=createNewElement("div")
+setAttributesToElement("class","callout callout-info",callOutInfoElement)
+const titleProject=createNewElement("h5")
+const descriptionProject=createNewElement("p")
+const projectValue=createNewElement("p")
+const projectDeliveryTime=createNewElement("p")
+wrapElement.appendChild(cardBodyElement)
+cardBodyElement.appendChild(callOutInfoElement)
+const date=formatDate(item.delivery_time)
+const valueCurrencyFormat=parseFloat(item.remuneration_data).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
+titleProject.innerHTML=item.job_name
+descriptionProject.innerHTML=item.job_description
+projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
+projectDeliveryTime.innerHTML=`Prazo de entrega: 
+                        ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)})
+if(response.length==0){loaderButton.style.display="none"}})})})};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()

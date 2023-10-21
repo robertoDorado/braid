@@ -1,3 +1,20 @@
+function formatDate(stringDate) {
+    const date = new Date(stringDate);
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+
+    if (day < 10) day = "0" + day;
+    if (month < 10) month = "0" + month;
+    if (hour < 10) hour = "0" + hour;
+    if (minute < 10) minute = "0" + minute;
+
+    return { day, month, year, hour, minute }
+}
+
 function isValidEmail(value) {
     return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
 }
@@ -34,9 +51,11 @@ function validateRequiredFields(elem, errorMessage) {
     }
 }
 
-function isAtBottomPage() {
-    const documentHeight = document.documentElement.scrollHeight;
-    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-    const scrollY = window.scrollY;
-    return documentHeight - (scrollY + windowHeight) < 10;
+function createNewElement(elementName) {
+    const element = document.createElement(elementName)
+    return element
+}
+
+function setAttributesToElement(attributeName, attributeValue, element) {
+    element.setAttribute(attributeName, attributeValue)
 }

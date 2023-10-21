@@ -56,6 +56,18 @@ if (url.getCurrentEndpoint() == "braid-system/client-report-form") {
                 throw new Error(data.msg)
             }
 
+            if (data.invalid_length_description_field) {
+                throw new Error(data.msg)
+            }
+
+            if (data.invalid_length_job_name_field) {
+                throw new Error(data.msg)
+            }
+
+            if (data.invalid_remuneration_data) {
+                throw new Error(data.msg)
+            }
+
             if (data.success_create_job) {
                 window.location.href = data.url
             }

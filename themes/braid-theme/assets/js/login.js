@@ -24,7 +24,7 @@ if (url.getCurrentEndpoint() == 'user/login') {
         inputs.forEach(function (elem) {
             try {
                 validateRequiredFields(elem, errorMessage)
-            }catch(error) {
+            } catch (error) {
                 throw new Error(error.message)
             }
         })
@@ -43,6 +43,23 @@ if (url.getCurrentEndpoint() == 'user/login') {
         btnSubmitLogin.style.display = 'none'
 
         let endpoint = {
+            "localhost": "/braid/user/token",
+            "clientes.laborcode.com.br": "/braid/user/token",
+            "braid.com.br": "/user/token",
+            "www.braid.com.br": "/user/token",
+        }
+
+        endpoint = endpoint[url.getHostName()] || ''
+        let requestUrl = url.getUrlOrigin(endpoint)
+
+        const bodyData = JSON.stringify({ 
+            username: this.userName.value, 
+            password: this.password.value 
+        })
+
+        fetch(requestUrl, { method: "POST", body: bodyData })
+
+        endpoint = {
             "localhost": "/braid/user/login",
             "clientes.laborcode.com.br": "/braid/user/login",
             "braid.com.br": "/user/login",
@@ -51,36 +68,36 @@ if (url.getCurrentEndpoint() == 'user/login') {
 
         endpoint = endpoint[url.getHostName()] || ''
         const form = new FormData(this)
-        const requestUrl = url.getUrlOrigin(endpoint)
+        requestUrl = url.getUrlOrigin(endpoint)
 
         fetch(requestUrl, { method: 'POST', body: form })
-        .then(data => data.json()).then(function (data) {
+            .then(data => data.json()).then(function (data) {
 
-            if (data.invalid_email) {
-                throw new Error(data.msg)
-            }
-
-            if (data.invalid_password) {
-                throw new Error(data.msg)
-            }
-            
-            if (data.access_denied) {
-                throw new Error(data.msg)
-            }
-
-            if (data.success_login) {
-                if (errorMessage.style.display == 'block') {
-                    errorMessage.style.display = 'none'
+                if (data.invalid_email) {
+                    throw new Error(data.msg)
                 }
-                window.location.href = data.url
-            }
 
-        }).catch(function(error) {
-            error = error.toString().replace("Error: ", "")
-            btnSubmitLogin.style.display = 'block'
-            loaderImage.style.display = 'none'
-            errorMessage.style.display = 'block'
-            errorMessage.innerHTML = error
-        })
+                if (data.invalid_password) {
+                    throw new Error(data.msg)
+                }
+
+                if (data.access_denied) {
+                    throw new Error(data.msg)
+                }
+
+                if (data.success_login) {
+                    if (errorMessage.style.display == 'block') {
+                        errorMessage.style.display = 'none'
+                    }
+                    window.location.href = data.url
+                }
+
+            }).catch(function (error) {
+                error = error.toString().replace("Error: ", "")
+                btnSubmitLogin.style.display = 'block'
+                loaderImage.style.display = 'none'
+                errorMessage.style.display = 'block'
+                errorMessage.innerHTML = error
+            })
     })
 }

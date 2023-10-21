@@ -70,7 +70,8 @@ $route->get("/client-report", "Admin:clientReport");
 $route->get("/client-report-form", "Admin:clientReportForm");
 $route->post("/client-report-form", "Admin:clientReportForm");
 $route->post("/exit", "Admin:exit");
-$route->get("/charge-on-demand/{page}/{max}/{id}", "Admin:chargeOnDemand");
+$route->get("/charge-on-demand/{hash}", "Admin:chargeOnDemand");
+$route->get("/token", "Admin:getLoginTokenData");
 
 
 /**

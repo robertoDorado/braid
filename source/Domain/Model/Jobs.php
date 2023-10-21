@@ -52,6 +52,16 @@ class Jobs
         }
     }
 
+    public function countTotalJobsByBusinessManId(int $id)
+    {
+        $this->jobs = new ModelsJobs();
+        $totalRegisters = $this->jobs
+        ->find("business_man_id=:business_man_id", ":business_man_id=" . $id . "")
+        ->count();
+
+        return $totalRegisters;
+    }
+
     public function getJobsByBusinessManId(int $id, int $limitValue = 0, int $offsetValue = 0)
     {
         $this->jobs = new ModelsJobs();
