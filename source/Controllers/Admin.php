@@ -139,7 +139,6 @@ class Admin extends Controller
     public function clientReportForm()
     {
         if ($this->getServer("REQUEST_METHOD") == "POST") {
-            date_default_timezone_set("America/Sao_Paulo");
             $post = $this->getRequestPost()
                 ->setRequiredFields(["jobName", "jobDescription", "remunerationData", "deliveryTime"])
                 ->configureDataPost()->getAllPostData();

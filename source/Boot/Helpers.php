@@ -41,7 +41,6 @@ function transformCamelCaseToSnakeCase(array $args)
 
 function formatDate($days)
 {
-    date_default_timezone_set('America/Sao_Paulo');
     $date = new DateTime();
 
     $date->modify($days);
@@ -51,7 +50,6 @@ function formatDate($days)
 
 function formatDateTime($days, $hour, $minute, $second)
 {
-    date_default_timezone_set('America/Sao_Paulo');
     $dateTime = new DateTime();
 
     $dateTime->modify($days);

@@ -224,7 +224,6 @@ class User
 
     public function requestRecoverPassword(string $login, string $email)
     {
-        date_default_timezone_set("America/Sao_Paulo");
         $user = $this->getUserByLogin($login, $email);
 
         if (empty($user)) {
