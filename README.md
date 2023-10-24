@@ -1,4 +1,4 @@
-# Plataforma de Freelancers XYZ
+# Plataforma de Freelancers Braid.pro
 
 ![Logo da Plataforma](https://clientes.laborcode.com.br/braid/themes/braid-theme/assets/img/logo-2-rbg.png)
 
