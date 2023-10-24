@@ -6,7 +6,6 @@ use DateTime;
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Credentials;
-use Source\Domain\Model\Designer;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\User;
 
@@ -24,6 +23,62 @@ class Admin extends Controller
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public function searchProject()
+    {
+        header("Content-Type: application/json");
+        if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode(["error" => "Cabeçalho de autorização ausente"]);
+            die;
+        }
+
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $credentials = new Credentials();
+        
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
+        }
+
+        $searchValue = $this->get("searchProject");
+        if (empty($searchValue)) {
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode(["invalid_request" => "acesso negado"]);
+            die;
+        }
+        
+        $businessMan = new BusinessMan();
+        $businessMan = $businessMan
+        ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        $jobs = new Jobs();
+        $jobsResponse = $jobs->getJobsLikeQuery([
+            "job_name" => $searchValue,
+            "job_description" => $searchValue
+        ], "business_man_id, job_name, job_description, remuneration_data, delivery_time", 3);
+        $jobsData = [];
+
+        if (!empty($businessMan)) {
+            if (!empty($jobsResponse)) {
+                foreach ($jobsResponse as $job) {
+                    if ($businessMan->id == $job->business_man_id) {
+                        array_push($jobsData, $job);
+                    }
+                }
+            }
+        }else {
+            $jobsData = $jobsResponse;
+        }
+
+
+        echo empty($jobsData) ? 
+            json_encode(["empty_request" => true, "msg" => "Nenhum projeto encontrado"])
+            : json_encode($jobsData);
     }
 
     public function getLoginTokenData()
@@ -47,7 +102,7 @@ class Admin extends Controller
             die;
         }
         
-        $tokenData = str_replace("Bearer: ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
         $data = base64_decode($data["hash"], true);
         if (!$data) {
             throw new \Exception("Hash base64 inválida");
@@ -101,7 +156,6 @@ class Admin extends Controller
         ]);
 
         if (empty($credentials)) {
-            $this->getCurrentSession()->unset("login_user");
             throw new \Exception(json_encode(["invalid_token_data" => true]));
         }
 
@@ -165,7 +219,7 @@ class Admin extends Controller
             }
 
             $jobs = new Jobs();
-            $post["remunerationData"] = $jobs->convertCurrencyRealToFloat($post["remunerationData"]);
+            $post["remunerationData"] = convertCurrencyRealToFloat($post["remunerationData"]);
             
             if (empty($post["remunerationData"])) {
                 echo json_encode(["invalid_remuneration_data" => true, 
@@ -236,7 +290,8 @@ class Admin extends Controller
 
     public function clientReport()
     {
-        $menuSelected = explode("/", $this->getServer("REQUEST_URI"));
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
         $menuSelected = array_filter($menuSelected, function ($item) {
             if (!empty($item)) {
                 return $item;
@@ -299,7 +354,6 @@ class Admin extends Controller
         }
 
         $user = new User();
-
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $post = $this->getRequestPost()->setRequiredFields([
                 "fullName", "userName", "csrfToken",
@@ -338,7 +392,8 @@ class Admin extends Controller
         }
 
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        $menuSelected = explode("/", $this->getServer("REQUEST_URI"));
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
         $menuSelected = array_filter($menuSelected, function ($item) {
             if (!empty($item)) {
                 return $item;

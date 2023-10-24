@@ -596,6 +596,13 @@ footer {
     transform: translate(-50%, -50%);
 }
 
+.warning-empty-registers {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
 @media screen and (min-width: 1200px) {
 
     .container-message {

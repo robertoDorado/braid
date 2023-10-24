@@ -33,9 +33,6 @@ class RequestPost
     public function __construct(Session $session)
     {
         $this->post = $_POST;
-        $this->post = array_map(function ($value) {
-            return filter_var($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        }, $this->post);
         $this->session = !empty($session) ? $session : null;
     }
     

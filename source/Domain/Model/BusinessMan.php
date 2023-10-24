@@ -76,10 +76,6 @@ class BusinessMan
         ->find("full_email=:full_email", ":full_email=" . $email . "")
         ->fetch();
 
-        if (empty($businessMan)) {
-            throw new \Exception("Objeto businessMan não existe");
-        }
-
         return $businessMan;
     }
 

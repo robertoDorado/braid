@@ -1,5 +1,49 @@
 <?php
 
+function removeQueryStringFromEndpoint($url) {
+    $urlParts = parse_url($url);
+
+    if (isset($urlParts['query'])) {
+        $url = $urlParts['path'];
+        if (isset($urlParts['fragment'])) {
+            $url .= '#' . $urlParts['fragment'];
+        }
+    }
+
+    return $url;
+}
+
+function removeQueryStringFromUrl($url) {
+    $urlParts = parse_url($url);
+
+    if (isset($urlParts['query'])) {
+        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'];
+        if (isset($urlParts['fragment'])) {
+            $url .= '#' . $urlParts['fragment'];
+        }
+    }
+
+    return $url;
+}
+
+function convertCurrencyRealToFloat(string $value)
+{
+    if (empty($value)) {
+        throw new \Exception("Valor a ser convertido não pode estar vazio.");
+    }
+
+    $value = preg_replace("/[^\d\.,]+/", "", $value);
+    $value = str_replace(".", "", $value);
+    $value = str_replace(",", ".", $value);
+    $value = floatval($value);
+
+    if (gettype($value) !== "double") {
+        throw new \Exception("Erro na conversão do valor para float");
+    }
+
+    return $value;
+}
+
 function removeLastStringOcurrence(string $haystack, string $needle)
 {
     $pos = strrpos($haystack, $needle);

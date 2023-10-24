@@ -52,6 +52,38 @@ class Jobs
         }
     }
 
+    public function getJobsLikeQuery(array $data, string $columns = "*", int $limit = 0)
+    {
+        if (empty($data)) {
+            throw new \Exception("Parâmetro data é obrigatório");
+        }
+
+        $terms = "";
+        $params = "";
+
+        foreach($data as $key => $value) {
+            $terms .= "{$key} LIKE :{$key} OR";
+            $params .= ":{$key}=%{$value}%&";
+        }
+        
+        $terms = removeLastStringOcurrence($terms, "OR");
+        $params = removeLastStringOcurrence($params, "&");
+
+        $this->jobs = new ModelsJobs();
+        $jobs = $this->jobs->find($terms, $params, $columns);
+
+        if (!empty($limit)) {
+            $jobs->limit($limit);
+        }
+        
+        $jobsResponse = [];
+        foreach ($jobs->fetch(true) as $value) {
+            array_push($jobsResponse, $value->data());
+        }
+
+        return $jobsResponse;
+    }
+
     public function countTotalJobs()
     {
         $this->jobs = new ModelsJobs();
@@ -109,20 +141,6 @@ class Jobs
         }
         
         return $jobs->fetch(true);
-    }
-
-    public function convertCurrencyRealToFloat(string $value)
-    {
-        if (empty($value)) {
-            throw new \Exception("Valor a ser convertido não pode estar vazio.");
-        }
-
-        $value = str_replace("&nbsp;", "", $value);
-        $value = str_replace(["R$", "."], "", $value);
-        $value = str_replace(",", ".", $value);
-        $value = floatval($value);
-
-        return $value;
     }
 
     public function getId()

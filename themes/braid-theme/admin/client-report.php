@@ -1,4 +1,20 @@
 <?php $v->layout("admin/_admin") ?>
+
+<h2 class="text-center display-4">Pesquisa</h2>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <form action="#" id="formSearchProject">
+            <div class="input-group">
+                <input type="search" name="searchProject" class="form-control form-control-lg" placeholder="Pesquise o projeto por título ou descrição">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-lg btn-default">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="row">
     <div class="col">
         <?php if (!empty($jobs)) : ?>
@@ -13,7 +29,9 @@
                 </div>
             <?php endforeach ?>
         <?php else : ?>
-            <p style="padding: 0 1rem;">Não há projetos para exibir</p>
+            <div class="warning-empty-registers">
+                <p style="padding: 1rem 0">Não há projetos para exibir</p>
+            </div>
         <?php endif ?>
     </div>
 </div>

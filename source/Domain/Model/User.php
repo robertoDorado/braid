@@ -158,8 +158,10 @@ class User
 
         $user = $this->getUserByLogin($this->login, $this->email);
 
-        if ($user->is_valid_user == 0) {
-            return null;
+        if (!empty($user)) {
+            if ($user->is_valid_user == 0) {
+                return null;
+            }
         }
 
         if (empty($user)) {

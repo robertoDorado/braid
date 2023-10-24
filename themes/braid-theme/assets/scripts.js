@@ -147,7 +147,7 @@ errorMessage.style.display='block'
 errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const loadNewProjects=document.getElementById("loadNewProjects")
 const rows=Array.from(document.querySelectorAll(".row"))
 let page=1
-loadNewProjects.addEventListener("click",function(event){event.preventDefault()
+if(loadNewProjects){loadNewProjects.addEventListener("click",function(event){event.preventDefault()
 const loaderButton=this
 const loaderImage=this.firstElementChild
 const loaderLabel=this.lastElementChild
@@ -164,10 +164,9 @@ endpoint={"localhost":"/braid/braid-system/charge-on-demand","clientes.laborcode
 endpoint=endpoint[url.getHostName()]||''
 requestUrl=url.getUrlOrigin(endpoint)
 const stringBase64=btoa(JSON.stringify(response))
-fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer: "+response.tokenData}}).then(function(response){if(!response.ok){throw new Error("Erro na requisição de carregamento")}
-return response.json()}).then(function(response){loaderImage.style.display="none"
+fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){loaderImage.style.display="none"
 loaderLabel.style.display="block"
-const wrapElement=rows[1].firstElementChild
+const wrapElement=rows[2].firstElementChild
 response=Array.from(response)
 response.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)
@@ -185,9 +184,9 @@ titleProject.innerHTML=item.job_name
 descriptionProject.innerHTML=item.job_description
 projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
-                        ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
+                            ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)})
-if(response.length==0){loaderButton.style.display="none"}})})})};const skipPopop=document.getElementById("skipPopop")
+if(response.length==0){loaderButton.style.display="none"}})})})}};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
 try{const form=new FormData()
@@ -346,7 +345,43 @@ obs={changeParam:(params,option)=>{params.userType=option
 return params}}
 params=obs.changeParam(params,this.option.value)
 params=url.stringfyQueryStringData(params)
-window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="/"){function typeWrite(text){const arrayText=text.split('');document.querySelector('.background-home h1').innerHTML=' ';arrayText.forEach(function(letter,i){setTimeout(function(){document.querySelector('.background-home h1').innerHTML+=letter},75*i)})}
+window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const formSearchProject=document.getElementById("formSearchProject")
+const rows=Array.from(document.querySelectorAll(".row"))
+formSearchProject.addEventListener("submit",function(event){event.preventDefault()
+const fieldSearch=this.getElementsByTagName("input")[0]
+const formAction=formSearchProject.action.replace("#","")
+const urlRequest=new URL(formAction)
+urlRequest.searchParams.set(fieldSearch.name,fieldSearch.value)
+window.history.replaceState({},document.title,urlRequest.href)
+const querySetringParams=new URLSearchParams(urlRequest.search)
+if(querySetringParams.get("searchProject")){let endpoint={"localhost":"/braid/braid-system/token","clientes.laborcode.com.br":"/braid/braid-system/token","braid.com.br":"/braid-system/token","www.braid.com.br":"/braid-system/token",}
+endpoint=endpoint[url.getHostName()]||''
+let requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl).then(response=>response.json()).then(function(response){endpoint={"localhost":"/braid/braid-system/search-project","clientes.laborcode.com.br":"/braid/braid-system/search-project","braid.com.br":"/braid-system/search-project","www.braid.com.br":"/braid-system/search-project",}
+endpoint=endpoint[url.getHostName()]||''
+requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl+urlRequest.search,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){const wrapElement=rows[2].firstElementChild
+wrapElement.innerHTML=""
+response=Array.from(response)
+response.forEach(function(item){const cardBodyElement=createNewElement("div")
+setAttributesToElement("class","card-body",cardBodyElement)
+const callOutInfoElement=createNewElement("div")
+setAttributesToElement("class","callout callout-info",callOutInfoElement)
+const titleProject=createNewElement("h5")
+const descriptionProject=createNewElement("p")
+const projectValue=createNewElement("p")
+const projectDeliveryTime=createNewElement("p")
+wrapElement.appendChild(cardBodyElement)
+cardBodyElement.appendChild(callOutInfoElement)
+const date=formatDate(item.delivery_time)
+const valueCurrencyFormat=parseFloat(item.remuneration_data).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
+titleProject.innerHTML=item.job_name
+descriptionProject.innerHTML=item.job_description
+projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
+projectDeliveryTime.innerHTML=`Prazo de entrega: 
+                        ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)})
+rows[3].style.display="none"})})}})};if(url.getCurrentEndpoint()=="/"){function typeWrite(text){const arrayText=text.split('');document.querySelector('.background-home h1').innerHTML=' ';arrayText.forEach(function(letter,i){setTimeout(function(){document.querySelector('.background-home h1').innerHTML+=letter},75*i)})}
 const texts=[{title:"Potencialize seus projetos com a nossa plataforma para designers freelancers!",},{title:"Encontre projetos com a nossa plataforma para designers freelancers!",}]
 let currentIndex=0;const intervalTime=10000;typeWrite(texts[currentIndex].title);setInterval(()=>{currentIndex++;currentIndex=currentIndex>=texts.length?0:currentIndex
 typeWrite(texts[currentIndex].title)},intervalTime)}
