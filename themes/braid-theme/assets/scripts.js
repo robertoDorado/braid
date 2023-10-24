@@ -362,8 +362,8 @@ endpoint=endpoint[url.getHostName()]||''
 requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl+urlRequest.search,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){const wrapElement=rows[2].firstElementChild
 wrapElement.innerHTML=""
-response=Array.from(response)
-response.forEach(function(item){const cardBodyElement=createNewElement("div")
+const data=Array.from(response)
+data.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)
 const callOutInfoElement=createNewElement("div")
 setAttributesToElement("class","callout callout-info",callOutInfoElement)
@@ -381,7 +381,15 @@ projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)})
-rows[3].style.display="none"})})}})};if(url.getCurrentEndpoint()=="/"){function typeWrite(text){const arrayText=text.split('');document.querySelector('.background-home h1').innerHTML=' ';arrayText.forEach(function(letter,i){setTimeout(function(){document.querySelector('.background-home h1').innerHTML+=letter},75*i)})}
+if(response.empty_request){const messageContainer=rows[2].firstElementChild
+const messageWrap=createNewElement("div")
+setAttributesToElement("class","warning-empty-registers",messageWrap)
+messageContainer.appendChild(messageWrap)
+const message=createNewElement("p")
+message.style.padding="1rem 0"
+messageWrap.appendChild(message)
+message.innerHTML=response.msg
+rows[3].style.display="none"}})})}})};if(url.getCurrentEndpoint()=="/"){function typeWrite(text){const arrayText=text.split('');document.querySelector('.background-home h1').innerHTML=' ';arrayText.forEach(function(letter,i){setTimeout(function(){document.querySelector('.background-home h1').innerHTML+=letter},75*i)})}
 const texts=[{title:"Potencialize seus projetos com a nossa plataforma para designers freelancers!",},{title:"Encontre projetos com a nossa plataforma para designers freelancers!",}]
 let currentIndex=0;const intervalTime=10000;typeWrite(texts[currentIndex].title);setInterval(()=>{currentIndex++;currentIndex=currentIndex>=texts.length?0:currentIndex
 typeWrite(texts[currentIndex].title)},intervalTime)}
