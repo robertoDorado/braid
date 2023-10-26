@@ -146,6 +146,8 @@ loaderImage.style.display='none'
 errorMessage.style.display='block'
 errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const loadNewProjects=document.getElementById("loadNewProjects")
 const rows=Array.from(document.querySelectorAll(".row"))
+const cardBody=document.getElementById("cardBody")
+const userType=cardBody.dataset.user
 let page=1
 if(loadNewProjects){loadNewProjects.addEventListener("click",function(event){event.preventDefault()
 const loaderButton=this
@@ -167,6 +169,12 @@ const stringBase64=btoa(JSON.stringify(response))
 fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){loaderImage.style.display="none"
 loaderLabel.style.display="block"
 const wrapElement=rows[2].firstElementChild
+let endpointEditProject={"localhost":"/braid/braid-system/edit-project","clientes.laborcode.com.br":"/braid/braid-system/edit-project","braid.com.br":"/braid-system/edit-project","www.braid.com.br":"/braid-system/edit-project",}
+endpointEditProject=endpointEditProject[url.getHostName()]||''
+const requestUrlEditProject=url.getUrlOrigin(endpointEditProject)
+let enpointDeleteProject={"localhost":"/braid/braid-system/delete-project","clientes.laborcode.com.br":"/braid/braid-system/delete-project","braid.com.br":"/braid-system/delete-project","www.braid.com.br":"/braid-system/delete-project",}
+enpointDeleteProject=enpointDeleteProject[url.getHostName()]||''
+const requestUrlDeleteProject=url.getUrlOrigin(enpointDeleteProject)
 response=Array.from(response)
 response.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)
@@ -185,7 +193,16 @@ descriptionProject.innerHTML=item.job_description
 projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                             ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
-callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)})
+if(userType=="businessman"){const editLink=createNewElement("a")
+const deleteLink=createNewElement("a")
+setAttributesToElement("href",`${requestUrlEditProject}/${btoa(item.id)}`,editLink)
+setAttributesToElement("href",`${requestUrlDeleteProject}/${btoa(item.id)}`,deleteLink)
+setAttributesToElement("class","btn btn-primary sample-format-link",editLink)
+setAttributesToElement("class","btn btn-danger sample-format-link",deleteLink)
+editLink.innerHTML="Editar dados do projeto"
+deleteLink.innerHTML="Excluir projeto"
+deleteLink.style.marginLeft=".2rem"
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
 if(response.length==0){loaderButton.style.display="none"}})})})}};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
@@ -347,6 +364,8 @@ params=obs.changeParam(params,this.option.value)
 params=url.stringfyQueryStringData(params)
 window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const formSearchProject=document.getElementById("formSearchProject")
 const rows=Array.from(document.querySelectorAll(".row"))
+const cardBody=document.getElementById("cardBody")
+const userType=cardBody.dataset.user
 formSearchProject.addEventListener("submit",function(event){event.preventDefault()
 const fieldSearch=this.getElementsByTagName("input")[0]
 const formAction=formSearchProject.action.replace("#","")
@@ -362,6 +381,12 @@ endpoint=endpoint[url.getHostName()]||''
 requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl+urlRequest.search,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){const wrapElement=rows[2].firstElementChild
 wrapElement.innerHTML=""
+let endpointEditProject={"localhost":"/braid/braid-system/edit-project","clientes.laborcode.com.br":"/braid/braid-system/edit-project","braid.com.br":"/braid-system/edit-project","www.braid.com.br":"/braid-system/edit-project",}
+endpointEditProject=endpointEditProject[url.getHostName()]||''
+const requestUrlEditProject=url.getUrlOrigin(endpointEditProject)
+let enpointDeleteProject={"localhost":"/braid/braid-system/delete-project","clientes.laborcode.com.br":"/braid/braid-system/delete-project","braid.com.br":"/braid-system/delete-project","www.braid.com.br":"/braid-system/delete-project",}
+enpointDeleteProject=enpointDeleteProject[url.getHostName()]||''
+const requestUrlDeleteProject=url.getUrlOrigin(enpointDeleteProject)
 const data=Array.from(response)
 data.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)
@@ -380,7 +405,16 @@ descriptionProject.innerHTML=item.job_description
 projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
-callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)})
+if(userType=="businessman"){const editLink=createNewElement("a")
+const deleteLink=createNewElement("a")
+setAttributesToElement("href",`${requestUrlEditProject}/${btoa(item.id)}`,editLink)
+setAttributesToElement("href",`${requestUrlDeleteProject}/${btoa(item.id)}`,deleteLink)
+setAttributesToElement("class","btn btn-primary sample-format-link",editLink)
+setAttributesToElement("class","btn btn-danger sample-format-link",deleteLink)
+editLink.innerHTML="Editar dados do projeto"
+deleteLink.innerHTML="Excluir projeto"
+deleteLink.style.marginLeft=".2rem"
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
 if(response.empty_request){const messageContainer=rows[2].firstElementChild
 const messageWrap=createNewElement("div")
 setAttributesToElement("class","warning-empty-registers",messageWrap)

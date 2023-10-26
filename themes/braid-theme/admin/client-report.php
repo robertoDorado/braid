@@ -19,12 +19,16 @@
     <div class="col">
         <?php if (!empty($jobs)) : ?>
             <?php foreach ($jobs as $job) : ?>
-                <div class="card-body">
+                <div class="card-body" id="cardBody" data-user="<?= $userType ?>">
                     <div class="callout callout-info">
                         <h5><?= $job->job_name ?></h5>
                         <p><?= $job->job_description ?></p>
                         <p><?= "Valor do acordo: R$ " . number_format($job->remuneration_data, 2, ",", ".") ?></p>
                         <p><?= "Prazo de entrega: " . date("d/m/Y H:i", strtotime($job->delivery_time)) ?></p>
+                        <?php if ($userType == "businessman") : ?>
+                            <a href="<?= url("/braid-system/edit-project/{$job->id}") ?>" class="btn btn-primary sample-format-link">Editar dados do projeto</a>
+                            <a href="<?= url("/braid-system/delete-project/{$job->id}") ?>" class="btn btn-danger sample-format-link">Excluir projeto</a>
+                        <?php endif ?>
                     </div>
                 </div>
             <?php endforeach ?>

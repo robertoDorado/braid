@@ -1,19 +1,21 @@
 if (url.getCurrentEndpoint() == "braid-system/client-report") {
     const loadNewProjects = document.getElementById("loadNewProjects")
     const rows = Array.from(document.querySelectorAll(".row"))
+    const cardBody = document.getElementById("cardBody")
+    const userType = cardBody.dataset.user
     let page = 1
 
     if (loadNewProjects) {
         loadNewProjects.addEventListener("click", function (event) {
             event.preventDefault()
-    
+
             const loaderButton = this
             const loaderImage = this.firstElementChild
             const loaderLabel = this.lastElementChild
-    
+
             loaderImage.style.display = "block"
             loaderLabel.style.display = "none"
-    
+
             page++;
             let endpoint = {
                 "localhost": "/braid/braid-system/token",
@@ -21,34 +23,34 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                 "braid.com.br": "/braid-system/token",
                 "www.braid.com.br": "/braid-system/token",
             }
-    
+
             endpoint = endpoint[url.getHostName()] || ''
             let requestUrl = url.getUrlOrigin(endpoint)
-    
+
             fetch(requestUrl).then(function (response) {
                 if (!response.ok) {
                     throw new Error("Erro na requisição do token")
                 }
-    
+
                 return response.json()
             }).then(function (response) {
                 if (!response.tokenData) {
                     throw new Error("Erro ao retornar o token do usuário")
                 }
-    
+
                 response["page"] = page
                 response["max"] = 3
-    
+
                 endpoint = {
                     "localhost": "/braid/braid-system/charge-on-demand",
                     "clientes.laborcode.com.br": "/braid/braid-system/charge-on-demand",
                     "braid.com.br": "/braid-system/charge-on-demand",
                     "www.braid.com.br": "/braid-system/charge-on-demand",
                 }
-    
+
                 endpoint = endpoint[url.getHostName()] || ''
                 requestUrl = url.getUrlOrigin(endpoint)
-    
+
                 const stringBase64 = btoa(JSON.stringify(response))
                 fetch(requestUrl + "/" + stringBase64, {
                     method: "GET",
@@ -59,36 +61,70 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                     loaderImage.style.display = "none"
                     loaderLabel.style.display = "block"
                     const wrapElement = rows[2].firstElementChild
+
+                    let endpointEditProject = {
+                        "localhost": "/braid/braid-system/edit-project",
+                        "clientes.laborcode.com.br": "/braid/braid-system/edit-project",
+                        "braid.com.br": "/braid-system/edit-project",
+                        "www.braid.com.br": "/braid-system/edit-project",
+                    }
+    
+                    endpointEditProject = endpointEditProject[url.getHostName()] || ''
+                    const requestUrlEditProject = url.getUrlOrigin(endpointEditProject)
+
+                    let enpointDeleteProject = {
+                        "localhost": "/braid/braid-system/delete-project",
+                        "clientes.laborcode.com.br": "/braid/braid-system/delete-project",
+                        "braid.com.br": "/braid-system/delete-project",
+                        "www.braid.com.br": "/braid-system/delete-project",
+                    }
+    
+                    enpointDeleteProject = enpointDeleteProject[url.getHostName()] || ''
+                    const requestUrlDeleteProject = url.getUrlOrigin(enpointDeleteProject)
                     
                     response = Array.from(response)
                     response.forEach(function (item) {
                         const cardBodyElement = createNewElement("div")
                         setAttributesToElement("class", "card-body", cardBodyElement)
-    
+
                         const callOutInfoElement = createNewElement("div")
                         setAttributesToElement("class", "callout callout-info", callOutInfoElement)
-    
+
                         const titleProject = createNewElement("h5")
                         const descriptionProject = createNewElement("p")
                         const projectValue = createNewElement("p")
                         const projectDeliveryTime = createNewElement("p")
-    
+
                         wrapElement.appendChild(cardBodyElement)
                         cardBodyElement.appendChild(callOutInfoElement)
-    
+
                         const date = formatDate(item.delivery_time)
                         const valueCurrencyFormat = parseFloat(item.remuneration_data).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-    
+
                         titleProject.innerHTML = item.job_name
                         descriptionProject.innerHTML = item.job_description
                         projectValue.innerHTML = `Valor do acordo: ${valueCurrencyFormat}`
-    
+
                         projectDeliveryTime.innerHTML = `Prazo de entrega: 
                             ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
-    
-                        callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
+
+
+                        if (userType == "businessman") {
+                            const editLink = createNewElement("a")
+                            const deleteLink = createNewElement("a")
+                            setAttributesToElement("href", `${requestUrlEditProject}/${btoa(item.id)}`, editLink)
+                            setAttributesToElement("href", `${requestUrlDeleteProject}/${btoa(item.id)}`, deleteLink)
+                            setAttributesToElement("class", "btn btn-primary sample-format-link", editLink)
+                            setAttributesToElement("class", "btn btn-danger sample-format-link", deleteLink)
+                            editLink.innerHTML = "Editar dados do projeto"
+                            deleteLink.innerHTML = "Excluir projeto"
+                            deleteLink.style.marginLeft = ".2rem"
+                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
+                        } else {
+                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
+                        }
                     })
-    
+
                     if (response.length == 0) {
                         loaderButton.style.display = "none"
                     }

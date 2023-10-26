@@ -1,6 +1,8 @@
 if (url.getCurrentEndpoint() == "braid-system/client-report") {
     const formSearchProject = document.getElementById("formSearchProject")
     const rows = Array.from(document.querySelectorAll(".row"))
+    const cardBody = document.getElementById("cardBody")
+    const userType = cardBody.dataset.user
 
     formSearchProject.addEventListener("submit", function (event) {
         event.preventDefault()
@@ -44,6 +46,26 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                     const wrapElement = rows[2].firstElementChild
                     wrapElement.innerHTML = ""
 
+                    let endpointEditProject = {
+                        "localhost": "/braid/braid-system/edit-project",
+                        "clientes.laborcode.com.br": "/braid/braid-system/edit-project",
+                        "braid.com.br": "/braid-system/edit-project",
+                        "www.braid.com.br": "/braid-system/edit-project",
+                    }
+    
+                    endpointEditProject = endpointEditProject[url.getHostName()] || ''
+                    const requestUrlEditProject = url.getUrlOrigin(endpointEditProject)
+
+                    let enpointDeleteProject = {
+                        "localhost": "/braid/braid-system/delete-project",
+                        "clientes.laborcode.com.br": "/braid/braid-system/delete-project",
+                        "braid.com.br": "/braid-system/delete-project",
+                        "www.braid.com.br": "/braid-system/delete-project",
+                    }
+    
+                    enpointDeleteProject = enpointDeleteProject[url.getHostName()] || ''
+                    const requestUrlDeleteProject = url.getUrlOrigin(enpointDeleteProject)
+
                     const data = Array.from(response)
                     data.forEach(function (item) {
                         const cardBodyElement = createNewElement("div")
@@ -70,7 +92,20 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         projectDeliveryTime.innerHTML = `Prazo de entrega: 
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 
-                        callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
+                        if (userType == "businessman") {
+                            const editLink = createNewElement("a")
+                            const deleteLink = createNewElement("a")
+                            setAttributesToElement("href", `${requestUrlEditProject}/${btoa(item.id)}`, editLink)
+                            setAttributesToElement("href", `${requestUrlDeleteProject}/${btoa(item.id)}`, deleteLink)
+                            setAttributesToElement("class", "btn btn-primary sample-format-link", editLink)
+                            setAttributesToElement("class", "btn btn-danger sample-format-link", deleteLink)
+                            editLink.innerHTML = "Editar dados do projeto"
+                            deleteLink.innerHTML = "Excluir projeto"
+                            deleteLink.style.marginLeft = ".2rem"
+                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
+                        } else {
+                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
+                        }
                     })
 
                     if (response.empty_request) {

@@ -52,6 +52,11 @@ class Jobs
         }
     }
 
+    public function getJobsById(int $id)
+    {
+        return (new ModelsJobs())->findById($id);
+    }
+
     public function getJobsLikeQuery(array $data, string $columns = "*", int $limit = 0)
     {
         if (empty($data)) {
@@ -91,7 +96,7 @@ class Jobs
         return $totalJobs;
     }
 
-    public function getAllJobs(int $limit = 0, int $offsetValue = 0, bool $orderBy = false)
+    public function getAllJobs(int $limit = 0, int $offsetValue = 0, bool $orderBy = false, bool $hashId = false)
     {
         $this->jobs = new ModelsJobs();
         $allJobs = $this->jobs->find("");
@@ -108,7 +113,17 @@ class Jobs
             $allJobs->order("id", $orderBy);
         }
 
-        return $allJobs->fetch(true);
+        $jobsData = $allJobs->fetch(true);
+
+        if ($hashId) {
+            if (!empty($jobsData)) {
+                foreach ($jobsData as &$job){
+                    $job->id = base64_encode($job->id);
+                }
+            }
+        }
+
+        return $jobsData;
     }
 
     public function countTotalJobsByBusinessManId(int $id)
@@ -121,7 +136,7 @@ class Jobs
         return $totalRegisters;
     }
 
-    public function getJobsByBusinessManId(int $id, int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false)
+    public function getJobsByBusinessManId(int $id, int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false, bool $hashId = false)
     {
         $this->jobs = new ModelsJobs();
 
@@ -139,8 +154,18 @@ class Jobs
         if ($orderBy) {
             $jobs->order("id", $orderBy);
         }
+
+        $jobsData = $jobs->fetch(true);
+
+        if ($hashId) {
+            if (!empty($jobsData)) {
+                foreach($jobsData as &$job) {
+                    $job->id = base64_encode($job->id);
+                }
+            }
+        }
         
-        return $jobs->fetch(true);
+        return $jobsData;
     }
 
     public function getId()

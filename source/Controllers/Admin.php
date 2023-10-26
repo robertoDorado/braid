@@ -25,6 +25,60 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function deleteProject()
+    {
+        echo "delete";
+    }
+
+    public function editProject(array $data = [])
+    {
+        $jobId = base64_decode($data["hash"], true);
+
+        if (!$jobId) {
+            redirect("/braid-system/client-report");
+        }
+        
+        if (!preg_match("/^\d+$/", $jobId)) {
+            redirect("/braid-system/client-report");
+        }
+
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $jobs = new Jobs();
+        $jobData = $jobs->getJobsById($jobId);
+
+        if ($userData->user_type != "businessman") {
+            redirect("/braid-system/client-report");
+        }
+        
+        if (empty($jobData)) {
+            redirect("/braid-system/client-report");
+        }
+
+        echo $this->view->render("admin/client-report-edit", [
+            "jobData" => $jobData,
+            "menuSelected" => $menuSelected,
+            "csrfToken" => $csrfToken,
+            "breadCrumbTitle" => "Editar projeto",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function searchProject()
     {
         header("Content-Type: application/json");
@@ -60,7 +114,7 @@ class Admin extends Controller
         $jobsResponse = $jobs->getJobsLikeQuery([
             "job_name" => $searchValue,
             "job_description" => $searchValue
-        ], "business_man_id, job_name, job_description, remuneration_data, delivery_time", 3);
+        ], "id, business_man_id, job_name, job_description, remuneration_data, delivery_time", 3);
         $jobsData = [];
 
         if (!empty($businessMan)) {
@@ -310,10 +364,10 @@ class Admin extends Controller
             $businessMan = $businessMan
             ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
     
-            $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, 3, 0, true);
+            $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, 3, 0, true, true);
             $totalJobs = $jobs->countTotalJobsByBusinessManId($businessMan->id);
         }else {
-            $jobsData = $jobs->getAllJobs(3, 0, true);
+            $jobsData = $jobs->getAllJobs(3, 0, true, true);
             $totalJobs = $jobs->countTotalJobs();
         }
 
