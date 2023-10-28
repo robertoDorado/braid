@@ -52,6 +52,26 @@ class Jobs
         }
     }
 
+    public function updateJobById(array $post): bool
+    {
+        $this->jobs = new ModelsJobs();
+        $jobData = $this->jobs->findById($post["id"]);
+
+        if (empty($jobData)) {
+            throw new \Exception("Registro do projeto inexistente");
+        }
+
+        $jobData->job_name = $post["jobName"];
+        $jobData->job_description = $post["jobDescription"];
+        $jobData->remuneration_data = $post["remunerationData"];
+        $jobData->delivery_time = $post["deliveryTime"];
+        if (!$jobData->save()) {
+            throw new \Exception($jobData->fail());
+        }
+
+        return true;
+    }
+
     public function getJobsById(int $id)
     {
         return (new ModelsJobs())->findById($id);

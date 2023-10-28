@@ -48,10 +48,14 @@ if (endpointSystem.join("/") == "braid-system/edit-project") {
         const form = new FormData(this)
         const requestUrl = url.getUrlOrigin(endpoint)
 
-        fetch(requestUrl + "/" + endpointParam, { method: "POST", body: form })
+        fetch(requestUrl + "/" + endpointParam, { 
+            method: "POST",
+            headers: {
+                Authorization: endpointParam
+            },
+            body: form
+        })
         .then(data => data.json()).then(function (data) {
-            console.log(data)
-            throw new Error("")
 
             if (data.invalid_datetime) {
                 throw new Error(data.msg)

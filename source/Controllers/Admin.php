@@ -27,26 +27,29 @@ class Admin extends Controller
 
     public function deleteProject()
     {
-        echo "delete";
     }
 
     public function editProject(array $data = [])
     {
-        $jobId = base64_decode($data["hash"], true);
-
-        if (!$jobId) {
-            redirect("/braid-system/client-report");
-        }
-
-        if (!preg_match("/^\d+$/", $jobId)) {
-            redirect("/braid-system/client-report");
-        }
-
         if ($this->getServer("REQUEST_METHOD") == "POST") {
+            if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+                throw new \Exception("Cabeçalho de autorização ausente");
+            }
+
+            $jobId = base64_decode($this->getAllServerData()["HTTP_AUTHORIZATION"], true);
+            if (!$jobId) {
+                throw new \Exception("Erro ao tentar acessar parametro da requisição");
+            }
+            
+            if (!preg_match("/^\d+$/", $jobId)) {
+                throw new \Exception("Erro ao tentar acessar parametro da requisição");
+            }
+
             $post = $this->getRequestPost()->setRequiredFields(["jobName", "jobDescription",
             "csrfToken", "csrf_token", "remunerationData", "deliveryTime"])->configureDataPost()
             ->getAllPostData();
 
+            $post["id"] = $jobId;
             $post["deliveryTime"] = str_replace("T", " ", $post["deliveryTime"]);
             if (strtotime($post["deliveryTime"]) < time()) {
                 echo json_encode([
@@ -83,11 +86,25 @@ class Admin extends Controller
                 die;
             }
 
-            echo json_encode([
+            $response = $jobs->updateJobById($post);
+            echo $response ? json_encode([
                 "success_update_job" => true,
                 "url" => url("braid-system/client-report")
+            ]) : json_encode([
+                "general_error" => true,
+                "msg" => "Erro geral ao tentar atualizar os dados do projeto"
             ]);
             die;
+        }
+
+        $jobId = base64_decode($data["hash"], true);
+
+        if (!$jobId) {
+            redirect("/braid-system/client-report");
+        }
+
+        if (!preg_match("/^\d+$/", $jobId)) {
+            redirect("/braid-system/client-report");
         }
 
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
@@ -131,9 +148,7 @@ class Admin extends Controller
     {
         header("Content-Type: application/json");
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
-            header("HTTP/1.1 403 Forbidden");
-            echo json_encode(["error" => "Cabeçalho de autorização ausente"]);
-            die;
+            throw new \Exception("Cabeçalho de autorização ausente");
         }
 
         $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
@@ -199,9 +214,7 @@ class Admin extends Controller
     {
         header('Content-Type: application/json');
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
-            header("HTTP/1.1 403 Forbidden");
-            echo json_encode(["error" => "Cabeçalho de autorização ausente"]);
-            die;
+            throw new \Exception("Cabeçalho de autorização ausente");
         }
 
         $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
