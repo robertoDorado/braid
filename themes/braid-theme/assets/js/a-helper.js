@@ -59,3 +59,14 @@ function createNewElement(elementName) {
 function setAttributesToElement(attributeName, attributeValue, element) {
     element.setAttribute(attributeName, attributeValue)
 }
+
+function removeParamFromEndpoint(endpoint, getEndpointParam=false) {
+    endpoint = endpoint.split("/")
+    
+    if (!getEndpointParam) {
+        endpoint.pop()
+        return endpoint.join("/")
+    }else {
+        return endpoint
+    }
+}

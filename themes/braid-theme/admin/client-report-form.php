@@ -24,6 +24,7 @@
                             <div class="form-group">
                                 <label for="deliveryTime">Prazo de entrega</label>
                                 <input type="datetime-local" name="deliveryTime" class="form-control" data-required="true" data-error="Prazo de entrega" id="deliveryTime" placeholder="Prazo de entrega">
+                                <input type="hidden" class="form-control" name="csrfToken" value="<?= empty($csrfToken) ? "" : $csrfToken ?>" data-required="true" data-error="Token">
                             </div>
                         </div>
 

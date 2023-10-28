@@ -7,7 +7,7 @@
                     <div class="card-header bg-danger">
                         <h3 class="card-title">Editar projeto</h3>
                     </div>
-                    <form id="clientReportForm">
+                    <form id="clientReportFormEdit">
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="jobName">Título do projeto</label>
@@ -24,6 +24,7 @@
                             <div class="form-group">
                                 <label for="deliveryTime">Prazo de entrega</label>
                                 <input type="datetime-local" value="<?= $jobData->delivery_time ?>" name="deliveryTime" class="form-control" data-required="true" data-error="Prazo de entrega" id="deliveryTime" placeholder="Prazo de entrega">
+                                <input type="hidden" class="form-control" name="csrfToken" value="<?= empty($csrfToken) ? "" : $csrfToken ?>" data-required="true" data-error="Token">
                             </div>
                         </div>
 

@@ -37,9 +37,57 @@ class Admin extends Controller
         if (!$jobId) {
             redirect("/braid-system/client-report");
         }
-        
+
         if (!preg_match("/^\d+$/", $jobId)) {
             redirect("/braid-system/client-report");
+        }
+
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            $post = $this->getRequestPost()->setRequiredFields(["jobName", "jobDescription",
+            "csrfToken", "csrf_token", "remunerationData", "deliveryTime"])->configureDataPost()
+            ->getAllPostData();
+
+            $post["deliveryTime"] = str_replace("T", " ", $post["deliveryTime"]);
+            if (strtotime($post["deliveryTime"]) < time()) {
+                echo json_encode([
+                    "invalid_datetime" => true,
+                    "msg" => "Data de entrega não pode ser inferior a data de hoje"
+                ]);
+                die;
+            }
+
+            if (strlen($post["jobName"]) > 255) {
+                echo json_encode([
+                    "invalid_length_job_name_field" => true,
+                    "msg" => "Campo nome do projeto excede o limite de caracteres"
+                ]);
+                die;
+            }
+
+            if (strlen($post["jobDescription"]) > 255) {
+                echo json_encode([
+                    "invalid_length_description_field" => true,
+                    "msg" => "Campo descrição do projeto excede o limite de caracteres"
+                ]);
+                die;
+            }
+
+            $jobs = new Jobs();
+            $post["remunerationData"] = convertCurrencyRealToFloat($post["remunerationData"]);
+
+            if (empty($post["remunerationData"])) {
+                echo json_encode([
+                    "invalid_remuneration_data" => true,
+                    "msg" => "Valor de remuneração inválido"
+                ]);
+                die;
+            }
+
+            echo json_encode([
+                "success_update_job" => true,
+                "url" => url("braid-system/client-report")
+            ]);
+            die;
         }
 
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
@@ -61,7 +109,7 @@ class Admin extends Controller
         if ($userData->user_type != "businessman") {
             redirect("/braid-system/client-report");
         }
-        
+
         if (empty($jobData)) {
             redirect("/braid-system/client-report");
         }
@@ -90,7 +138,7 @@ class Admin extends Controller
 
         $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
         $credentials = new Credentials();
-        
+
         $credentials = $credentials->getCredentials([
             "token_data" => $tokenData
         ]);
@@ -105,10 +153,10 @@ class Admin extends Controller
             echo json_encode(["invalid_request" => "acesso negado"]);
             die;
         }
-        
+
         $businessMan = new BusinessMan();
         $businessMan = $businessMan
-        ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+            ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         $jobs = new Jobs();
         $jobsResponse = $jobs->getJobsLikeQuery([
@@ -125,12 +173,12 @@ class Admin extends Controller
                     }
                 }
             }
-        }else {
+        } else {
             $jobsData = $jobsResponse;
         }
 
 
-        echo empty($jobsData) ? 
+        echo empty($jobsData) ?
             json_encode(["empty_request" => true, "msg" => "Nenhum projeto encontrado"])
             : json_encode($jobsData);
     }
@@ -155,7 +203,7 @@ class Admin extends Controller
             echo json_encode(["error" => "Cabeçalho de autorização ausente"]);
             die;
         }
-        
+
         $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
         $data = base64_decode($data["hash"], true);
         if (!$data) {
@@ -201,9 +249,8 @@ class Admin extends Controller
                     throw new \Exception(json_encode($errorMessage));
                 }
             }
-
         }
-        
+
         $credentials = new Credentials();
         $credentials = $credentials->getCredentials([
             "token_data" => $tokenData
@@ -223,7 +270,7 @@ class Admin extends Controller
             $businessMan = $businessMan->getBusinessManByEmail($userData->full_email);
 
             $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, $data["max"], $offsetValue, true);
-        }else {
+        } else {
             $jobsData = $jobs->getAllJobs(3, $offsetValue, true);
         }
 
@@ -248,7 +295,8 @@ class Admin extends Controller
     {
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $post = $this->getRequestPost()
-                ->setRequiredFields(["jobName", "jobDescription", "remunerationData", "deliveryTime"])
+                ->setRequiredFields(["jobName", "jobDescription",
+                "csrfToken", "csrf_token", "remunerationData", "deliveryTime"])
                 ->configureDataPost()->getAllPostData();
 
             $post["deliveryTime"] = str_replace("T", " ", $post["deliveryTime"]);
@@ -261,23 +309,29 @@ class Admin extends Controller
             }
 
             if (strlen($post["jobName"]) > 255) {
-                echo json_encode(["invalid_length_job_name_field" => true,
-                "msg" => "Campo nome do projeto excede o limite de caracteres"]);
+                echo json_encode([
+                    "invalid_length_job_name_field" => true,
+                    "msg" => "Campo nome do projeto excede o limite de caracteres"
+                ]);
                 die;
             }
-            
+
             if (strlen($post["jobDescription"]) > 255) {
-                echo json_encode(["invalid_length_description_field" => true,
-                "msg" => "Campo descrição do projeto excede o limite de caracteres"]);
+                echo json_encode([
+                    "invalid_length_description_field" => true,
+                    "msg" => "Campo descrição do projeto excede o limite de caracteres"
+                ]);
                 die;
             }
 
             $jobs = new Jobs();
             $post["remunerationData"] = convertCurrencyRealToFloat($post["remunerationData"]);
-            
+
             if (empty($post["remunerationData"])) {
-                echo json_encode(["invalid_remuneration_data" => true, 
-                "msg" => "Valor de remuneração inválido"]);
+                echo json_encode([
+                    "invalid_remuneration_data" => true,
+                    "msg" => "Valor de remuneração inválido"
+                ]);
                 die;
             }
 
@@ -362,11 +416,11 @@ class Admin extends Controller
         if ($userData->user_type == "businessman") {
             $businessMan = new BusinessMan();
             $businessMan = $businessMan
-            ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
-    
+                ->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+
             $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, 3, 0, true, true);
             $totalJobs = $jobs->countTotalJobsByBusinessManId($businessMan->id);
-        }else {
+        } else {
             $jobsData = $jobs->getAllJobs(3, 0, true, true);
             $totalJobs = $jobs->countTotalJobs();
         }

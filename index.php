@@ -74,7 +74,8 @@ $route->get("/charge-on-demand/{hash}", "Admin:chargeOnDemand");
 $route->get("/token", "Admin:getLoginTokenData");
 $route->get("/search-project", "Admin:searchProject");
 $route->get("/edit-project/{hash}", "Admin:editProject");
-$route->get("/delete-project/{hash}", "Admin:deleteProject");
+$route->post("/edit-project/{hash}", "Admin:editProject");
+$route->post("/delete-project/{hash}", "Admin:deleteProject");
 
 
 /**
