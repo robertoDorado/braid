@@ -89,6 +89,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                     response.forEach(function (item) {
                         const cardBodyElement = createNewElement("div")
                         setAttributesToElement("class", "card-body", cardBodyElement)
+                        setAttributesToElement("data-hash", btoa(item.id), cardBodyElement)
 
                         const callOutInfoElement = createNewElement("div")
                         setAttributesToElement("class", "callout callout-info", callOutInfoElement)
@@ -123,7 +124,6 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                             deleteLink.innerHTML = "Excluir projeto"
                             deleteLink.style.marginLeft = ".2rem"
                             callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
-                            const projectElement = deleteLink.parentElement
 
                             deleteLink.addEventListener("click", function (event) {
                                 event.preventDefault()
@@ -145,19 +145,34 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                     })
 
                     deleteBtnModal.addEventListener("click", function () {
-                        const hideModal = this.previousElementSibling
-                        fetch(requestUrlDeleteProject, { 
+                        const hideModalBtn = this.previousElementSibling
+
+                        fetch(requestUrlDeleteProject, {
                             method: "POST",
                             headers: {
                                 Authorization: "Bearer " + this.dataset.hash
-                            } 
-                        }).then(response => response.json())
-                        .then(function(resp) {
-                            if (resp.success_delete_project) {
-                                response.forEach(function(item) {
-                                })
                             }
-                        })
+                        }).then(response => response.json())
+                            .then(function (response) {
+                                if (response.success_delete_project) {
+
+                                    let allDataProject = Array.from(document.querySelectorAll(".card-body"))
+                                    allDataProject = allDataProject.filter((elem) => elem.dataset.hash != null)
+
+                                    allDataProject.forEach(function (elem) {
+                                        const projectId = atob(elem.dataset.hash)
+
+                                        if (!/^\d+$/.test(projectId)) {
+                                            throw new Error("Data hash inválido")
+                                        }
+
+                                        if (response.id == projectId) {
+                                            elem.style.display = "none"
+                                            hideModalBtn.click()
+                                        }
+                                    })
+                                }
+                            })
                     })
 
                     if (response.length == 0) {

@@ -11,7 +11,10 @@ elem.style.borderBottom='1px solid #ff2c2c'
 throw new Error(`Campo ${elem.name} não pode estar vazio`)}else{elem.style.borderBottom='1px solid #2196f3'}}}}
 function createNewElement(elementName){const element=document.createElement(elementName)
 return element}
-function setAttributesToElement(attributeName,attributeValue,element){element.setAttribute(attributeName,attributeValue)};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
+function setAttributesToElement(attributeName,attributeValue,element){element.setAttribute(attributeName,attributeValue)}
+function removeParamFromEndpoint(endpoint,getEndpointParam=!1){endpoint=endpoint.split("/")
+if(!getEndpointParam){endpoint.pop()
+return endpoint.join("/")}else{return endpoint}};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
 return this.host}
 getUrlOrigin(endpoint=''){endpoint=endpoint.split('/').filter(value=>value!='').join('/')
 endpoint=endpoint.length>0?"/"+endpoint:''
@@ -44,7 +47,37 @@ elem.firstChild.classList.add("cross")}},'3':function(value,elem){if(isSpecialCh
 elem.firstChild.classList.remove("cross")
 elem.firstChild.classList.add("checkmark")}else{elem.firstChild.innerHTML="&#x2718;"
 elem.firstChild.classList.remove("checkmark")
-elem.firstChild.classList.add("cross")}}};if(url.getCurrentEndpoint()=="braid-system/client-report-form"){const remunerationData=document.getElementById("remunerationData")
+elem.firstChild.classList.add("cross")}}};const endpointSystem=removeParamFromEndpoint(url.getCurrentEndpoint(),!0)
+const endpointParam=endpointSystem.pop()
+if(endpointSystem.join("/")=="braid-system/edit-project"){const clientReportFormEdit=document.getElementById("clientReportFormEdit")
+const remunerationData=document.getElementById("remunerationData")
+const errorMessage=document.getElementById("errorMessage")
+const mask={money:function(value){value=value.replace(/\D/g,'')
+value=parseFloat((value/100).toFixed(2))
+value=value.toLocaleString('pt-BR',{style:'currency',currency:"BRL"})
+return value}}
+remunerationData.addEventListener("input",function(){this.value=mask[this.dataset.mask](this.value)})
+clientReportFormEdit.addEventListener("submit",function(event){event.preventDefault()
+const inputs=Array.from(this.querySelectorAll(".form-control"))
+inputs.forEach(function(elem){try{validateRequiredFields(elem,errorMessage)}catch(error){throw new Error(error.message)}})
+const btnSubmit=this.getElementsByTagName("button")[0].lastElementChild
+const loaderImage=this.getElementsByTagName("button")[0].firstElementChild
+loaderImage.style.display='block'
+btnSubmit.style.display='none'
+let endpoint={"localhost":"/braid/braid-system/edit-project","clientes.laborcode.com.br":"/braid/braid-system/edit-project","braid.com.br":"/braid-system/edit-project","www.braid.com.br":"/braid-system/edit-project",}
+endpoint=endpoint[url.getHostName()]||''
+const form=new FormData(this)
+const requestUrl=url.getUrlOrigin(endpoint)
+fetch(requestUrl,{method:"POST",headers:{Authorization:"Bearer "+endpointParam},body:form}).then(data=>data.json()).then(function(data){if(data.invalid_datetime){throw new Error(data.msg)}
+if(data.general_error){throw new Error(data.msg)}
+if(data.invalid_length_description_field){throw new Error(data.msg)}
+if(data.invalid_length_job_name_field){throw new Error(data.msg)}
+if(data.invalid_remuneration_data){throw new Error(data.msg)}
+if(data.success_update_job){window.location.href=data.url}}).catch(function(error){error=error.toString().replace("Error: ","")
+btnSubmit.style.display='block'
+loaderImage.style.display='none'
+errorMessage.style.display='block'
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report-form"){const remunerationData=document.getElementById("remunerationData")
 const clientReportForm=document.getElementById("clientReportForm")
 const errorMessage=document.getElementById("errorMessage")
 const mask={money:function(value){value=value.replace(/\D/g,'')
@@ -76,7 +109,26 @@ errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="/"){function ani
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}
-window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=="braid-system"){const formAlterProfile=document.getElementById("formAlterProfile")
+window.addEventListener('load',function(){animateCounter(".freelancers-register span");animateCounter(".businessman-register span")})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteProject=Array.from(document.querySelectorAll(".delete-project"))
+const launchSureDeleteModal=document.getElementById("launchSureDeleteModal")
+const calloutModalDeleteProject=document.getElementById("calloutModalDeleteProject")
+const deleteBtnModal=document.getElementById("deleteBtnModal")
+deleteProject.forEach(function(elem){elem.addEventListener("click",function(event){event.preventDefault()
+launchSureDeleteModal.click()
+const projectElement=this.parentElement
+const dataProject=Array.from(projectElement.children)
+const hashId=this.dataset.hash
+if(calloutModalDeleteProject){const modalDataProject=Array.from(calloutModalDeleteProject.children)
+modalDataProject[0].innerHTML=dataProject[0].innerHTML
+modalDataProject[1].innerHTML=dataProject[1].innerHTML
+modalDataProject[2].innerHTML=dataProject[2].innerHTML
+modalDataProject[3].innerHTML=dataProject[3].innerHTML}
+let enpointDeleteProject={"localhost":"/braid/braid-system/delete-project","clientes.laborcode.com.br":"/braid/braid-system/delete-project","braid.com.br":"/braid-system/delete-project","www.braid.com.br":"/braid-system/delete-project",}
+enpointDeleteProject=enpointDeleteProject[url.getHostName()]||''
+const requestUrlDeleteProject=url.getUrlOrigin(enpointDeleteProject)
+deleteBtnModal.addEventListener("click",function(){const hideModal=this.previousElementSibling
+fetch(requestUrlDeleteProject,{method:"POST",headers:{Authorization:"Bearer "+hashId}}).then(response=>response.json()).then(function(response){if(response.success_delete_project){projectElement.parentElement.style.display="none"
+hideModal.click()}})})})})};if(url.getCurrentEndpoint()=="braid-system"){const formAlterProfile=document.getElementById("formAlterProfile")
 const errorMessage=document.getElementById("errorMessage")
 const photoImage=document.getElementById("photoImage")
 const photoPreview=document.getElementById("photoPreview")
@@ -144,7 +196,10 @@ window.location.href=data.url}}).catch(function(error){error=error.toString().re
 btnSubmitLogin.style.display='block'
 loaderImage.style.display='none'
 errorMessage.style.display='block'
-errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const loadNewProjects=document.getElementById("loadNewProjects")
+errorMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteBtnModal=document.getElementById("deleteBtnModal")
+const launchSureDeleteModal=document.getElementById("launchSureDeleteModal")
+const calloutModalDeleteProject=document.getElementById("calloutModalDeleteProject")
+const loadNewProjects=document.getElementById("loadNewProjects")
 const rows=Array.from(document.querySelectorAll(".row"))
 const cardBody=document.getElementById("cardBody")
 const userType=cardBody.dataset.user
@@ -178,6 +233,7 @@ const requestUrlDeleteProject=url.getUrlOrigin(enpointDeleteProject)
 response=Array.from(response)
 response.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)
+setAttributesToElement("data-hash",btoa(item.id),cardBodyElement)
 const callOutInfoElement=createNewElement("div")
 setAttributesToElement("class","callout callout-info",callOutInfoElement)
 const titleProject=createNewElement("h5")
@@ -196,13 +252,29 @@ projectDeliveryTime.innerHTML=`Prazo de entrega:
 if(userType=="businessman"){const editLink=createNewElement("a")
 const deleteLink=createNewElement("a")
 setAttributesToElement("href",`${requestUrlEditProject}/${btoa(item.id)}`,editLink)
-setAttributesToElement("href",`${requestUrlDeleteProject}/${btoa(item.id)}`,deleteLink)
+setAttributesToElement("href","#",deleteLink)
 setAttributesToElement("class","btn btn-primary sample-format-link",editLink)
-setAttributesToElement("class","btn btn-danger sample-format-link",deleteLink)
+setAttributesToElement("class","btn btn-danger sample-format-link delete-project",deleteLink)
 editLink.innerHTML="Editar dados do projeto"
 deleteLink.innerHTML="Excluir projeto"
 deleteLink.style.marginLeft=".2rem"
-callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)
+deleteLink.addEventListener("click",function(event){event.preventDefault()
+launchSureDeleteModal.click()
+const dataProject=Array.from(this.parentElement.children)
+setAttributesToElement("data-hash",btoa(item.id),deleteBtnModal)
+if(calloutModalDeleteProject){const modalDataProject=Array.from(calloutModalDeleteProject.children)
+modalDataProject[0].innerHTML=dataProject[0].innerHTML
+modalDataProject[1].innerHTML=dataProject[1].innerHTML
+modalDataProject[2].innerHTML=dataProject[2].innerHTML
+modalDataProject[3].innerHTML=dataProject[3].innerHTML}})}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
+deleteBtnModal.addEventListener("click",function(){const hideModalBtn=this.previousElementSibling
+fetch(requestUrlDeleteProject,{method:"POST",headers:{Authorization:"Bearer "+this.dataset.hash}}).then(response=>response.json()).then(function(response){if(response.success_delete_project){let allDataProject=Array.from(document.querySelectorAll(".card-body"))
+allDataProject=allDataProject.filter((elem)=>elem.dataset.hash!=null)
+allDataProject.forEach(function(elem){const projectId=atob(elem.dataset.hash)
+if(!/^\d+$/.test(projectId)){throw new Error("Data hash inválido")}
+if(response.id==projectId){elem.style.display="none"
+hideModalBtn.click()}})}})})
 if(response.length==0){loaderButton.style.display="none"}})})})}};const skipPopop=document.getElementById("skipPopop")
 if(skipPopop){skipPopop.addEventListener('click',function(event){event.preventDefault()
 this.parentElement.parentElement.style.display="none"
@@ -362,7 +434,10 @@ obs={changeParam:(params,option)=>{params.userType=option
 return params}}
 params=obs.changeParam(params,this.option.value)
 params=url.stringfyQueryStringData(params)
-window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const formSearchProject=document.getElementById("formSearchProject")
+window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteBtnModal=document.getElementById("deleteBtnModal")
+const launchSureDeleteModal=document.getElementById("launchSureDeleteModal")
+const calloutModalDeleteProject=document.getElementById("calloutModalDeleteProject")
+const formSearchProject=document.getElementById("formSearchProject")
 const rows=Array.from(document.querySelectorAll(".row"))
 const cardBody=document.getElementById("cardBody")
 const userType=cardBody.dataset.user
@@ -390,6 +465,7 @@ const requestUrlDeleteProject=url.getUrlOrigin(enpointDeleteProject)
 const data=Array.from(response)
 data.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)
+setAttributesToElement("data-hash",btoa(item.id),cardBodyElement)
 const callOutInfoElement=createNewElement("div")
 setAttributesToElement("class","callout callout-info",callOutInfoElement)
 const titleProject=createNewElement("h5")
@@ -408,13 +484,29 @@ projectDeliveryTime.innerHTML=`Prazo de entrega:
 if(userType=="businessman"){const editLink=createNewElement("a")
 const deleteLink=createNewElement("a")
 setAttributesToElement("href",`${requestUrlEditProject}/${btoa(item.id)}`,editLink)
-setAttributesToElement("href",`${requestUrlDeleteProject}/${btoa(item.id)}`,deleteLink)
+setAttributesToElement("href","#",deleteLink)
 setAttributesToElement("class","btn btn-primary sample-format-link",editLink)
 setAttributesToElement("class","btn btn-danger sample-format-link",deleteLink)
 editLink.innerHTML="Editar dados do projeto"
 deleteLink.innerHTML="Excluir projeto"
 deleteLink.style.marginLeft=".2rem"
-callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)
+deleteLink.addEventListener("click",function(event){event.preventDefault()
+launchSureDeleteModal.click()
+const dataProject=Array.from(this.parentElement.children)
+setAttributesToElement("data-hash",btoa(item.id),deleteBtnModal)
+if(calloutModalDeleteProject){const modalDataProject=Array.from(calloutModalDeleteProject.children)
+modalDataProject[0].innerHTML=dataProject[0].innerHTML
+modalDataProject[1].innerHTML=dataProject[1].innerHTML
+modalDataProject[2].innerHTML=dataProject[2].innerHTML
+modalDataProject[3].innerHTML=dataProject[3].innerHTML}})}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
+deleteBtnModal.addEventListener("click",function(){const hideModalBtn=this.previousElementSibling
+fetch(requestUrlDeleteProject,{method:"POST",headers:{Authorization:"Bearer "+this.dataset.hash}}).then(response=>response.json()).then(function(response){if(response.success_delete_project){let allDataProject=Array.from(document.querySelectorAll(".card-body"))
+allDataProject=allDataProject.filter((elem)=>elem.dataset.hash!=null)
+allDataProject.forEach(function(elem){const projectId=atob(elem.dataset.hash)
+if(!/^\d+$/.test(projectId)){throw new Error("Data hash inválido")}
+if(response.id==projectId){elem.style.display="none"
+hideModalBtn.click()}})}})})
 if(response.empty_request){const messageContainer=rows[2].firstElementChild
 const messageWrap=createNewElement("div")
 setAttributesToElement("class","warning-empty-registers",messageWrap)

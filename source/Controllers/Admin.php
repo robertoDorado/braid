@@ -46,6 +46,9 @@ class Admin extends Controller
             if (!preg_match("/^\d+$/", $jobId)) {
                 throw new \Exception("Erro ao tentar acessar parametro da requisição");
             }
+
+            $jobs = new Jobs();
+            $jobs->deleteJobById($jobId);
             
             echo json_encode(["success_delete_project" => true, "id" => $jobId]);
         }

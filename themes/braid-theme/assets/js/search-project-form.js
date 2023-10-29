@@ -1,4 +1,5 @@
 if (url.getCurrentEndpoint() == "braid-system/client-report") {
+    const deleteBtnModal = document.getElementById("deleteBtnModal")
     const launchSureDeleteModal = document.getElementById("launchSureDeleteModal")
     const calloutModalDeleteProject = document.getElementById("calloutModalDeleteProject")
     const formSearchProject = document.getElementById("formSearchProject")
@@ -54,7 +55,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         "braid.com.br": "/braid-system/edit-project",
                         "www.braid.com.br": "/braid-system/edit-project",
                     }
-    
+
                     endpointEditProject = endpointEditProject[url.getHostName()] || ''
                     const requestUrlEditProject = url.getUrlOrigin(endpointEditProject)
 
@@ -64,7 +65,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         "braid.com.br": "/braid-system/delete-project",
                         "www.braid.com.br": "/braid-system/delete-project",
                     }
-    
+
                     enpointDeleteProject = enpointDeleteProject[url.getHostName()] || ''
                     const requestUrlDeleteProject = url.getUrlOrigin(enpointDeleteProject)
 
@@ -72,6 +73,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                     data.forEach(function (item) {
                         const cardBodyElement = createNewElement("div")
                         setAttributesToElement("class", "card-body", cardBodyElement)
+                        setAttributesToElement("data-hash", btoa(item.id), cardBodyElement)
 
                         const callOutInfoElement = createNewElement("div")
                         setAttributesToElement("class", "callout callout-info", callOutInfoElement)
@@ -106,10 +108,11 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                             deleteLink.style.marginLeft = ".2rem"
                             callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
 
-                            deleteLink.addEventListener("click", function(event) {
+                            deleteLink.addEventListener("click", function (event) {
                                 event.preventDefault()
                                 launchSureDeleteModal.click()
                                 const dataProject = Array.from(this.parentElement.children)
+                                setAttributesToElement("data-hash", btoa(item.id), deleteBtnModal)
 
                                 if (calloutModalDeleteProject) {
                                     const modalDataProject = Array.from(calloutModalDeleteProject.children)
@@ -124,16 +127,47 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         }
                     })
 
+                    deleteBtnModal.addEventListener("click", function () {
+                        const hideModalBtn = this.previousElementSibling
+
+                        fetch(requestUrlDeleteProject, {
+                            method: "POST",
+                            headers: {
+                                Authorization: "Bearer " + this.dataset.hash
+                            }
+                        }).then(response => response.json())
+                            .then(function (response) {
+                                if (response.success_delete_project) {
+
+                                    let allDataProject = Array.from(document.querySelectorAll(".card-body"))
+                                    allDataProject = allDataProject.filter((elem) => elem.dataset.hash != null)
+
+                                    allDataProject.forEach(function (elem) {
+                                        const projectId = atob(elem.dataset.hash)
+
+                                        if (!/^\d+$/.test(projectId)) {
+                                            throw new Error("Data hash inválido")
+                                        }
+
+                                        if (response.id == projectId) {
+                                            elem.style.display = "none"
+                                            hideModalBtn.click()
+                                        }
+                                    })
+                                }
+                            })
+                    })
+
                     if (response.empty_request) {
                         const messageContainer = rows[2].firstElementChild
                         const messageWrap = createNewElement("div")
                         setAttributesToElement("class", "warning-empty-registers", messageWrap)
                         messageContainer.appendChild(messageWrap)
-    
+
                         const message = createNewElement("p")
                         message.style.padding = "1rem 0"
                         messageWrap.appendChild(message)
-    
+
                         message.innerHTML = response.msg
                         rows[3].style.display = "none"
                     }

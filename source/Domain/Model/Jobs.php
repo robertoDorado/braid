@@ -52,6 +52,20 @@ class Jobs
         }
     }
 
+    public function deleteJobById(int $id)
+    {
+        $this->jobs = new ModelsJobs();
+        $job = $this->jobs->findById($id);
+
+        if (empty($job)) {
+            throw new \Exception("Projeto não identificado");
+        }
+
+        if (!$job->destroy()) {
+            throw new \Exception($job->fail());
+        }
+    }
+
     public function updateJobById(array $post): bool
     {
         $this->jobs = new ModelsJobs();
