@@ -1,5 +1,5 @@
 <?php $v->layout("admin/_admin") ?>
-
+<?= $v->insert("utils/modal-sure-delete") ?>
 <h2 class="text-center display-4">Pesquisa</h2>
 <div class="row">
     <div class="col-md-8 offset-md-2">
@@ -27,7 +27,7 @@
                         <p><?= "Prazo de entrega: " . date("d/m/Y H:i", strtotime($job->delivery_time)) ?></p>
                         <?php if ($userType == "businessman") : ?>
                             <a href="<?= url("/braid-system/edit-project/{$job->id}") ?>" class="btn btn-primary sample-format-link">Editar dados do projeto</a>
-                            <a href="<?= url("/braid-system/delete-project/{$job->id}") ?>" class="btn btn-danger sample-format-link">Excluir projeto</a>
+                            <a href="#" data-hash="<?= $job->id ?>" class="btn btn-danger sample-format-link delete-project">Excluir projeto</a>
                         <?php endif ?>
                     </div>
                 </div>

@@ -48,10 +48,10 @@ if (endpointSystem.join("/") == "braid-system/edit-project") {
         const form = new FormData(this)
         const requestUrl = url.getUrlOrigin(endpoint)
 
-        fetch(requestUrl + "/" + endpointParam, { 
+        fetch(requestUrl, { 
             method: "POST",
             headers: {
-                Authorization: endpointParam
+                Authorization: "Bearer " + endpointParam
             },
             body: form
         })

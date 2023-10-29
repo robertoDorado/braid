@@ -1,4 +1,7 @@
 if (url.getCurrentEndpoint() == "braid-system/client-report") {
+    const deleteBtnModal = document.getElementById("deleteBtnModal")
+    const launchSureDeleteModal = document.getElementById("launchSureDeleteModal")
+    const calloutModalDeleteProject = document.getElementById("calloutModalDeleteProject")
     const loadNewProjects = document.getElementById("loadNewProjects")
     const rows = Array.from(document.querySelectorAll(".row"))
     const cardBody = document.getElementById("cardBody")
@@ -68,7 +71,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         "braid.com.br": "/braid-system/edit-project",
                         "www.braid.com.br": "/braid-system/edit-project",
                     }
-    
+
                     endpointEditProject = endpointEditProject[url.getHostName()] || ''
                     const requestUrlEditProject = url.getUrlOrigin(endpointEditProject)
 
@@ -78,10 +81,10 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         "braid.com.br": "/braid-system/delete-project",
                         "www.braid.com.br": "/braid-system/delete-project",
                     }
-    
+
                     enpointDeleteProject = enpointDeleteProject[url.getHostName()] || ''
                     const requestUrlDeleteProject = url.getUrlOrigin(enpointDeleteProject)
-                    
+
                     response = Array.from(response)
                     response.forEach(function (item) {
                         const cardBodyElement = createNewElement("div")
@@ -113,16 +116,48 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                             const editLink = createNewElement("a")
                             const deleteLink = createNewElement("a")
                             setAttributesToElement("href", `${requestUrlEditProject}/${btoa(item.id)}`, editLink)
-                            setAttributesToElement("href", `${requestUrlDeleteProject}/${btoa(item.id)}`, deleteLink)
+                            setAttributesToElement("href", "#", deleteLink)
                             setAttributesToElement("class", "btn btn-primary sample-format-link", editLink)
-                            setAttributesToElement("class", "btn btn-danger sample-format-link", deleteLink)
+                            setAttributesToElement("class", "btn btn-danger sample-format-link delete-project", deleteLink)
                             editLink.innerHTML = "Editar dados do projeto"
                             deleteLink.innerHTML = "Excluir projeto"
                             deleteLink.style.marginLeft = ".2rem"
                             callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
+                            const projectElement = deleteLink.parentElement
+
+                            deleteLink.addEventListener("click", function (event) {
+                                event.preventDefault()
+                                launchSureDeleteModal.click()
+                                const dataProject = Array.from(this.parentElement.children)
+                                setAttributesToElement("data-hash", btoa(item.id), deleteBtnModal)
+
+                                if (calloutModalDeleteProject) {
+                                    const modalDataProject = Array.from(calloutModalDeleteProject.children)
+                                    modalDataProject[0].innerHTML = dataProject[0].innerHTML
+                                    modalDataProject[1].innerHTML = dataProject[1].innerHTML
+                                    modalDataProject[2].innerHTML = dataProject[2].innerHTML
+                                    modalDataProject[3].innerHTML = dataProject[3].innerHTML
+                                }
+                            })
                         } else {
                             callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
                         }
+                    })
+
+                    deleteBtnModal.addEventListener("click", function () {
+                        const hideModal = this.previousElementSibling
+                        fetch(requestUrlDeleteProject, { 
+                            method: "POST",
+                            headers: {
+                                Authorization: "Bearer " + this.dataset.hash
+                            } 
+                        }).then(response => response.json())
+                        .then(function(resp) {
+                            if (resp.success_delete_project) {
+                                response.forEach(function(item) {
+                                })
+                            }
+                        })
                     })
 
                     if (response.length == 0) {

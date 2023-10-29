@@ -27,6 +27,28 @@ class Admin extends Controller
 
     public function deleteProject()
     {
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+                throw new \Exception("Cabeçalho de autorização ausente");
+            }
+
+            if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+                throw new \Exception("Formato de autorização inválido.");
+            }
+
+            $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+            $jobId = base64_decode($tokenData, true);
+
+            if (!$jobId) {
+                throw new \Exception("Erro ao tentar acessar parametro da requisição");
+            }
+
+            if (!preg_match("/^\d+$/", $jobId)) {
+                throw new \Exception("Erro ao tentar acessar parametro da requisição");
+            }
+            
+            echo json_encode(["success_delete_project" => true, "id" => $jobId]);
+        }
     }
 
     public function editProject(array $data = [])
@@ -36,7 +58,13 @@ class Admin extends Controller
                 throw new \Exception("Cabeçalho de autorização ausente");
             }
 
-            $jobId = base64_decode($this->getAllServerData()["HTTP_AUTHORIZATION"], true);
+            if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+                throw new \Exception("Formato de autorização inválido.");
+            }
+
+            $token = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+            $jobId = base64_decode($token, true);
+
             if (!$jobId) {
                 throw new \Exception("Erro ao tentar acessar parametro da requisição");
             }
@@ -151,6 +179,10 @@ class Admin extends Controller
             throw new \Exception("Cabeçalho de autorização ausente");
         }
 
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
+        }
+
         $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
         $credentials = new Credentials();
 
@@ -215,6 +247,10 @@ class Admin extends Controller
         header('Content-Type: application/json');
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
+        }
+
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
         }
 
         $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);

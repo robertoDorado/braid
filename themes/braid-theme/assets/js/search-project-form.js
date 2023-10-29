@@ -1,4 +1,6 @@
 if (url.getCurrentEndpoint() == "braid-system/client-report") {
+    const launchSureDeleteModal = document.getElementById("launchSureDeleteModal")
+    const calloutModalDeleteProject = document.getElementById("calloutModalDeleteProject")
     const formSearchProject = document.getElementById("formSearchProject")
     const rows = Array.from(document.querySelectorAll(".row"))
     const cardBody = document.getElementById("cardBody")
@@ -96,13 +98,27 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                             const editLink = createNewElement("a")
                             const deleteLink = createNewElement("a")
                             setAttributesToElement("href", `${requestUrlEditProject}/${btoa(item.id)}`, editLink)
-                            setAttributesToElement("href", `${requestUrlDeleteProject}/${btoa(item.id)}`, deleteLink)
+                            setAttributesToElement("href", "#", deleteLink)
                             setAttributesToElement("class", "btn btn-primary sample-format-link", editLink)
                             setAttributesToElement("class", "btn btn-danger sample-format-link", deleteLink)
                             editLink.innerHTML = "Editar dados do projeto"
                             deleteLink.innerHTML = "Excluir projeto"
                             deleteLink.style.marginLeft = ".2rem"
                             callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
+
+                            deleteLink.addEventListener("click", function(event) {
+                                event.preventDefault()
+                                launchSureDeleteModal.click()
+                                const dataProject = Array.from(this.parentElement.children)
+
+                                if (calloutModalDeleteProject) {
+                                    const modalDataProject = Array.from(calloutModalDeleteProject.children)
+                                    modalDataProject[0].innerHTML = dataProject[0].innerHTML
+                                    modalDataProject[1].innerHTML = dataProject[1].innerHTML
+                                    modalDataProject[2].innerHTML = dataProject[2].innerHTML
+                                    modalDataProject[3].innerHTML = dataProject[3].innerHTML
+                                }
+                            })
                         } else {
                             callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
                         }
