@@ -612,6 +612,11 @@ footer {
     color: #ffffff !important;
 }
 
+.project-detail {
+    text-decoration: none !important;
+    color: #ffffff !important;
+}
+
 @media screen and (min-width: 1200px) {
 
     .container-message {

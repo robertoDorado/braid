@@ -2,7 +2,6 @@
 
 namespace Source\Controllers;
 
-use DateTime;
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Credentials;
@@ -23,6 +22,11 @@ class Admin extends Controller
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public function projectDetail(array $data = [])
+    {
+        echo $this->view->render("admin/project-detail", []);
     }
 
     public function deleteProject()

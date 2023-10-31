@@ -28,6 +28,9 @@
                         <?php if ($userType == "businessman") : ?>
                             <a href="<?= url("/braid-system/edit-project/{$job->id}") ?>" class="btn btn-primary sample-format-link">Editar dados do projeto</a>
                             <a href="#" data-hash="<?= $job->id ?>" class="btn btn-danger sample-format-link delete-project">Excluir projeto</a>
+                            <a href="#" class="btn btn-primary project-detail">Ver detalhes do projeto</a>
+                        <?php else: ?>
+                            <a href="#" class="btn btn-primary project-detail">Ver detalhes do projeto</a>
                         <?php endif ?>
                     </div>
                 </div>
