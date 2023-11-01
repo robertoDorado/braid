@@ -240,6 +240,12 @@ const titleProject=createNewElement("h5")
 const descriptionProject=createNewElement("p")
 const projectValue=createNewElement("p")
 const projectDeliveryTime=createNewElement("p")
+const viewProject=createNewElement("a")
+let endpointViewProject={"localhost":`/braid/braid-system/project-detail/${btoa(item.id)}`,"clientes.laborcode.com.br":`/braid/braid-system/project-detail/${btoa(item.id)}`,"braid.com.br":`/braid-system/project-detail/${btoa(item.id)}`,"www.braid.com.br":`/braid-system/project-detail/${btoa(item.id)}`,}
+endpointViewProject=endpointViewProject[url.getHostName()]||''
+const requestUrlViewProject=url.getUrlOrigin(endpointViewProject)
+setAttributesToElement("href",requestUrlViewProject,viewProject)
+setAttributesToElement("class","btn btn-primary project-detail",viewProject)
 wrapElement.appendChild(cardBodyElement)
 cardBodyElement.appendChild(callOutInfoElement)
 const date=formatDate(item.delivery_time)
@@ -247,6 +253,7 @@ const valueCurrencyFormat=parseFloat(item.remuneration_data).toLocaleString("pt-
 titleProject.innerHTML=item.job_name
 descriptionProject.innerHTML=item.job_description
 projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
+viewProject.innerHTML="Ver detalhes do projeto"
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                             ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 if(userType=="businessman"){const editLink=createNewElement("a")
@@ -258,7 +265,8 @@ setAttributesToElement("class","btn btn-danger sample-format-link delete-project
 editLink.innerHTML="Editar dados do projeto"
 deleteLink.innerHTML="Excluir projeto"
 deleteLink.style.marginLeft=".2rem"
-callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)
+viewProject.style.marginLeft=".2rem"
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink,viewProject)
 deleteLink.addEventListener("click",function(event){event.preventDefault()
 launchSureDeleteModal.click()
 const dataProject=Array.from(this.parentElement.children)
@@ -267,7 +275,7 @@ if(calloutModalDeleteProject){const modalDataProject=Array.from(calloutModalDele
 modalDataProject[0].innerHTML=dataProject[0].innerHTML
 modalDataProject[1].innerHTML=dataProject[1].innerHTML
 modalDataProject[2].innerHTML=dataProject[2].innerHTML
-modalDataProject[3].innerHTML=dataProject[3].innerHTML}})}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
+modalDataProject[3].innerHTML=dataProject[3].innerHTML}})}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,viewProject)}})
 deleteBtnModal.addEventListener("click",function(){const hideModalBtn=this.previousElementSibling
 fetch(requestUrlDeleteProject,{method:"POST",headers:{Authorization:"Bearer "+this.dataset.hash}}).then(response=>response.json()).then(function(response){if(response.success_delete_project){let allDataProject=Array.from(document.querySelectorAll(".card-body"))
 allDataProject=allDataProject.filter((elem)=>elem.dataset.hash!=null)
@@ -472,6 +480,12 @@ const titleProject=createNewElement("h5")
 const descriptionProject=createNewElement("p")
 const projectValue=createNewElement("p")
 const projectDeliveryTime=createNewElement("p")
+const viewProject=createNewElement("a")
+let endpointViewProject={"localhost":`/braid/braid-system/project-detail/${btoa(item.id)}`,"clientes.laborcode.com.br":`/braid/braid-system/project-detail/${btoa(item.id)}`,"braid.com.br":`/braid-system/project-detail/${btoa(item.id)}`,"www.braid.com.br":`/braid-system/project-detail/${btoa(item.id)}`,}
+endpointViewProject=endpointViewProject[url.getHostName()]||''
+const requestUrlViewProject=url.getUrlOrigin(endpointViewProject)
+setAttributesToElement("href",requestUrlViewProject,viewProject)
+setAttributesToElement("class","btn btn-primary project-detail",viewProject)
 wrapElement.appendChild(cardBodyElement)
 cardBodyElement.appendChild(callOutInfoElement)
 const date=formatDate(item.delivery_time)
@@ -479,6 +493,7 @@ const valueCurrencyFormat=parseFloat(item.remuneration_data).toLocaleString("pt-
 titleProject.innerHTML=item.job_name
 descriptionProject.innerHTML=item.job_description
 projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
+viewProject.innerHTML="Ver detalhes do projeto"
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 if(userType=="businessman"){const editLink=createNewElement("a")
@@ -490,7 +505,8 @@ setAttributesToElement("class","btn btn-danger sample-format-link",deleteLink)
 editLink.innerHTML="Editar dados do projeto"
 deleteLink.innerHTML="Excluir projeto"
 deleteLink.style.marginLeft=".2rem"
-callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink)
+viewProject.style.marginLeft=".2rem"
+callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,editLink,deleteLink,viewProject)
 deleteLink.addEventListener("click",function(event){event.preventDefault()
 launchSureDeleteModal.click()
 const dataProject=Array.from(this.parentElement.children)
@@ -499,7 +515,7 @@ if(calloutModalDeleteProject){const modalDataProject=Array.from(calloutModalDele
 modalDataProject[0].innerHTML=dataProject[0].innerHTML
 modalDataProject[1].innerHTML=dataProject[1].innerHTML
 modalDataProject[2].innerHTML=dataProject[2].innerHTML
-modalDataProject[3].innerHTML=dataProject[3].innerHTML}})}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime)}})
+modalDataProject[3].innerHTML=dataProject[3].innerHTML}})}else{callOutInfoElement.append(titleProject,descriptionProject,projectValue,projectDeliveryTime,viewProject)}})
 deleteBtnModal.addEventListener("click",function(){const hideModalBtn=this.previousElementSibling
 fetch(requestUrlDeleteProject,{method:"POST",headers:{Authorization:"Bearer "+this.dataset.hash}}).then(response=>response.json()).then(function(response){if(response.success_delete_project){let allDataProject=Array.from(document.querySelectorAll(".card-body"))
 allDataProject=allDataProject.filter((elem)=>elem.dataset.hash!=null)

@@ -617,6 +617,11 @@ footer {
     color: #ffffff !important;
 }
 
+.make-a-proposal {
+    width: 100%;
+    text-transform: uppercase;
+}
+
 @media screen and (min-width: 1200px) {
 
     .container-message {

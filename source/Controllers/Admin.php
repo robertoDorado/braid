@@ -26,7 +26,46 @@ class Admin extends Controller
 
     public function projectDetail(array $data = [])
     {
-        echo $this->view->render("admin/project-detail", []);
+        $jobId = base64_decode($data["hash"], true);
+
+        if (!$jobId) {
+            redirect("braid-system/client-report");
+        }
+        
+        if (!preg_match("/^\d+$/", $jobId)) {
+            redirect("braid-system/client-report");
+        }
+
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        $job = new Jobs();
+        $jobData = $job->getJobsById($jobId);
+
+        if (empty($jobData)) {
+            redirect("braid-system/client-report");
+        }
+
+        echo $this->view->render("admin/project-detail", [
+            "menuSelected" => $menuSelected,
+            "breadCrumbTitle" => "Visualizar projeto",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type,
+            "jobData" => $jobData
+        ]);
     }
 
     public function deleteProject()
@@ -102,7 +141,7 @@ class Admin extends Controller
                 die;
             }
 
-            if (strlen($post["jobDescription"]) > 255) {
+            if (strlen($post["jobDescription"]) > 1000) {
                 echo json_encode([
                     "invalid_length_description_field" => true,
                     "msg" => "Campo descrição do projeto excede o limite de caracteres"
@@ -372,7 +411,7 @@ class Admin extends Controller
                 die;
             }
 
-            if (strlen($post["jobDescription"]) > 255) {
+            if (strlen($post["jobDescription"]) > 1000) {
                 echo json_encode([
                     "invalid_length_description_field" => true,
                     "msg" => "Campo descrição do projeto excede o limite de caracteres"

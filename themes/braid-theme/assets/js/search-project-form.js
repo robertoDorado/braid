@@ -82,6 +82,20 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         const descriptionProject = createNewElement("p")
                         const projectValue = createNewElement("p")
                         const projectDeliveryTime = createNewElement("p")
+                        const viewProject = createNewElement("a")
+
+                        let endpointViewProject = {
+                            "localhost": `/braid/braid-system/project-detail/${btoa(item.id)}`,
+                            "clientes.laborcode.com.br": `/braid/braid-system/project-detail/${btoa(item.id)}`,
+                            "braid.com.br": `/braid-system/project-detail/${btoa(item.id)}`,
+                            "www.braid.com.br": `/braid-system/project-detail/${btoa(item.id)}`,
+                        }
+
+                        endpointViewProject = endpointViewProject[url.getHostName()] || ''
+                        const requestUrlViewProject = url.getUrlOrigin(endpointViewProject)
+
+                        setAttributesToElement("href", requestUrlViewProject, viewProject)
+                        setAttributesToElement("class", "btn btn-primary project-detail", viewProject)
 
                         wrapElement.appendChild(cardBodyElement)
                         cardBodyElement.appendChild(callOutInfoElement)
@@ -92,6 +106,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         titleProject.innerHTML = item.job_name
                         descriptionProject.innerHTML = item.job_description
                         projectValue.innerHTML = `Valor do acordo: ${valueCurrencyFormat}`
+                        viewProject.innerHTML = "Ver detalhes do projeto"
 
                         projectDeliveryTime.innerHTML = `Prazo de entrega: 
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
@@ -106,7 +121,8 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                             editLink.innerHTML = "Editar dados do projeto"
                             deleteLink.innerHTML = "Excluir projeto"
                             deleteLink.style.marginLeft = ".2rem"
-                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink)
+                            viewProject.style.marginLeft = ".2rem"
+                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink, viewProject)
 
                             deleteLink.addEventListener("click", function (event) {
                                 event.preventDefault()
@@ -123,7 +139,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                                 }
                             })
                         } else {
-                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime)
+                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, viewProject)
                         }
                     })
 

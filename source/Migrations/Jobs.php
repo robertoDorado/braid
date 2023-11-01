@@ -29,7 +29,7 @@ class Jobs extends DDL
         $this->setProperty('');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL',
         'VARCHAR(255) NOT NULL', 
-        'VARCHAR(255) NOT NULL', 'DECIMAL(10, 2) NOT NULL',
+        'VARCHAR(1000) NOT NULL', 'DECIMAL(10, 2) NOT NULL',
         'DATETIME NOT NULL',
         'FOREIGN KEY (business_man_id) REFERENCES business_man(id)']);
         $this->dropTableIfExists()->createTableQuery();
