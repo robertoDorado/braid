@@ -77,6 +77,7 @@ $route->get("/edit-project/{hash}", "Admin:editProject");
 $route->post("/edit-project", "Admin:editProject");
 $route->post("/delete-project", "Admin:deleteProject");
 $route->get("/project-detail/{hash}", "Admin:projectDetail");
+$route->get("/contract-form", "Admin:contractForm");
 
 
 /**

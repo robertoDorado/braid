@@ -35,6 +35,12 @@ class Jobs extends DDL
         $this->dropTableIfExists()->createTableQuery();
         $this->executeQuery();
     }
+
+    public function modifyColumnJobs()
+    {
+        $this->alterTable(["MODIFY COLUMN job_description VARCHAR(1000)"]);
+        $this->executeQuery();
+    }
 }
 
-(new Jobs())->defineTable();
+(new Jobs())->modifyColumnJobs();

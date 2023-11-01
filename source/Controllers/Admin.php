@@ -24,6 +24,34 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function contractForm()
+    {
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+
+        echo $this->view->render("admin/contract-form", [
+            "menuSelected" => $menuSelected,
+            "breadCrumbTitle" => "Fazer uma proposta",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type,
+            "csrfToken" => $csrfToken
+        ]);
+    }
+
     public function projectDetail(array $data = [])
     {
         $jobId = base64_decode($data["hash"], true);

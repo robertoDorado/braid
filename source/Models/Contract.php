@@ -19,6 +19,9 @@ class Contract extends Model
     /** @var string BusinessMan id chave estrangeira */
     private string $businessManId = 'business_man_id';
 
+    /** @var string Jobs id chave estrangeira */
+    private string $jobId = 'job_id';
+
     /** @var string Trabalhos a serem realizados */
     private string $jobsData = 'jobs_data';
 
@@ -54,6 +57,6 @@ class Contract extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobsData, $this->jobsDescription, $this->timestampJobs, $this->remunerationData, $this->intellectualProperty, $this->confidentialityData, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner]);    
+        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobId, $this->jobsData, $this->jobsDescription, $this->timestampJobs, $this->remunerationData, $this->intellectualProperty, $this->confidentialityData, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner]);    
     }
 }
