@@ -22,29 +22,8 @@ class Contract extends Model
     /** @var string Jobs id chave estrangeira */
     private string $jobId = 'job_id';
 
-    /** @var string Trabalhos a serem realizados */
-    private string $jobsData = 'jobs_data';
-
-    /** @var string Descrição dos trabalhos a serem realizados */
-    private string $jobsDescription = 'jobs_description';
-
-    /** @var string Data e hora para termino do contrato */
-    private string $timestampJobs = 'timestamp_jobs';
-
-    /** @var string Valor do acordo entre o contratante e o contratado */
-    private string $remunerationData = 'remuneration_data';
-
-    /** @var string Clausula para propriedade intelectual */
-    private string $intellectualProperty = 'intellectual_property';
-
-    /** @var string Clausula para confidencialidade */
-    private string $confidentialityData = 'confidentiality_data';
-
-    /** @var string Data de recisão do contrato */
-    private string $terminationOfContract = 'termination_of_contract';
-    
-    /** @var string Clausulas adicionais */
-    private string $additionalClauses = 'additional_clauses';
+    /** @var string Descrições adicionais sobre o trabalho que será feito */
+    private string $additionalDescription = 'additional_description';
 
     /** @var string Assinatura do contratante */
     private string $signatureBusinessMan = 'signature_business_man';
@@ -57,6 +36,6 @@ class Contract extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobId, $this->jobsData, $this->jobsDescription, $this->timestampJobs, $this->remunerationData, $this->intellectualProperty, $this->confidentialityData, $this->terminationOfContract, $this->additionalClauses, $this->signatureBusinessMan, $this->signatureDesigner]);    
+        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobId, $this->additionalDescription, $this->signatureBusinessMan, $this->signatureDesigner]);    
     }
 }

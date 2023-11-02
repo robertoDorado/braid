@@ -24,8 +24,18 @@ class Admin extends Controller
         parent::__construct();
     }
 
-    public function contractForm()
+    public function contractForm(array $data = [])
     {
+        $jobId = base64_decode($data["hash"], true);
+
+        if (!$jobId) {
+            redirect("braid-system/client-report");
+        }
+        
+        if (!preg_match("/^\d+$/", $jobId)) {
+            redirect("braid-system/client-report");
+        }
+
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
         $menuSelected = explode("/", $menuSelected);
         $menuSelected = array_filter($menuSelected, function ($item) {
@@ -35,6 +45,20 @@ class Admin extends Controller
         });
         $menuSelected = array_values($menuSelected);
         $menuSelected = $menuSelected[count($menuSelected) - 1];
+
+        $jobs = new Jobs();
+        $jobsData = $jobs->getJobsById($jobId);
+
+        if (empty($jobsData)) {
+            redirect("braid-system/client-report");
+        }
+
+        $businessMan = new BusinessMan();
+        $businessManData = $businessMan->getBusinessManById($jobsData->business_man_id);
+
+        if (empty($businessManData)) {
+            redirect("braid-system/client-report");
+        }
 
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);

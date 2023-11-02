@@ -10,8 +10,8 @@
                     <form id="contractForm">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="textData">Text Data</label>
-                                <input type="text" name="textData" class="form-control" data-required="true" data-error="Text Data" id="textData" placeholder="Text Data">
+                                <label for="additionalDescription">Descrições adicionais</label>
+                                <textarea type="text" name="additionalDescription" class="form-control" data-required="true" data-error="Descrições adicionais" id="additionalDescription" placeholder="Descrições adicionais sobre a proposta"></textarea>
                             </div>
                         </div>
                         <div class="card-footer">

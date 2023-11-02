@@ -11,44 +11,26 @@ use Source\Models\Contract as ModelsContract;
  */
 class Contract
 {
-    /** @var string[] Trabalhos que serão realizados */
-    private array $jobs;
-
-    /** @var string[] Descrição dos trabalhos que serão realizados */
-    private array $jobsDescription;
-
-    /** @var string Prazo e horário de trabalho */
-    private string $timestampJobs;
-
-    /** @var float Valor do acordo de pagamento (remuneração) */
-    private float $remuneration;
-
-    /** @var string Definição da propiedade intelectual */
-    private string $intellectualProperty;
-
-    /** @var string Definição de confidencialidade */
-    private string $confidentiality;
-
-    /** @var string Rescisão do contrato */
-    private string $terminationOfContract;
-
-    /** @var string Clausulas adicionais */
-    private string $additionalClauses;
-
-    /** @var string Assinatura do contratante */
-    private string $signatureBusinessMan;
-
-    /** @var string Assinatura do contratado */
-    private string $signatureDesigner;
-
     /** @var BusinessMan */
     private BusinessMan $businessMan;
 
     /** @var Designer */
     private Designer $designer;
 
+    /** @var Jobs */
+    private Jobs $jobs;
+
     /** @var ModelosContract Modelo de contrato para persistência */
     private ModelsContract $contract;
+
+    /** @var string Descrições adicionais sobre o trabalho que será feito */
+    private string $additionalDescription;
+
+    /** @var bool Assinatura do contratante */
+    private bool $signatureBusinessMan;
+
+    /** @var bool Assinatura do contratado */
+    private bool $signatureDesigner;
 
     public function setModelContract(Contract $obj)
     {
@@ -59,14 +41,8 @@ class Contract
             $this->contract = new ModelsContract();
             $this->contract->designer_id = $this->getDesigner()->getId();
             $this->contract->businessman_id = $this->getBusinessMan()->getId();
-            $this->contract->jobs_data = $this->getJobsAsString();
-            $this->contract->jobs_description = $this->getJobsDescriptionAsString();
-            $this->contract->timestamp_jobs = $this->getTimestampJobs();
-            $this->contract->remuneration_data = $this->getRemuneration();
-            $this->contract->intellectual_property = $this->getIntellectualProperty();
-            $this->contract->confidentiality_data = $this->getConfidentiality();
-            $this->contract->termination_of_contract = $this->getTerminationOfContract();
-            $this->contract->additional_clauses = $this->getAdditionalClauses();
+            $this->contract->job_id = $this->getJobs()->getId();
+            $this->contract->additional_description = $this->getAdditionalDescription();
             $this->contract->signature_businessman = $this->getSignatureBusinessMan();
             $this->contract->signature_designer = $this->getSignatureDesigner();
             if (!$this->contract->save()) {
@@ -75,113 +51,24 @@ class Contract
         }
     }
 
-    public function setJobs(array $jobs)
+    public function getAdditionalDescription()
     {
-        $this->jobs = $jobs;
+        return $this->additionalDescription;
     }
 
-    public function getJobs(): array
+    public function setAdditionalDescription(string $description)
+    {
+        $this->additionalDescription = $description;
+    }
+
+    public function getJobs()
     {
         return $this->jobs;
     }
 
-    public function getJobsAsString(): string
+    public function setJobs(Jobs $jobs)
     {
-        if (!empty($this->jobs)) {
-            $jobs = implode(";", $this->jobs);
-            return $jobs;
-        }
-    }
-
-    public function setJobsDescription(array $jobsDescription)
-    {
-        $this->jobsDescription = $jobsDescription;
-    }
-
-    public function getJobsDescription(): array
-    {
-        return $this->jobsDescription;
-    }
-
-    public function getJobsDescriptionAsString(): string
-    {
-        if (!empty($this->jobsDescription)) {
-            $jobs = implode(";", $this->jobsDescription);
-            return $jobs;
-        }
-    }
-
-    public function setTimestampJobs(string $timestampJobs)
-    {
-        $this->timestampJobs = $timestampJobs;
-    }
-
-    public function getTimestampJobs(): string
-    {
-        return $this->timestampJobs;
-    }
-
-    public function setRemuneration(float $remuneration)
-    {
-        $this->remuneration = $remuneration;
-    }
-
-    public function getRemuneration(): float
-    {
-        return $this->remuneration;
-    }
-
-    public function setIntellectualProperty(string $intellectualProperty)
-    {
-        $this->intellectualProperty = $intellectualProperty;
-    }
-
-    public function getIntellectualProperty()
-    {
-        if (empty($this->intellectualProperty)) {
-            return null;
-        }
-
-        return $this->intellectualProperty;
-    }
-
-    public function setConfidentiality(string $confidentiality)
-    {
-        $this->confidentiality = $confidentiality;
-    }
-
-    public function getConfidentiality()
-    {
-        if (empty($this->confidentiality)) {
-            return null;
-        }
-        return $this->confidentiality;
-    }
-
-    public function setTerminationOfContract(string $terminationOfContract)
-    {
-        $this->terminationOfContract = $terminationOfContract;
-    }
-
-    public function getTerminationOfContract()
-    {
-        if (empty($this->terminationOfContract)) {
-            return null;
-        }
-        return $this->terminationOfContract;
-    }
-
-    public function setAdditionalClauses(string $additionalClauses)
-    {
-        $this->additionalClauses = $additionalClauses;
-    }
-
-    public function getAdditionalClauses()
-    {
-        if (empty($this->additionalClauses)) {
-            return null;
-        }
-        return $this->additionalClauses;
+        $this->jobs = $jobs;
     }
 
     public function setDesigner(Designer $designer)
@@ -204,7 +91,7 @@ class Contract
         return $this->businessMan;
     }
 
-    public function setSignatureBusinessMan(string $signature)
+    public function setSignatureBusinessMan(bool $signature)
     {
         $this->signatureBusinessMan = $signature;
     }
@@ -214,7 +101,7 @@ class Contract
         return $this->signatureBusinessMan;
     }
 
-    public function setSignatureDesigner(string $signature)
+    public function setSignatureDesigner(bool $signature)
     {
         $this->signatureDesigner = $signature;
     }

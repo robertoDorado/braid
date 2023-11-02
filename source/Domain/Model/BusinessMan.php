@@ -65,6 +65,11 @@ class BusinessMan
         }
     }
 
+    public function getBusinessManById(int $id)
+    {
+        return (new ModelsBusinessMan())->findById($id);
+    }
+
     public function getBusinessManByEmail(string $email)
     {
         if (empty($email)) {

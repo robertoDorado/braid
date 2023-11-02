@@ -31,7 +31,7 @@
         <?php if ($userType == "designer") : ?>
             <div class="row">
                 <div class="col">
-                    <a href="<?= url("braid-system/contract-form") ?>" class="btn btn-success w3-large w3-padding-large make-a-proposal">Fazer uma proposta</a>
+                    <a href="<?= url("braid-system/contract-form/" . base64_encode($jobData->id) . "") ?>" class="btn btn-success w3-large w3-padding-large make-a-proposal">Fazer uma proposta</a>
                 </div>
             </div>
         <?php endif ?>
