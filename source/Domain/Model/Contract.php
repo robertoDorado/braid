@@ -40,11 +40,11 @@ class Contract
         if (is_array($getter) && is_array($isMethods)) {
             $this->contract = new ModelsContract();
             $this->contract->designer_id = $this->getDesigner()->getId();
-            $this->contract->businessman_id = $this->getBusinessMan()->getId();
+            $this->contract->business_man_id = $this->getBusinessMan()->getId();
             $this->contract->job_id = $this->getJobs()->getId();
             $this->contract->additional_description = $this->getAdditionalDescription();
-            $this->contract->signature_businessman = $this->getSignatureBusinessMan();
-            $this->contract->signature_designer = $this->getSignatureDesigner();
+            $this->contract->signature_business_man = empty($this->getSignatureBusinessMan()) ? 0 : 1;
+            $this->contract->signature_designer = empty($this->getSignatureDesigner()) ? 0 : 1;
             if (!$this->contract->save()) {
                 throw new \Exception($this->contract->fail());
             }

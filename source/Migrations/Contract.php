@@ -30,7 +30,7 @@ class Contract extends DDL
         $this->setProperty('');
         $this->setProperty('');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL',
-        'BIGINT NOT NULL', 'BIGINT NOT NULL', 'VARCHAR(1000) NOT NULL', 'TINYINT(1) NOT NULL', 'TINYINT(1) NOT NULL',
+        'BIGINT NOT NULL', 'BIGINT NOT NULL', 'VARCHAR(1000) NOT NULL', 'TINYINT(1) NULL', 'TINYINT(1) NULL',
         'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
         'CONSTRAINT `contract_ibfk_2` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`)',
         'CONSTRAINT `contract_ibfk_3` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)']);

@@ -69,6 +69,20 @@ class Designer
         }
     }
 
+    public function getDesignerByEmail(string $email)
+    {
+        $designer = new ModelsDesigner();
+
+        $designerData = $designer
+        ->find("full_email=:full_email", ":full_email=" . $email . "")->fetch();
+
+        if (empty($designerData)) {
+            throw new \Exception("Usuário do tipo designer não existe");
+        }
+
+        return $designerData;
+    }
+
     public function getTotalData()
     {
         $this->designer = new ModelsDesigner();
@@ -89,11 +103,13 @@ class Designer
         return $this->documentData;
     }
 
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getId()
     {
-        if (empty($this->id)) {
-            return null;
-        }
         return $this->id;
     }
 

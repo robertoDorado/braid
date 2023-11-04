@@ -4,7 +4,9 @@ namespace Source\Controllers;
 
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Contract;
 use Source\Domain\Model\Credentials;
+use Source\Domain\Model\Designer;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\User;
 
@@ -24,60 +26,52 @@ class Admin extends Controller
         parent::__construct();
     }
 
-    public function contractForm(array $data = [])
-    {
-        $jobId = base64_decode($data["hash"], true);
-
-        if (!$jobId) {
-            redirect("braid-system/client-report");
-        }
-        
-        if (!preg_match("/^\d+$/", $jobId)) {
-            redirect("braid-system/client-report");
-        }
-
-        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
-        $menuSelected = explode("/", $menuSelected);
-        $menuSelected = array_filter($menuSelected, function ($item) {
-            if (!empty($item)) {
-                return $item;
-            }
-        });
-        $menuSelected = array_values($menuSelected);
-        $menuSelected = $menuSelected[count($menuSelected) - 1];
-
-        $jobs = new Jobs();
-        $jobsData = $jobs->getJobsById($jobId);
-
-        if (empty($jobsData)) {
-            redirect("braid-system/client-report");
-        }
-
-        $businessMan = new BusinessMan();
-        $businessManData = $businessMan->getBusinessManById($jobsData->business_man_id);
-
-        if (empty($businessManData)) {
-            redirect("braid-system/client-report");
-        }
-
-        $user = new User();
-        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        $csrfToken = $this->getCurrentSession()->csrf_token;
-
-        echo $this->view->render("admin/contract-form", [
-            "menuSelected" => $menuSelected,
-            "breadCrumbTitle" => "Fazer uma proposta",
-            "fullName" => $userData->full_name,
-            "fullEmail" => $userData->full_email,
-            "nickName" => $userData->nick_name,
-            "pathPhoto" => $userData->path_photo,
-            "userType" => $userData->user_type,
-            "csrfToken" => $csrfToken
-        ]);
-    }
-
     public function projectDetail(array $data = [])
     {
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            $data = json_decode(file_get_contents('php://input'), true);
+            
+            if ($data["request_csrf_token"]) {
+                echo json_encode(["csrf_token" => $this->getCurrentSession()->csrf_token]);
+                die;
+            }
+
+            $post = $this->getRequestPost()
+            ->setRequiredFields(["csrf_token", "csrfToken", "additionalDescription"])
+            ->configureDataPost()->getAllPostData();
+
+            if (!preg_match("/^\d+$/", $post["jobId"])) {
+                echo json_encode(["invalid_job_id" => true, "msg" => "Parâmetro inválido"]);
+                die;
+            }
+
+            $designer = new Designer();
+            $designerData = $designer
+            ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
+            $designer->setId($designerData->id);
+
+            $jobs = new Jobs();
+            $jobsData = $jobs->getJobsById($post["jobId"]);
+            $jobs->setId($jobsData->id);
+
+            $businessMan = new BusinessMan();
+            $businessManData = $businessMan->getBusinessManById($jobsData->business_man_id);
+            $businessMan->setId($businessManData->id);
+
+            $contract = new Contract();
+            $contract->setDesigner($designer);
+            $contract->setBusinessMan($businessMan);
+            $contract->setJobs($jobs);
+            $contract->setAdditionalDescription($post["additionalDescription"]);
+            $contract->setSignatureBusinessMan(false);
+            $contract->setSignatureDesigner(true);
+            $contract->setModelContract($contract);
+
+            echo json_encode(["contract_success" => true, 
+            "url" => url("/braid-system/client-report")]);
+            die;
+        }
+
         $jobId = base64_decode($data["hash"], true);
 
         if (!$jobId) {

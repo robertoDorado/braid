@@ -1,6 +1,6 @@
 <?php $v->layout("admin/_admin") ?>
 <section class="content">
-    <div class="container-fluid">
+    <div class="container-fluid" id="containerProjectDescription">
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -10,7 +10,6 @@
                             Descrição do projeto
                         </h3>
                     </div>
-
                     <div class="card-body">
                         <dl>
                             <dt>Título do projeto</dt>
@@ -23,15 +22,13 @@
                             <dd><?= date("d/m/Y H:i", strtotime($jobData->delivery_time)) ?></dd>
                         </dl>
                     </div>
-
                 </div>
-
             </div>
         </div>
         <?php if ($userType == "designer") : ?>
             <div class="row">
                 <div class="col">
-                    <a href="<?= url("braid-system/contract-form/" . base64_encode($jobData->id) . "") ?>" class="btn btn-success w3-large w3-padding-large make-a-proposal">Fazer uma proposta</a>
+                    <a href="#" id="makeProposal" class="btn btn-success w3-large w3-padding-large make-a-proposal">Fazer uma proposta</a>
                 </div>
             </div>
         <?php endif ?>
