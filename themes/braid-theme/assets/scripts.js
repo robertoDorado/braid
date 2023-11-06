@@ -128,7 +128,7 @@ const cardFooter=createNewElement("div")
 const buttonSubmit=createNewElement("button")
 const img=createNewElement("img")
 const span=createNewElement("span")
-const errorMessage=createNewElement("div")
+const alertMessage=createNewElement("div")
 row.style.marginTop=".9rem"
 label.innerHTML="Descrições adicionais"
 contractForm.id="contractForm"
@@ -150,9 +150,9 @@ img.src=urlLoader
 img.alt="loader"
 h3.innerHTML="Fazer uma proposta"
 span.innerHTML="Enviar proposta"
-errorMessage.style.textAlign="center"
-errorMessage.style.display="none"
-errorMessage.id="errorMessage"
+alertMessage.style.textAlign="center"
+alertMessage.style.display="none"
+alertMessage.id="alertMessage"
 setAttributesToElement("class","row",row)
 setAttributesToElement("class","col",col)
 setAttributesToElement("class","card card-primary",cardPrimary)
@@ -165,27 +165,41 @@ setAttributesToElement("class","form-control",textArea)
 setAttributesToElement("placeholder","Descrições adicionais sobre a proposta",textArea)
 setAttributesToElement("class","card-footer",cardFooter)
 setAttributesToElement("class","btn bg-danger",buttonSubmit)
-setAttributesToElement("class","alert alert-danger",errorMessage)
+setAttributesToElement("class","alert alert-danger",alertMessage)
 setAttributesToElement("class","form-control",csrfToken)
+endpoint={"localhost":"/braid/braid-system/project-detail","clientes.laborcode.com.br":"/braid/braid-system/project-detail","braid.com.br":"/braid-system/project-detail","www.braid.com.br":"/braid-system/project-detail",}
+endpoint=endpoint[url.getHostName()]||''
+const projectDetailUrl=url.getUrlOrigin(endpoint)
 makeProposal.addEventListener("click",function(event){event.preventDefault()
 if(!elementCreated){containerProjectDescription.appendChild(row)
 row.appendChild(col)
 col.appendChild(cardPrimary)
 cardPrimary.append(cardHeader,contractForm)
 cardHeader.appendChild(h3)
-contractForm.append(cardBody,cardFooter,errorMessage)
+contractForm.append(cardBody,cardFooter,alertMessage)
 cardBody.appendChild(formGroup)
 formGroup.append(label,textArea,csrfToken)
 cardFooter.appendChild(buttonSubmit)
 buttonSubmit.append(img,span)
-window.scrollTo(0,document.body.scrollHeight);endpoint={"localhost":"/braid/braid-system/project-detail","clientes.laborcode.com.br":"/braid/braid-system/project-detail","braid.com.br":"/braid-system/project-detail","www.braid.com.br":"/braid-system/project-detail",}
-endpoint=endpoint[url.getHostName()]||''
-const csrfUrl=url.getUrlOrigin(endpoint)
-fetch(csrfUrl,{method:"POST",body:JSON.stringify({request_csrf_token:!0})}).then(data=>data.json()).then(function(data){csrfToken.value=data.csrf_token})
+window.scrollTo(0,document.body.scrollHeight);fetch(projectDetailUrl,{method:"POST",body:JSON.stringify({request_csrf_token:!0})}).then(data=>data.json()).then(function(data){csrfToken.value=data.csrf_token})
 elementCreated=!0}})
 contractForm.addEventListener("submit",function(event){event.preventDefault()
 const inputs=Array.from(this.querySelectorAll(".form-control"))
-inputs.forEach(function(elem){validateRequiredFields(elem,errorMessage)})})};if(url.getCurrentEndpoint()=="/"){function animateCounter(selector){const target=document.querySelector(selector)
+inputs.forEach(function(elem){validateRequiredFields(elem,alertMessage)})
+const form=new FormData(this)
+form.append("jobId",atob(endpointParamForm))
+span.style.display='none'
+img.style.display='block'
+fetch(projectDetailUrl,{method:"POST",body:form}).then(data=>data.json()).then(function(data){if(data.invalid_job_id){throw new Error(data.msg)}
+if(data.contract_success){alertMessage.classList.remove("alert-danger")
+alertMessage.classList.add("alert-success")
+alertMessage.innerHTML="Candidatura realizada com sucesso"
+alertMessage.style.display='block'
+setTimeout(()=>{window.location.href=data.url},5000)}}).catch(function(error){error=error.toString().replace("Error: ","")
+span.style.display='block'
+img.style.display='none'
+alertMessage.style.display='block'
+alertMessage.innerHTML=error})})};if(url.getCurrentEndpoint()=="/"){function animateCounter(selector){const target=document.querySelector(selector)
 let counter=parseInt(target.innerHTML)
 let current=0;if(!target){throw new Error("invalid count element")}
 const increment=counter/(2000/16);const interval=setInterval(()=>{current+=increment;const roundedCurrent=Math.round(current);document.querySelector(selector).innerHTML=roundedCurrent.toLocaleString("pt-BR");if(current>=counter){clearInterval(interval);document.querySelector(selector).innerHTML=counter.toLocaleString("pt-BR")}},50)}

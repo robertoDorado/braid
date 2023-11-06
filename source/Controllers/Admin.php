@@ -415,21 +415,12 @@ class Admin extends Controller
             $jobsData = $jobs->getAllJobs(3, $offsetValue, true);
         }
 
-        $jobArray = [];
-
-        if (!empty($jobsData)) {
-            foreach ($jobsData as $job) {
-                $jobData = get_object_vars($job->data());
-                $jobArray[] = $jobData;
-            }
-        }
-
-        if (empty($jobArray)) {
+        if (empty($jobsData)) {
             echo json_encode(["empty_projects" => true]);
             die;
         }
 
-        echo json_encode($jobArray);
+        echo json_encode($jobsData);
     }
 
     public function clientReportForm()
@@ -494,7 +485,7 @@ class Admin extends Controller
             $jobs->setJobDescription($post["jobDescription"]);
             $jobs->setRemuneration($post["remunerationData"]);
             $jobs->setDeliveryTime($post["deliveryTime"]);
-            $jobs->setModelJob($jobs, $businessMan);
+            $jobs->setModelJob($jobs);
 
             echo json_encode([
                 "success_create_job" => true,

@@ -99,6 +99,32 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         const projectValue = createNewElement("p")
                         const projectDeliveryTime = createNewElement("p")
                         const viewProject = createNewElement("a")
+                        const tooltipCandidatesFreelancer = createNewElement("div")
+                        const faIconUser = createNewElement("i")
+                        const totalCandidates = createNewElement("span")
+                        const containerFooterCallout = createNewElement("div")
+                        const buttonsCalloutProjects = createNewElement("div")
+                        const editLink = createNewElement("a")
+                        const deleteLink = createNewElement("a")
+
+                        editLink.innerHTML = "Editar dados do projeto"
+                        deleteLink.innerHTML = "Excluir projeto"
+                        deleteLink.style.marginLeft = ".2rem"
+                        viewProject.style.marginLeft = ".2rem"
+
+                        setAttributesToElement("class", "tooltip-candidates-freelancer", tooltipCandidatesFreelancer)
+                        setAttributesToElement("class", "fa-solid fa-user", faIconUser)
+                        setAttributesToElement("class", "total-candidates", totalCandidates)
+                        setAttributesToElement("class", "container-footer-callout", containerFooterCallout)
+                        setAttributesToElement("class", "buttons-callout-projects", buttonsCalloutProjects)
+                        
+                        setAttributesToElement("href", `${requestUrlEditProject}/${btoa(item.id)}`, editLink)
+                        setAttributesToElement("href", "#", deleteLink)
+                        setAttributesToElement("class", "btn btn-primary sample-format-link", editLink)
+                        setAttributesToElement("class", "btn btn-danger sample-format-link delete-project", deleteLink)
+
+                        totalCandidates.innerHTML = item.total_candidates
+                        tooltipCandidatesFreelancer.append(faIconUser, totalCandidates)
 
                         let endpointViewProject = {
                             "localhost": `/braid/braid-system/project-detail/${btoa(item.id)}`,
@@ -127,24 +153,19 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         projectDeliveryTime.innerHTML = `Prazo de entrega: 
                             ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 
-
                         if (userType == "businessman") {
-                            const editLink = createNewElement("a")
-                            const deleteLink = createNewElement("a")
-                            setAttributesToElement("href", `${requestUrlEditProject}/${btoa(item.id)}`, editLink)
-                            setAttributesToElement("href", "#", deleteLink)
-                            setAttributesToElement("class", "btn btn-primary sample-format-link", editLink)
-                            setAttributesToElement("class", "btn btn-danger sample-format-link delete-project", deleteLink)
-                            editLink.innerHTML = "Editar dados do projeto"
-                            deleteLink.innerHTML = "Excluir projeto"
-                            deleteLink.style.marginLeft = ".2rem"
-                            viewProject.style.marginLeft = ".2rem"
-                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, editLink, deleteLink, viewProject)
+                            buttonsCalloutProjects.append(editLink, deleteLink, viewProject)
+                        }else {
+                            buttonsCalloutProjects.appendChild(viewProject)
+                        }
+                            
+                        containerFooterCallout.append(buttonsCalloutProjects, tooltipCandidatesFreelancer)
 
+                        if (deleteLink) {
                             deleteLink.addEventListener("click", function (event) {
                                 event.preventDefault()
                                 launchSureDeleteModal.click()
-                                const dataProject = Array.from(this.parentElement.children)
+                                const dataProject = Array.from(this.parentElement.parentElement.parentElement.children)
                                 setAttributesToElement("data-hash", btoa(item.id), deleteBtnModal)
 
                                 if (calloutModalDeleteProject) {
@@ -155,9 +176,9 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                                     modalDataProject[3].innerHTML = dataProject[3].innerHTML
                                 }
                             })
-                        } else {
-                            callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, viewProject)
                         }
+
+                        callOutInfoElement.append(titleProject, descriptionProject, projectValue, projectDeliveryTime, containerFooterCallout)
                     })
 
                     deleteBtnModal.addEventListener("click", function () {

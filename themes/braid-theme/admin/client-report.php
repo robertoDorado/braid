@@ -25,13 +25,21 @@
                         <p><?= $job->job_description ?></p>
                         <p><?= "Valor do acordo: R$ " . number_format($job->remuneration_data, 2, ",", ".") ?></p>
                         <p><?= "Prazo de entrega: " . date("d/m/Y H:i", strtotime($job->delivery_time)) ?></p>
-                        <?php if ($userType == "businessman") : ?>
-                            <a href="<?= url("/braid-system/edit-project/{$job->id}") ?>" class="btn btn-primary sample-format-link">Editar dados do projeto</a>
-                            <a href="#" data-hash="<?= $job->id ?>" class="btn btn-danger sample-format-link delete-project">Excluir projeto</a>
-                            <a href="<?= url("/braid-system/project-detail/" . $job->id . "") ?>" class="btn btn-primary project-detail">Ver detalhes do projeto</a>
-                        <?php else: ?>
-                            <a href="<?= url("/braid-system/project-detail/" . $job->id . "") ?>" class="btn btn-primary project-detail">Ver detalhes do projeto</a>
-                        <?php endif ?>
+                        <div class="container-footer-callout">
+                            <div class="buttons-callout-projects">
+                                <?php if ($userType == "businessman") : ?>
+                                    <a href="<?= url("/braid-system/edit-project/{$job->id}") ?>" class="btn btn-primary sample-format-link">Editar dados do projeto</a>
+                                    <a href="#" data-hash="<?= $job->id ?>" class="btn btn-danger sample-format-link delete-project">Excluir projeto</a>
+                                    <a href="<?= url("/braid-system/project-detail/" . $job->id . "") ?>" class="btn btn-primary project-detail">Ver detalhes do projeto</a>
+                                <?php else : ?>
+                                    <a href="<?= url("/braid-system/project-detail/" . $job->id . "") ?>" class="btn btn-primary project-detail">Ver detalhes do projeto</a>
+                                <?php endif ?>
+                            </div>
+                            <div class="tooltip-candidates-freelancer">
+                                <i class="fa-solid fa-user"></i>
+                                <span class="total-candidates"><?= $job->total_candidates ?></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <?php endforeach ?>

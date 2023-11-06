@@ -145,7 +145,7 @@ if (endpointSystemForm.join("/") == "braid-system/project-detail") {
                 alertMessage.style.display = 'block'
                 setTimeout(() => {
                     window.location.href = data.url
-                }, 5000)
+                }, 2000)
             }
 
         }).catch(function(error) {

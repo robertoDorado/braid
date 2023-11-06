@@ -8,12 +8,13 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
         elem.addEventListener("click", function (event) {
             event.preventDefault()
             launchSureDeleteModal.click()
-            const projectElement = this.parentElement
+            const projectElement = this.parentElement.parentElement.parentElement
             const dataProject = Array.from(projectElement.children)
             const hashId = this.dataset.hash
 
             if (calloutModalDeleteProject) {
                 const modalDataProject = Array.from(calloutModalDeleteProject.children)
+                console.log(dataProject)
                 modalDataProject[0].innerHTML = dataProject[0].innerHTML
                 modalDataProject[1].innerHTML = dataProject[1].innerHTML
                 modalDataProject[2].innerHTML = dataProject[2].innerHTML

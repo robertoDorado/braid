@@ -566,7 +566,7 @@ footer {
 .btn-login {
     position: absolute;
     right: 5.5%;
-    
+
     width: 150px;
     display: flex !important;
     flex-direction: row;
@@ -604,7 +604,7 @@ footer {
 }
 
 .form-search-project {
-    padding: 0 1rem; 
+    padding: 0 1rem;
 }
 
 .sample-format-link {
@@ -620,6 +620,38 @@ footer {
 .make-a-proposal {
     width: 100%;
     text-transform: uppercase;
+}
+
+.tooltip-candidates-freelancer {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.tooltip-candidates-freelancer:hover::before {
+    content: "Total de candidatos para este projeto";
+    white-space: nowrap;
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-candidates-freelancer:hover::before {
+    opacity: 1;
+}
+
+.container-footer-callout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
 }
 
 @media screen and (min-width: 1200px) {

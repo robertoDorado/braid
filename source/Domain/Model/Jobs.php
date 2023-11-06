@@ -27,19 +27,19 @@ class Jobs
     /** @var string Tempo máximo para entrega */
     private string $deliveryTime;
 
-    /** @var BusinessMan[] Chave de relacionamento BusinessMan */
-    private array $businessman;
+    /** @var BusinessMan Chave de relacionamento BusinessMan */
+    private BusinessMan $businessman;
 
     private ModelsJobs $jobs;
 
-    public function setModelJob(Jobs $jobs, BusinessMan $businessMan)
+    public function setModelJob(Jobs $jobs)
     {
         $getters = checkGettersFilled($jobs);
         $isMethods = checkIsMethodsFilled($jobs);
 
         if (is_array($getters) && is_array($isMethods)) {
             $this->jobs = new ModelsJobs();
-            $this->jobs->business_man_id = $businessMan->getId();
+            $this->jobs->business_man_id = $this->getBusinessMan()->getId();
             $this->jobs->job_name = $this->getJobName();
             $this->jobs->job_description = $this->getJobDescription();
             $this->jobs->remuneration_data = $this->getRemuneration();
@@ -130,33 +130,10 @@ class Jobs
         return $totalJobs;
     }
 
-    public function getAllJobs(int $limit = 0, int $offsetValue = 0, bool $orderBy = false, bool $hashId = false)
+    public function getAllJobs(int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false, bool $hashId = false)
     {
         $this->jobs = new ModelsJobs();
-        $allJobs = $this->jobs->find("");
-
-        if (!empty($limit)) {
-            $allJobs->limit($limit);
-        }
-
-        if (!empty($offsetValue)) {
-            $allJobs->offset($offsetValue);
-        }
-
-        if ($orderBy) {
-            $allJobs->order("id", $orderBy);
-        }
-
-        $jobsData = $allJobs->fetch(true);
-
-        if ($hashId) {
-            if (!empty($jobsData)) {
-                foreach ($jobsData as &$job){
-                    $job->id = base64_encode($job->id);
-                }
-            }
-        }
-
+        $jobsData = $this->jobs->getJobsWithCandidates(0, $limitValue, $offsetValue, $orderBy, $hashId);
         return $jobsData;
     }
 
@@ -174,31 +151,7 @@ class Jobs
     {
         $this->jobs = new ModelsJobs();
 
-        $jobs = $this->jobs->find("business_man_id=:business_man_id",
-        ":business_man_id=" . $id . "");
-
-        if (!empty($limitValue)) {
-            $jobs->limit($limitValue);
-        }
-
-        if (!empty($offsetValue)) {
-            $jobs->offset($offsetValue);
-        }
-
-        if ($orderBy) {
-            $jobs->order("id", $orderBy);
-        }
-
-        $jobsData = $jobs->fetch(true);
-
-        if ($hashId) {
-            if (!empty($jobsData)) {
-                foreach($jobsData as &$job) {
-                    $job->id = base64_encode($job->id);
-                }
-            }
-        }
-        
+        $jobsData = $this->jobs->getJobsWithCandidates($id, $limitValue, $offsetValue, $orderBy, $hashId);
         return $jobsData;
     }
 
@@ -254,7 +207,7 @@ class Jobs
 
     public function setBusinessMan(BusinessMan $businessMan)
     {
-        $this->businessman[] = $businessMan;
+        $this->businessman = $businessMan;
     }
 
     public function getBusinessMan()
