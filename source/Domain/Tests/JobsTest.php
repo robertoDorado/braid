@@ -54,11 +54,9 @@ class JobsTest extends TestCase
         $this->jobs = new Jobs();
         $this->jobs->setBusinessMan(new BusinessMan());
         $this->jobs->setBusinessMan(new BusinessMan());
-        $businessMans = $this->jobs->getBusinessMan();
+        $businessMan = $this->jobs->getBusinessMan();
         
-        foreach ($businessMans as $businessMan) {
-            $this->assertInstanceOf(BusinessMan::class, $businessMan);
-        }
+        $this->assertInstanceOf(BusinessMan::class, $businessMan);
     }
 
     public function testConverStringCurrencyToFloatA()

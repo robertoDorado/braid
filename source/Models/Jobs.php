@@ -36,20 +36,63 @@ class Jobs extends Model
         parent::__construct($this->tableName, ['id'], [$this->businessManId, $this->jobName, $this->jobDescription, $this->jobDescription, $this->remunerationData, $this->deliveryTime]);
     }
 
+    public function getJobsWithCandidatesLikeQuery(array $data, int $limitValue = 0)
+    {
+        $terms = "";
+        $params = "";
+
+        if (!empty($data)) {
+            foreach ($data as $key => $value) {
+                $terms .= "{$key} LIKE :{$key} OR ";
+                $params .= "{$key}=%{$value}%&";
+            }
+        }
+
+        $terms = removeLastStringOcurrence($terms, "OR");
+        $params = removeLastStringOcurrence($params, "&");
+
+        $sql = "SELECT jobs.id, jobs.business_man_id,
+        COUNT(contract.designer_id) AS total_candidates, 
+        jobs.job_name, jobs.job_description, jobs.remuneration_data, 
+        jobs.delivery_time, contract.designer_id 
+        FROM {$this->tableName} LEFT JOIN contract ON (contract.job_id = jobs.id)";
+
+        if (!empty($terms)) {
+            $sql .= " WHERE {$terms} GROUP BY jobs.id";
+        } else {
+            $sql .= " GROUP BY jobs.id";
+        }
+
+        if (!empty($limitValue)) {
+            $sql .= " LIMIT {$limitValue}";
+        }
+
+        $stmt = $this->read($sql, $params);
+
+        if (empty($stmt)) {
+            return;
+        }
+
+        if (empty($stmt->rowCount())) {
+            return;
+        }
+
+        $jobsData = $stmt->fetchAll(\PDO::FETCH_OBJ);
+        return $jobsData;
+    }
+
     public function getJobsWithCandidates(int $id = 0, int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false, bool $hashId = false)
     {
         $param = "";
-        $sql = "SELECT 
-        braid.jobs.id, COUNT(contract.designer_id) AS total_candidates,
-        braid.jobs.job_name, braid.jobs.job_description,
-        braid.jobs.remuneration_data, braid.jobs.delivery_time, contract.designer_id
-        FROM jobs
-        LEFT JOIN contract ON (contract.job_id = jobs.id)";
+        $sql = "SELECT jobs.id, COUNT(contract.designer_id) AS total_candidates,
+        jobs.job_name, jobs.job_description,
+        jobs.remuneration_data, jobs.delivery_time, contract.designer_id
+        FROM {$this->tableName} LEFT JOIN contract ON (contract.job_id = jobs.id)";
 
         if (!empty($id)) {
             $sql .= " WHERE jobs.business_man_id = :business_man_id GROUP BY jobs.id";
             $param .= "business_man_id=" . $id . "";
-        }else {
+        } else {
             $sql .= " GROUP BY jobs.id";
         }
 
@@ -67,8 +110,12 @@ class Jobs extends Model
 
         $stmt = $this->read($sql, $param);
 
-        if ($stmt->rowCount() == 0) {
-            return null;
+        if (empty($stmt)) {
+            return;
+        }
+
+        if (empty($stmt->rowCount())) {
+            return;
         }
 
         $jobsData = $stmt->fetchAll(\PDO::FETCH_OBJ);

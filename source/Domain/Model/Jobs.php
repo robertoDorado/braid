@@ -91,36 +91,11 @@ class Jobs
         return (new ModelsJobs())->findById($id);
     }
 
-    public function getJobsLikeQuery(array $data, string $columns = "*", int $limit = 0)
+    public function getJobsLikeQuery(array $data, int $limit = 0)
     {
-        if (empty($data)) {
-            throw new \Exception("Parâmetro data é obrigatório");
-        }
-
-        $terms = "";
-        $params = "";
-
-        foreach($data as $key => $value) {
-            $terms .= "{$key} LIKE :{$key} OR";
-            $params .= ":{$key}=%{$value}%&";
-        }
-        
-        $terms = removeLastStringOcurrence($terms, "OR");
-        $params = removeLastStringOcurrence($params, "&");
-
         $this->jobs = new ModelsJobs();
-        $jobs = $this->jobs->find($terms, $params, $columns);
-
-        if (!empty($limit)) {
-            $jobs->limit($limit);
-        }
-        
-        $jobsResponse = [];
-        foreach ($jobs->fetch(true) as $value) {
-            array_push($jobsResponse, $value->data());
-        }
-
-        return $jobsResponse;
+        $jobsData = $this->jobs->getJobsWithCandidatesLikeQuery($data, $limit);
+        return $jobsData;
     }
 
     public function countTotalJobs()

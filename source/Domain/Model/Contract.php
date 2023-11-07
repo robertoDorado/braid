@@ -51,6 +51,15 @@ class Contract
         }
     }
 
+    public function getContractByDesignerIdAndJobId(int $designerId, int $jobId)
+    {
+        $this->contract = new ModelsContract();
+        $contractData = $this->contract->find("designer_id=:designer_id AND job_id=:job_id",
+        ":designer_id=" . $designerId . "&:job_id=" . $jobId . "")->fetch();
+
+        return $contractData;
+    }
+
     public function getAdditionalDescription()
     {
         return $this->additionalDescription;

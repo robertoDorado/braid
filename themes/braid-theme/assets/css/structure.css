@@ -654,7 +654,24 @@ footer {
     justify-content: space-around;
 }
 
+.check-mark-candidate {
+    width: 50px;
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    margin: 1rem;
+}
+
+.alert-already-make-proposal {
+    text-transform: uppercase;
+    text-align: center;
+}
+
 @media screen and (min-width: 1200px) {
+
+    .check-mark-candidate {
+        width: 100px;
+    }
 
     .container-message {
         padding: 200px;

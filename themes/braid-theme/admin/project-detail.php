@@ -4,6 +4,9 @@
         <div class="row">
             <div class="col">
                 <div class="card">
+                    <?php if (!empty($contractData)) : ?>
+                        <img class="check-mark-candidate" src="<?= theme("assets/img/green-double-circle-check-mark.png") ?>" alt="check-mark">
+                    <?php endif ?>
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-project-diagram"></i>
@@ -28,7 +31,11 @@
         <?php if ($userType == "designer") : ?>
             <div class="row">
                 <div class="col">
-                    <a href="#" id="makeProposal" class="btn btn-success w3-large w3-padding-large make-a-proposal">Fazer uma proposta</a>
+                    <?php if (empty($contractData)) : ?>
+                        <a href="#" id="makeProposal" class="btn btn-success w3-large w3-padding-large make-a-proposal">Fazer uma proposta</a>
+                    <?php else : ?>
+                        <div class="alert alert-warning alert-already-make-proposal">você já se candidatou para este projeto</div>
+                    <?php endif ?>
                 </div>
             </div>
         <?php endif ?>

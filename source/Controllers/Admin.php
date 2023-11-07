@@ -31,9 +31,11 @@ class Admin extends Controller
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $data = json_decode(file_get_contents('php://input'), true);
             
-            if ($data["request_csrf_token"]) {
-                echo json_encode(["csrf_token" => $this->getCurrentSession()->csrf_token]);
-                die;
+            if (!empty($data["request_csrf_token"])) {
+                if ($data["request_csrf_token"]) {
+                    echo json_encode(["csrf_token" => $this->getCurrentSession()->csrf_token]);
+                    die;
+                }
             }
 
             $post = $this->getRequestPost()
@@ -98,11 +100,19 @@ class Admin extends Controller
         $job = new Jobs();
         $jobData = $job->getJobsById($jobId);
 
+        $designer = new Designer();
+        $designerData = $designer
+            ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        $contract = new Contract();
+        $contractData = $contract->getContractByDesignerIdAndJobId($designerData->id, $jobData->id);
+
         if (empty($jobData)) {
             redirect("braid-system/client-report");
         }
 
         echo $this->view->render("admin/project-detail", [
+            "contractData" => $contractData,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Visualizar projeto",
             "fullName" => $userData->full_name,
@@ -301,7 +311,7 @@ class Admin extends Controller
         $jobsResponse = $jobs->getJobsLikeQuery([
             "job_name" => $searchValue,
             "job_description" => $searchValue
-        ], "id, business_man_id, job_name, job_description, remuneration_data, delivery_time", 3);
+        ], 3);
         $jobsData = [];
 
         if (!empty($businessMan)) {
