@@ -100,12 +100,14 @@ class Admin extends Controller
         $job = new Jobs();
         $jobData = $job->getJobsById($jobId);
 
-        $designer = new Designer();
-        $designerData = $designer
-            ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
-
-        $contract = new Contract();
-        $contractData = $contract->getContractByDesignerIdAndJobId($designerData->id, $jobData->id);
+        if ($userData->user_type == "designer") {
+            $designer = new Designer();
+            $designerData = $designer
+                ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
+    
+            $contract = new Contract();
+            $contractData = $contract->getContractByDesignerIdAndJobId($designerData->id, $jobData->id);
+        }
 
         if (empty($jobData)) {
             redirect("braid-system/client-report");

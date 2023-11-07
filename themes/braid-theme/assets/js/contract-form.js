@@ -93,29 +93,31 @@ if (endpointSystemForm.join("/") == "braid-system/project-detail") {
     endpoint = endpoint[url.getHostName()] || ''
     const projectDetailUrl = url.getUrlOrigin(endpoint)
 
-    makeProposal.addEventListener("click", function (event) {
-        event.preventDefault()
-
-        if (!elementCreated) {
-            containerProjectDescription.appendChild(row)
-            row.appendChild(col)
-            col.appendChild(cardPrimary)
-            cardPrimary.append(cardHeader, contractForm)
-            cardHeader.appendChild(h3)
-            contractForm.append(cardBody, cardFooter, alertMessage)
-            cardBody.appendChild(formGroup)
-            formGroup.append(label, textArea, csrfToken)
-            cardFooter.appendChild(buttonSubmit)
-            buttonSubmit.append(img, span)
-            window.scrollTo(0, document.body.scrollHeight);
-
-            fetch(projectDetailUrl, { method: "POST", body: JSON.stringify({ request_csrf_token: true }) })
-            .then(data => data.json()).then(function (data) {
-                csrfToken.value = data.csrf_token
-            })
-            elementCreated = true
-        }
-    })
+    if (makeProposal) {
+        makeProposal.addEventListener("click", function (event) {
+            event.preventDefault()
+    
+            if (!elementCreated) {
+                containerProjectDescription.appendChild(row)
+                row.appendChild(col)
+                col.appendChild(cardPrimary)
+                cardPrimary.append(cardHeader, contractForm)
+                cardHeader.appendChild(h3)
+                contractForm.append(cardBody, cardFooter, alertMessage)
+                cardBody.appendChild(formGroup)
+                formGroup.append(label, textArea, csrfToken)
+                cardFooter.appendChild(buttonSubmit)
+                buttonSubmit.append(img, span)
+                window.scrollTo(0, document.body.scrollHeight);
+    
+                fetch(projectDetailUrl, { method: "POST", body: JSON.stringify({ request_csrf_token: true }) })
+                .then(data => data.json()).then(function (data) {
+                    csrfToken.value = data.csrf_token
+                })
+                elementCreated = true
+            }
+        })
+    }
 
     contractForm.addEventListener("submit", function (event) {
         event.preventDefault()

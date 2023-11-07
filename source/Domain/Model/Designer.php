@@ -76,10 +76,6 @@ class Designer
         $designerData = $designer
         ->find("full_email=:full_email", ":full_email=" . $email . "")->fetch();
 
-        if (empty($designerData)) {
-            throw new \Exception("Usuário do tipo designer não existe");
-        }
-
         return $designerData;
     }
 
