@@ -14,13 +14,16 @@ use Source\Models\Designer as ModelsDesigner;
 class Designer
 {
     /** @var int Ultimo id inserido na tabela Designer */
-    private int $id;
+    private int $id = 0;
 
     /** @var string Nome do Designer  */
     private string $fullName;
 
     /** @var string E-mail do designer */
     private string $fullEmail = '';
+
+    /** @var string Foto */
+    private string $pathPhoto = '';
 
     /** @var string Número do CPF */
     private string $documentData = '';
@@ -55,6 +58,7 @@ class Designer
             $this->designer = new ModelsDesigner();
             $this->designer->full_name = $this->getDesignerName();
             $this->designer->full_email = $this->getEmail();
+            $this->designer->path_photo = empty($this->getPathPhoto()) ? null : $this->getPathPhoto();
             $this->designer->document_data = empty($this->getDocument()) ? null : $this->getDocument();
             $this->designer->experience_data = empty($this->getExperienceAsString()) ? null : $this->getExperienceAsString();
             $this->designer->portfolio_data = empty($this->getPortfolioAsString()) ? null : $this->getPortfolioAsString();
@@ -67,6 +71,16 @@ class Designer
 
             $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function getPathPhoto()
+    {
+        return $this->pathPhoto;
+    }
+
+    public function setPathPhoto(string $pathPhoto)
+    {
+        $this->pathPhoto = $pathPhoto;
     }
 
     public function getDesignerById(int $id)

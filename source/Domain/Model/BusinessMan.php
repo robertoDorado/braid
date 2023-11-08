@@ -22,6 +22,9 @@ class BusinessMan
     /** @var string Email do dono da empresa */
     private string $fullEmail = '';
 
+    /** @var string Foto */
+    private string $pathPhoto = '';
+
     /** @var string Nome da empresa */
     private string $companyName = '';
 
@@ -52,6 +55,7 @@ class BusinessMan
             $this->businessMan = new ModelsBusinessMan();
             $this->businessMan->full_name = $this->getCeoName();
             $this->businessMan->full_email = $this->getEmail();
+            $this->businessMan->path_photo = empty($this->getPathPhoto()) ? null : $this->getPathPhoto();
             $this->businessMan->company_name = empty($this->getCompanyName()) ? null : $this->getCompanyName();
             $this->businessMan->register_number = empty($this->getRegisterNumber()) ? null : $this->getRegisterNumber();
             $this->businessMan->company_description = empty($this->getDescriptionCompany()) ? null : $this->getDescriptionCompany();
@@ -63,6 +67,16 @@ class BusinessMan
 
             $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function getPathPhoto()
+    {
+        return $this->pathPhoto;
+    }
+
+    public function setPathPhoto(string $pathPhoto)
+    {
+        $this->pathPhoto = $pathPhoto;
     }
 
     public function getBusinessManById(int $id)

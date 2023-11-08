@@ -19,6 +19,9 @@ class BusinessMan extends Model
     /** @var string Email do contratante */
     private string $fullEmail = 'full_email';
 
+    /** @var string Foto de identificação */
+    private string $photoPath = 'photo_path';
+
     /** @var string  Nome da empresa */
     private string $companyName = 'company_name';
 

@@ -27,18 +27,31 @@ class Designer extends DDL
         $this->setClassProperties();
         $this->removeProperty('table_name');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL UNIQUE',
-        'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL',
-        'VARCHAR(255) NULL', 'VARCHAR(255) NULL']);
+        'VARCHAR(255) NULL', 'VARCHAR(1000) NULL', 'VARCHAR(1000) NULL', 'VARCHAR(1000) NULL',
+        'VARCHAR(1000) NULL', 'VARCHAR(1000) NULL', 'VARCHAR(1000) NULL']);
         $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 
     public function setEmailColumn()
     {
-        $this->setClassProperties();
         $this->alterTable(['ADD email VARCHAR(255) NOT NULL', 'ADD CONSTRAINT email UNIQUE (email)']);
+        $this->executeQuery();
+    }
+
+    public function setColumnPathPhoto()
+    {
+        $this->alterTable(["ADD path_photo VARCHAR(255) NULL"]);
+        $this->executeQuery();
+    }
+
+    public function setColumnOneThousendLengthVarchar()
+    {
+        $this->alterTable(["MODIFY biography_data VARCHAR(1000)",
+        "MODIFY goals_data VARCHAR(1000)", "MODIFY qualifications_data VARCHAR(1000)",
+        "MODIFY portfolio_data VARCHAR(1000)", "MODIFY experience_data VARCHAR(1000)"]);
         $this->executeQuery();
     }
 }
 
-(new Designer())->defineTable();
+(new Designer())->setColumnOneThousendLengthVarchar();

@@ -100,21 +100,24 @@ class Admin extends Controller
         $job = new Jobs();
         $jobData = $job->getJobsById($jobId);
 
+        $designer = new Designer();
+        $contract = new Contract();
+
         if ($userData->user_type == "designer") {
-            $designer = new Designer();
             $designerData = $designer
                 ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
     
-            $contract = new Contract();
             $contractData = $contract->getContractByDesignerIdAndJobId($designerData->id, $jobData->id);
         }
-
+        
+        $candidatesDesigner = $contract->getContractLeftJoinDesigner($jobId);
         if (empty($jobData)) {
             redirect("braid-system/client-report");
         }
 
         echo $this->view->render("admin/project-detail", [
-            "contractData" => $contractData,
+            "candidatesDesigner" => $candidatesDesigner,
+            "contractData" => $contractData ?? null,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Visualizar projeto",
             "fullName" => $userData->full_name,

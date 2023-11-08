@@ -39,15 +39,19 @@
                 </div>
             </div>
         <?php else : ?>
-            <div class="callout callout-danger container-designer">
-                <div class="designer-data">
-                    <img src="<?= theme("assets/img/user/default.png") ?>" class="photo-designer" alt="photo-designer">
-                    <p>Teste</p>
-                </div>
-                <div class="description-data-designer">
-                    <p>teste teste</p>
-                </div>
-            </div>
+            <?php if (!empty($candidatesDesigner)) : ?>
+                <?php foreach($candidatesDesigner as $candidate): ?>
+                    <div class="callout callout-danger container-designer">
+                        <div class="designer-data">
+                            <img src="<?= empty($candidate->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $candidate->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
+                            <p><?= $candidate->full_name ?></p>
+                        </div>
+                        <div class="description-data-designer">
+                            <p><?= $candidate->additional_description ?></p>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            <?php endif ?>
         <?php endif ?>
     </div>
 </section>

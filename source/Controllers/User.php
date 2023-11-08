@@ -450,10 +450,12 @@ class User extends Controller
                 if ($data['userType'] == "businessman") {
                     $businessMan->setCeoName($data["fullName"]);
                     $businessMan->setEmail($data['email']);
+                    $businessMan->setPathPhoto($data['pathPhoto']);
                     $businessMan->setModelBusinessMan($businessMan);
                 } else if ($data["userType"] == "designer") {
                     $designer->setDesignerName($data["fullName"]);
                     $designer->setEmail($data['email']);
+                    $designer->setPathPhoto($data['pathPhoto']);
                     $designer->setModelDesigner($designer);
                 }
 

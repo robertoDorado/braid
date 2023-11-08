@@ -170,7 +170,7 @@ setAttributesToElement("class","form-control",csrfToken)
 endpoint={"localhost":"/braid/braid-system/project-detail","clientes.laborcode.com.br":"/braid/braid-system/project-detail","braid.com.br":"/braid-system/project-detail","www.braid.com.br":"/braid-system/project-detail",}
 endpoint=endpoint[url.getHostName()]||''
 const projectDetailUrl=url.getUrlOrigin(endpoint)
-makeProposal.addEventListener("click",function(event){event.preventDefault()
+if(makeProposal){makeProposal.addEventListener("click",function(event){event.preventDefault()
 if(!elementCreated){containerProjectDescription.appendChild(row)
 row.appendChild(col)
 col.appendChild(cardPrimary)
@@ -182,7 +182,7 @@ formGroup.append(label,textArea,csrfToken)
 cardFooter.appendChild(buttonSubmit)
 buttonSubmit.append(img,span)
 window.scrollTo(0,document.body.scrollHeight);fetch(projectDetailUrl,{method:"POST",body:JSON.stringify({request_csrf_token:!0})}).then(data=>data.json()).then(function(data){csrfToken.value=data.csrf_token})
-elementCreated=!0}})
+elementCreated=!0}})}
 contractForm.addEventListener("submit",function(event){event.preventDefault()
 const inputs=Array.from(this.querySelectorAll(".form-control"))
 inputs.forEach(function(elem){validateRequiredFields(elem,alertMessage)})
@@ -373,7 +373,7 @@ projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
 viewProject.innerHTML="Ver detalhes do projeto"
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                             ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
-if(userType=="businessman"){buttonsCalloutProjects.append(editLink,deleteLink,viewProject)}else{buttonsCalloutProjects.appendChild(viewProject)}
+if(userType=="businessman"){buttonsCalloutProjects.append(editLink,viewProject,deleteLink)}else{buttonsCalloutProjects.appendChild(viewProject)}
 containerFooterCallout.append(buttonsCalloutProjects,tooltipCandidatesFreelancer)
 if(deleteLink){deleteLink.addEventListener("click",function(event){event.preventDefault()
 launchSureDeleteModal.click()
@@ -627,7 +627,7 @@ projectValue.innerHTML=`Valor do acordo: ${valueCurrencyFormat}`
 viewProject.innerHTML="Ver detalhes do projeto"
 projectDeliveryTime.innerHTML=`Prazo de entrega: 
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
-if(userType=="businessman"){buttonsCalloutProjects.append(editLink,deleteLink,viewProject)}else{buttonsCalloutProjects.appendChild(viewProject)}
+if(userType=="businessman"){buttonsCalloutProjects.append(editLink,viewProject,deleteLink)}else{buttonsCalloutProjects.appendChild(viewProject)}
 containerFooterCallout.append(buttonsCalloutProjects,tooltipCandidatesFreelancer)
 if(deleteLink){deleteLink.addEventListener("click",function(event){event.preventDefault()
 launchSureDeleteModal.click()

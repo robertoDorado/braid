@@ -51,10 +51,15 @@ class Contract
         }
     }
 
-    public function getContractsByJobId(int $jobId)
+    public function getContractLeftJoinDesigner(int $jobId)
     {
         $this->contract = new ModelsContract();
-        $contractData = $this->contract->find("job_id=:job_id", ":job_id=" . $jobId . "")->fetch(true);
+        $contractData = $this->contract
+        ->find("job_id=:job_id", ":job_id=" . $jobId . "", "additional_description")
+        ->advancedLeftJoin("designer", 
+        "braid.designer.id = braid.contract.designer_id", null, null, "full_name, path_photo")
+        ->fetch(true);
+
         return $contractData;
     }
 
