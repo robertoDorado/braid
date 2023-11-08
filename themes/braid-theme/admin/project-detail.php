@@ -38,6 +38,16 @@
                     <?php endif ?>
                 </div>
             </div>
+        <?php else : ?>
+            <div class="callout callout-danger container-designer">
+                <div class="designer-data">
+                    <img src="<?= theme("assets/img/user/default.png") ?>" class="photo-designer" alt="photo-designer">
+                    <p>Teste</p>
+                </div>
+                <div class="description-data-designer">
+                    <p>teste teste</p>
+                </div>
+            </div>
         <?php endif ?>
     </div>
 </section>

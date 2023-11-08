@@ -138,7 +138,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         ${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}`
 
                         if (userType == "businessman") {
-                            buttonsCalloutProjects.append(editLink, deleteLink, viewProject)
+                            buttonsCalloutProjects.append(editLink, viewProject, deleteLink)
                         } else {
                             buttonsCalloutProjects.appendChild(viewProject)
                         }

@@ -69,6 +69,13 @@ class Designer
         }
     }
 
+    public function getDesignerById(int $id)
+    {
+        $this->designer = new ModelsDesigner();
+        $designerData = $this->designer->findById($id);
+        return $designerData;
+    }
+
     public function getDesignerByEmail(string $email)
     {
         $designer = new ModelsDesigner();

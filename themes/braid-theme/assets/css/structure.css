@@ -649,9 +649,20 @@ footer {
 
 .container-footer-callout {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: end;
+}
+
+.buttons-callout-projects {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttons-callout-projects a {
+    margin: .5rem 0;
 }
 
 .check-mark-candidate {
@@ -667,7 +678,50 @@ footer {
     text-align: center;
 }
 
+.photo-designer {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.container-designer {
+    display: flex;
+    flex-direction: row;
+}
+
+.description-data-designer p {
+    margin-left: 1rem;
+}
+
+.designer-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.designer-data p {
+    font-size: .8rem;
+    margin-top: 0.2rem;
+    font-style: italic;
+    font-weight: bold;
+    color: #7c7a7a;
+}
+
 @media screen and (min-width: 1200px) {
+
+    .container-footer-callout {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .buttons-callout-projects {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .buttons-callout-projects a {
+        margin: 0 .5rem;
+    }
 
     .check-mark-candidate {
         width: 100px;
