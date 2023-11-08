@@ -58,6 +58,7 @@ class Contract
         ->find("job_id=:job_id", ":job_id=" . $jobId . "", "additional_description")
         ->advancedLeftJoin("designer", 
         "braid.designer.id = braid.contract.designer_id", null, null, "full_name, path_photo")
+        ->order("braid.contract.id", true)
         ->fetch(true);
 
         return $contractData;
