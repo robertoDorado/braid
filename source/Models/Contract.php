@@ -16,9 +16,6 @@ class Contract extends Model
     /** @var string Designer id chave estrangeira */
     private string $designerId = 'designer_id';
 
-    /** @var string BusinessMan id chave estrangeira */
-    private string $businessManId = 'business_man_id';
-
     /** @var string Jobs id chave estrangeira */
     private string $jobId = 'job_id';
 
@@ -36,6 +33,6 @@ class Contract extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->businessManId, $this->jobId, $this->additionalDescription, $this->signatureBusinessMan, $this->signatureDesigner]);    
+        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->jobId, $this->additionalDescription, $this->signatureBusinessMan, $this->signatureDesigner]);    
     }
 }

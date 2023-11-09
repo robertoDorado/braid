@@ -26,6 +26,97 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function chargeOnDemandCandidates(array $data = [])
+    {
+        header('Content-Type: application/json');
+        if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+            throw new \Exception("Cabeçalho de autorização ausente");
+        }
+
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
+        }
+
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $data = base64_decode($data["hash"], true);
+        if (!$data) {
+            throw new \Exception("Hash base64 inválida");
+        }
+
+        $data = json_decode($data, true);
+        $origin = $this->getServer("SERVER_NAME");
+        $allowOrigin = ["clientes.laborcode.com.br", "braid.com.br"];
+
+        if (!in_array($origin, $allowOrigin)) {
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode(['error' => 'Acesso negado']);
+            die;
+        }
+
+        header("Access-Control-Allow-Origin: {$origin}");
+        $errorMessage = [
+            "invalid_parameter" => true,
+            "msg" => "valor do parametro invalido"
+        ];
+
+        if (empty($data["page"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+
+        if (empty($data["max"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+
+        if (empty($data["job_id"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+        
+        if (!preg_match("/^\d+$/", $data["job_id"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+
+        foreach ($data as $key => $value) {
+
+            if ($key == "page" || $key == "max") {
+                if (!preg_match("/^[\d]+$/", $value)) {
+                    header("HTTP/1.1 500 Internal Server Error");
+                    throw new \Exception(json_encode($errorMessage));
+                }
+
+                if ($value < 0) {
+                    header("HTTP/1.1 500 Internal Server Error");
+                    throw new \Exception(json_encode($errorMessage));
+                }
+            }
+        }
+
+        $credentials = new Credentials();
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
+        }
+
+        $response = [];
+        $contract = new Contract();
+        $contractData = $contract->getContractLeftJoinDesigner($data["job_id"]);
+        $contractData = $contractData
+        ->limit($data["max"])->offset($data["page"])->order("braid.contract.id", true)->fetch(true);
+
+        foreach ($contractData as $contract) {
+            array_push($response, $contract->data());
+        }
+        
+        echo json_encode($response);
+        die;
+    }
+
     public function projectDetail(array $data = [])
     {
         if ($this->getServer("REQUEST_METHOD") == "POST") {
@@ -56,13 +147,8 @@ class Admin extends Controller
             $jobsData = $jobs->getJobsById($post["jobId"]);
             $jobs->setId($jobsData->id);
 
-            $businessMan = new BusinessMan();
-            $businessManData = $businessMan->getBusinessManById($jobsData->business_man_id);
-            $businessMan->setId($businessManData->id);
-
             $contract = new Contract();
             $contract->setDesigner($designer);
-            $contract->setBusinessMan($businessMan);
             $contract->setJobs($jobs);
             $contract->setAdditionalDescription($post["additionalDescription"]);
             $contract->setSignatureBusinessMan(false);
@@ -111,12 +197,17 @@ class Admin extends Controller
         }
         
         $candidatesDesigner = $contract->getContractLeftJoinDesigner($jobId);
+        $candidatesDesignerData = $candidatesDesigner
+        ->order("braid.contract.id", true)->limit(3)->fetch(true);
+
+        $totalCandidatesDesigner = $candidatesDesigner->count();
         if (empty($jobData)) {
             redirect("braid-system/client-report");
         }
 
         echo $this->view->render("admin/project-detail", [
-            "candidatesDesigner" => $candidatesDesigner,
+            "totalCandidatesDesigner" => $totalCandidatesDesigner,
+            "candidatesDesigner" => $candidatesDesignerData,
             "contractData" => $contractData ?? null,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Visualizar projeto",

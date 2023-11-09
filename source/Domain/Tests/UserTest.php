@@ -18,6 +18,14 @@ class UserTest extends TestCase
     /** @var User Objeto a ser testado */
     private User $user;
 
+    public function testSetUserType()
+    {
+        $this->user = new User();
+        $this->user->setUserType("businessman");
+        $userType = $this->user->getUserType();
+        $this->assertIsString($userType);
+    }
+
     public function testFailLoginA()
     {
         $this->user = new User();

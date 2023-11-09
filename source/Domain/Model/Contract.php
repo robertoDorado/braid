@@ -11,9 +11,6 @@ use Source\Models\Contract as ModelsContract;
  */
 class Contract
 {
-    /** @var BusinessMan */
-    private BusinessMan $businessMan;
-
     /** @var Designer */
     private Designer $designer;
 
@@ -40,7 +37,6 @@ class Contract
         if (is_array($getter) && is_array($isMethods)) {
             $this->contract = new ModelsContract();
             $this->contract->designer_id = $this->getDesigner()->getId();
-            $this->contract->business_man_id = $this->getBusinessMan()->getId();
             $this->contract->job_id = $this->getJobs()->getId();
             $this->contract->additional_description = $this->getAdditionalDescription();
             $this->contract->signature_business_man = empty($this->getSignatureBusinessMan()) ? 0 : 1;
@@ -51,15 +47,17 @@ class Contract
         }
     }
 
-    public function getContractLeftJoinDesigner(int $jobId)
+    public function getContractLeftJoinDesigner(int $jobId, bool $getDataObject = false)
     {
         $this->contract = new ModelsContract();
         $contractData = $this->contract
         ->find("job_id=:job_id", ":job_id=" . $jobId . "", "additional_description")
         ->advancedLeftJoin("designer", 
-        "braid.designer.id = braid.contract.designer_id", null, null, "full_name, path_photo")
-        ->order("braid.contract.id", true)
-        ->fetch(true);
+        "braid.designer.id = braid.contract.designer_id", null, null, "full_name, path_photo");
+
+        if ($getDataObject) {
+            return $contractData->fetch(true);
+        }
 
         return $contractData;
     }
@@ -101,16 +99,6 @@ class Contract
     public function getDesigner(): Designer
     {
         return $this->designer;
-    }
-
-    public function setBusinessMan(BusinessMan $businessMan)
-    {
-        $this->businessMan = $businessMan;
-    }
-
-    public function getBusinessMan(): BusinessMan
-    {
-        return $this->businessMan;
     }
 
     public function setSignatureBusinessMan(bool $signature)

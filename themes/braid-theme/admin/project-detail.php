@@ -40,7 +40,7 @@
             </div>
         <?php else : ?>
             <?php if (!empty($candidatesDesigner)) : ?>
-                <?php foreach($candidatesDesigner as $candidate): ?>
+                <?php foreach ($candidatesDesigner as $candidate) : ?>
                     <div class="callout callout-danger container-designer">
                         <div class="designer-data">
                             <img src="<?= empty($candidate->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $candidate->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
@@ -51,6 +51,16 @@
                         </div>
                     </div>
                 <?php endforeach ?>
+                <?php if ($totalCandidatesDesigner > 3) : ?>
+                    <div class="row">
+                        <div class="col load-candidates-on-demand">
+                            <a href="#" class="btn btn-danger" id="loadCandidates">
+                                <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+                                <span>Carregar mais candidatos</span>
+                            </a>
+                        </div>
+                    </div>
+                <?php endif ?>
             <?php endif ?>
         <?php endif ?>
     </div>

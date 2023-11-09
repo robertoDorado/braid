@@ -28,11 +28,9 @@ class Contract extends DDL
         $this->removeProperty('table_name');
         $this->setProperty('');
         $this->setProperty('');
-        $this->setProperty('');
-        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL',
-        'BIGINT NOT NULL', 'BIGINT NOT NULL', 'VARCHAR(1000) NOT NULL', 'TINYINT(1) NULL', 'TINYINT(1) NULL',
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL', 'BIGINT NOT NULL',
+        'VARCHAR(1000) NOT NULL', 'TINYINT(1) NULL', 'TINYINT(1) NULL',
         'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
-        'CONSTRAINT `contract_ibfk_2` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`)',
         'CONSTRAINT `contract_ibfk_3` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)']);
         $this->dropTableIfExists()->createTableQuery();
         $this->executeQuery();
@@ -41,6 +39,12 @@ class Contract extends DDL
     public function addColumnToContractTable()
     {
         $this->alterTable(["ADD COLUMN job_id BIGINT NOT NULL", " ADD CONSTRAINT contract_ibfk_3 FOREIGN KEY (job_id) REFERENCES jobs(id)"]);
+        $this->executeQuery();
+    }
+
+    public function removeColumnBusinessManId()
+    {
+        $this->alterTable(["DROP FOREIGN KEY contract_ibfk_2", "DROP COLUMN business_man_id"]);
         $this->executeQuery();
     }
 }

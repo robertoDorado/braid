@@ -30,13 +30,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
             endpoint = endpoint[url.getHostName()] || ''
             let requestUrl = url.getUrlOrigin(endpoint)
 
-            fetch(requestUrl).then(function (response) {
-                if (!response.ok) {
-                    throw new Error("Erro na requisição do token")
-                }
-
-                return response.json()
-            }).then(function (response) {
+            fetch(requestUrl).then(response => response.json()).then(function (response) {
                 if (!response.tokenData) {
                     throw new Error("Erro ao retornar o token do usuário")
                 }
@@ -61,6 +55,11 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         Authorization: "Bearer " + response.tokenData
                     }
                 }).then(response => response.json()).then(function (response) {
+                    
+                    if (!response.length) {
+                        loaderButton.style.display = "none"
+                    }
+
                     loaderImage.style.display = "none"
                     loaderLabel.style.display = "block"
                     const wrapElement = rows[2].firstElementChild
@@ -211,10 +210,6 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                                 }
                             })
                     })
-
-                    if (response.length == 0) {
-                        loaderButton.style.display = "none"
-                    }
                 })
             })
         })

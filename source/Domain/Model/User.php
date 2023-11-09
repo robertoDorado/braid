@@ -61,6 +61,16 @@ class User
         }
     }
 
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    public function setUserType(string $userType)
+    {
+        $this->userType = $userType;
+    }
+
     public function getUserByEmail(string $email)
     {
         if ($this->user instanceof ModelsUser) {

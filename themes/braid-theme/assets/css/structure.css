@@ -655,7 +655,7 @@ footer {
 }
 
 .buttons-callout-projects {
-    display:flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -697,6 +697,7 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100px;
 }
 
 .designer-data p {
@@ -705,6 +706,15 @@ footer {
     font-style: italic;
     font-weight: bold;
     color: #7c7a7a;
+    text-align: center;
+}
+
+.load-candidates-on-demand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
 }
 
 @media screen and (min-width: 1200px) {

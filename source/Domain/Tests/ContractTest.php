@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Designer;
+use Source\Domain\Model\Jobs;
 
 /**
  * ContractTest Source\Domain\Tests
@@ -19,6 +20,15 @@ class ContractTest extends TestCase
     /** @var Contract Objeto contrato */
     private Contract $contract;
 
+    public function testGetJob()
+    {
+        $this->contract = new Contract();
+        $this->contract->setJobs(new Jobs());
+
+        $job = $this->contract->getJobs();
+        $this->assertInstanceOf(Jobs::class, $job);
+    }
+
     public function testGetDesigner()
     {
         $this->contract = new Contract();
@@ -26,16 +36,6 @@ class ContractTest extends TestCase
 
         $designer = $this->contract->getDesigner();
         $this->assertInstanceOf(Designer::class, $designer);
-    }
-
-    public function testGetBusinessMan()
-    {
-        $this->contract = new Contract();
-        $this->contract->setBusinessMan(new BusinessMan());
-
-        $businessman = $this->contract->getBusinessMan();
-
-        $this->assertInstanceOf(BusinessMan::class, $businessman);
     }
 
     public function testGetSignatureBusinessManA()
