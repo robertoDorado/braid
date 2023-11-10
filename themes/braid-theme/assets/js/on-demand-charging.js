@@ -7,6 +7,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
     const cardBody = document.getElementById("cardBody")
     const userType = cardBody.dataset.user
     let page = 1
+    const limit = 3
 
     if (loadNewProjects) {
         loadNewProjects.addEventListener("click", function (event) {
@@ -36,7 +37,7 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                 }
 
                 response["page"] = page
-                response["max"] = 3
+                response["max"] = limit
 
                 endpoint = {
                     "localhost": "/braid/braid-system/charge-on-demand",
@@ -55,10 +56,6 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                         Authorization: "Bearer " + response.tokenData
                     }
                 }).then(response => response.json()).then(function (response) {
-                    
-                    if (!response.length) {
-                        loaderButton.style.display = "none"
-                    }
 
                     loaderImage.style.display = "none"
                     loaderLabel.style.display = "block"
@@ -83,6 +80,14 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
 
                     enpointDeleteProject = enpointDeleteProject[url.getHostName()] || ''
                     const requestUrlDeleteProject = url.getUrlOrigin(enpointDeleteProject)
+
+                    
+                    const totalJobsObject = response.pop()
+                    const paginate = Math.ceil(totalJobsObject.total_jobs / limit)
+
+                    if (paginate == page) {
+                        loaderButton.style.display = "none"
+                    }
 
                     response = Array.from(response)
                     response.forEach(function (item) {

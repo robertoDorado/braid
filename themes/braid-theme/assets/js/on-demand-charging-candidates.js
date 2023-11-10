@@ -3,8 +3,11 @@ const endpointParamValue = response.pop()
 const endpointData = response.join("/")
 
 if (endpointData == "braid-system/project-detail") {
+    let containerDesignerInDocument = Array.from(document.querySelectorAll(".container-designer"))
     const loadCandidates = document.getElementById("loadCandidates")
-    let page = 2
+    const containerCandidates = document.getElementById("containerCandidates")
+    let page = 1
+    const limit = 3
 
     if (loadCandidates) {
         loadCandidates.addEventListener("click", function (event) {
@@ -35,7 +38,7 @@ if (endpointData == "braid-system/project-detail") {
                     }
 
                     response["page"] = page
-                    response["max"] = 3
+                    response["max"] = limit
                     response["job_id"] = atob(endpointParamValue)
 
                     endpoint = {
@@ -60,11 +63,60 @@ if (endpointData == "braid-system/project-detail") {
                             imgLoader.style.display = "none"
                             btnLoader.style.display = "block"
 
+                            containerDesignerInDocument = containerDesignerInDocument
+                                .map(elem => atob(elem.dataset.hash))
+
+                            response = Array.from(response)
+                            response = response.filter(value => containerDesignerInDocument
+                                .indexOf(value.designer_id) === -1)
+                            
                             if (!response.length) {
                                 loaderBtn.style.display = "none"
                             }
-                            console.log(response)
+                            
+                            response.forEach(function (item) {
+                                endpoint = {
+                                    "localhost": "/braid/themes/braid-theme/assets/img/user",
+                                    "clientes.laborcode.com.br": "/braid/themes/braid-theme/assets/img/user",
+                                    "braid.com.br": "/themes/braid-theme/assets/img/user",
+                                    "www.braid.com.br": "/themes/braid-theme/assets/img/user",
+                                }
+
+                                endpoint = endpoint[url.getHostName()] || ''
+                                requestUrl = url.getUrlOrigin(endpoint)
+
+                                const containerDesigner = createNewElement("div")
+                                const designerData = createNewElement("div")
+                                const photoDesigner = createNewElement("img")
+                                const freelancerName = createNewElement("p")
+                                const descriptionDataDesigner = createNewElement("div")
+                                const descriptionData = createNewElement("p")
+
+                                containerDesigner.dataset.hash = btoa(item.designer_id)
+
+                                if (item.path_photo == null) {
+                                    photoDesigner.src = requestUrl + "/default.png"
+                                    photoDesigner.alt = "default.png"
+                                } else {
+                                    photoDesigner.src = requestUrl + "/" + item.path_photo
+                                    photoDesigner.alt = item.path_photo
+                                }
+
+                                freelancerName.innerHTML = item.full_name
+                                descriptionData.innerHTML = item.additional_description
+
+                                setAttributesToElement("class", "callout callout-danger container-designer", containerDesigner)
+                                setAttributesToElement("class", "designer-data", designerData)
+                                setAttributesToElement("class", "photo-designer", photoDesigner)
+                                setAttributesToElement("class", "description-data-designer", descriptionDataDesigner)
+
+                                descriptionDataDesigner.appendChild(descriptionData)
+                                designerData.append(photoDesigner, freelancerName)
+                                containerDesigner.append(designerData, descriptionDataDesigner)
+                                containerCandidates.appendChild(containerDesigner)
+                            })
                         })
+                    containerDesignerInDocument = Array.from(document.querySelectorAll(".container-designer"))
                 })
         })
     }

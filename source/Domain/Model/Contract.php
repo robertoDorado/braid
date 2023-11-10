@@ -51,7 +51,7 @@ class Contract
     {
         $this->contract = new ModelsContract();
         $contractData = $this->contract
-        ->find("job_id=:job_id", ":job_id=" . $jobId . "", "additional_description")
+        ->find("job_id=:job_id", ":job_id=" . $jobId . "", "additional_description, designer_id")
         ->advancedLeftJoin("designer", 
         "braid.designer.id = braid.contract.designer_id", null, null, "full_name, path_photo");
 

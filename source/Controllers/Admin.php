@@ -73,7 +73,7 @@ class Admin extends Controller
             header("HTTP/1.1 500 Internal Server Error");
             throw new \Exception(json_encode($errorMessage));
         }
-        
+
         if (!preg_match("/^\d+$/", $data["job_id"])) {
             header("HTTP/1.1 500 Internal Server Error");
             throw new \Exception(json_encode($errorMessage));
@@ -107,12 +107,12 @@ class Admin extends Controller
         $contract = new Contract();
         $contractData = $contract->getContractLeftJoinDesigner($data["job_id"]);
         $contractData = $contractData
-        ->limit($data["max"])->offset($data["page"])->order("braid.contract.id", true)->fetch(true);
+            ->offset($data["page"])->limit($data["max"])->order("braid.contract.id", true)->fetch(true);
 
         foreach ($contractData as $contract) {
             array_push($response, $contract->data());
         }
-        
+
         echo json_encode($response);
         die;
     }
@@ -121,7 +121,7 @@ class Admin extends Controller
     {
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $data = json_decode(file_get_contents('php://input'), true);
-            
+
             if (!empty($data["request_csrf_token"])) {
                 if ($data["request_csrf_token"]) {
                     echo json_encode(["csrf_token" => $this->getCurrentSession()->csrf_token]);
@@ -130,8 +130,8 @@ class Admin extends Controller
             }
 
             $post = $this->getRequestPost()
-            ->setRequiredFields(["csrf_token", "csrfToken", "additionalDescription"])
-            ->configureDataPost()->getAllPostData();
+                ->setRequiredFields(["csrf_token", "csrfToken", "additionalDescription"])
+                ->configureDataPost()->getAllPostData();
 
             if (!preg_match("/^\d+$/", $post["jobId"])) {
                 echo json_encode(["invalid_job_id" => true, "msg" => "Parâmetro inválido"]);
@@ -140,7 +140,7 @@ class Admin extends Controller
 
             $designer = new Designer();
             $designerData = $designer
-            ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
+                ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
             $designer->setId($designerData->id);
 
             $jobs = new Jobs();
@@ -155,8 +155,10 @@ class Admin extends Controller
             $contract->setSignatureDesigner(true);
             $contract->setModelContract($contract);
 
-            echo json_encode(["contract_success" => true, 
-            "url" => url("/braid-system/client-report")]);
+            echo json_encode([
+                "contract_success" => true,
+                "url" => url("/braid-system/client-report")
+            ]);
             die;
         }
 
@@ -165,7 +167,7 @@ class Admin extends Controller
         if (!$jobId) {
             redirect("braid-system/client-report");
         }
-        
+
         if (!preg_match("/^\d+$/", $jobId)) {
             redirect("braid-system/client-report");
         }
@@ -192,13 +194,13 @@ class Admin extends Controller
         if ($userData->user_type == "designer") {
             $designerData = $designer
                 ->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
-    
+
             $contractData = $contract->getContractByDesignerIdAndJobId($designerData->id, $jobData->id);
         }
-        
+
         $candidatesDesigner = $contract->getContractLeftJoinDesigner($jobId);
         $candidatesDesignerData = $candidatesDesigner
-        ->order("braid.contract.id", true)->limit(3)->fetch(true);
+            ->limit(3)->offset(0)->order("braid.contract.id", true)->fetch(true);
 
         $totalCandidatesDesigner = $candidatesDesigner->count();
         if (empty($jobData)) {
@@ -244,7 +246,7 @@ class Admin extends Controller
 
             $jobs = new Jobs();
             $jobs->deleteJobById($jobId);
-            
+
             echo json_encode(["success_delete_project" => true, "id" => $jobId]);
         }
     }
@@ -266,14 +268,16 @@ class Admin extends Controller
             if (!$jobId) {
                 throw new \Exception("Erro ao tentar acessar parametro da requisição");
             }
-            
+
             if (!preg_match("/^\d+$/", $jobId)) {
                 throw new \Exception("Erro ao tentar acessar parametro da requisição");
             }
 
-            $post = $this->getRequestPost()->setRequiredFields(["jobName", "jobDescription",
-            "csrfToken", "csrf_token", "remunerationData", "deliveryTime"])->configureDataPost()
-            ->getAllPostData();
+            $post = $this->getRequestPost()->setRequiredFields([
+                "jobName", "jobDescription",
+                "csrfToken", "csrf_token", "remunerationData", "deliveryTime"
+            ])->configureDataPost()
+                ->getAllPostData();
 
             $post["id"] = $jobId;
             $post["deliveryTime"] = str_replace("T", " ", $post["deliveryTime"]);
@@ -517,10 +521,13 @@ class Admin extends Controller
             $businessMan = $businessMan->getBusinessManByEmail($userData->full_email);
 
             $jobsData = $jobs->getJobsByBusinessManId($businessMan->id, $data["max"], $offsetValue, true);
+            $totalJobsData = $jobs->countTotalJobsByBusinessManId($businessMan->id);
         } else {
             $jobsData = $jobs->getAllJobs(3, $offsetValue, true);
+            $totalJobsData = $jobs->countTotalJobs();
         }
 
+        $jobsData[] = ["total_jobs" => $totalJobsData];
         if (empty($jobsData)) {
             echo json_encode(["empty_projects" => true]);
             die;
@@ -533,8 +540,10 @@ class Admin extends Controller
     {
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $post = $this->getRequestPost()
-                ->setRequiredFields(["jobName", "jobDescription",
-                "csrfToken", "csrf_token", "remunerationData", "deliveryTime"])
+                ->setRequiredFields([
+                    "jobName", "jobDescription",
+                    "csrfToken", "csrf_token", "remunerationData", "deliveryTime"
+                ])
                 ->configureDataPost()->getAllPostData();
 
             $post["deliveryTime"] = str_replace("T", " ", $post["deliveryTime"]);

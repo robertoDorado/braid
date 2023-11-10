@@ -40,17 +40,19 @@
             </div>
         <?php else : ?>
             <?php if (!empty($candidatesDesigner)) : ?>
-                <?php foreach ($candidatesDesigner as $candidate) : ?>
-                    <div class="callout callout-danger container-designer">
-                        <div class="designer-data">
-                            <img src="<?= empty($candidate->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $candidate->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
-                            <p><?= $candidate->full_name ?></p>
+                <div id="containerCandidates">
+                    <?php foreach ($candidatesDesigner as $candidate) : ?>
+                        <div class="callout callout-danger container-designer" data-hash="<?= base64_encode($candidate->designer_id) ?>">
+                            <div class="designer-data">
+                                <img src="<?= empty($candidate->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $candidate->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
+                                <p><?= $candidate->full_name ?></p>
+                            </div>
+                            <div class="description-data-designer">
+                                <p><?= $candidate->additional_description ?></p>
+                            </div>
                         </div>
-                        <div class="description-data-designer">
-                            <p><?= $candidate->additional_description ?></p>
-                        </div>
-                    </div>
-                <?php endforeach ?>
+                    <?php endforeach ?>
+                </div>
                 <?php if ($totalCandidatesDesigner > 3) : ?>
                     <div class="row">
                         <div class="col load-candidates-on-demand">
