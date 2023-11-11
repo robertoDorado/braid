@@ -3,7 +3,6 @@ const endpointParamValue = response.pop()
 const endpointData = response.join("/")
 
 if (endpointData == "braid-system/project-detail") {
-    let containerDesignerInDocument = Array.from(document.querySelectorAll(".container-designer"))
     const loadCandidates = document.getElementById("loadCandidates")
     const containerCandidates = document.getElementById("containerCandidates")
     let page = 1
@@ -63,17 +62,14 @@ if (endpointData == "braid-system/project-detail") {
                             imgLoader.style.display = "none"
                             btnLoader.style.display = "block"
 
-                            containerDesignerInDocument = containerDesignerInDocument
-                                .map(elem => atob(elem.dataset.hash))
+                            const totalJobsObject = response.pop()
+                            const paginate = Math.ceil(totalJobsObject.total_contracts / limit)
 
-                            response = Array.from(response)
-                            response = response.filter(value => containerDesignerInDocument
-                                .indexOf(value.designer_id) === -1)
-                            
-                            if (!response.length) {
+                            if (paginate == page) {
                                 loaderBtn.style.display = "none"
                             }
-                            
+
+                            response = Array.from(response)
                             response.forEach(function (item) {
                                 endpoint = {
                                     "localhost": "/braid/themes/braid-theme/assets/img/user",
@@ -116,7 +112,6 @@ if (endpointData == "braid-system/project-detail") {
                                 containerCandidates.appendChild(containerDesigner)
                             })
                         })
-                    containerDesignerInDocument = Array.from(document.querySelectorAll(".container-designer"))
                 })
         })
     }

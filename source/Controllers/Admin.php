@@ -103,17 +103,20 @@ class Admin extends Controller
             throw new \Exception(json_encode(["invalid_token_data" => true]));
         }
 
+        $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
         $response = [];
+
         $contract = new Contract();
         $contractData = $contract->getContractLeftJoinDesigner($data["job_id"]);
         $contractData = $contractData
-            ->offset($data["page"])->limit($data["max"])
+            ->offset($offsetValue)->limit($data["max"])
             ->order("braid.contract.id", true)->fetch(true);
 
-        foreach ($contractData as $contract) {
-            array_push($response, $contract->data());
+        foreach ($contractData as $contractValue) {
+            array_push($response, $contractValue->data());
         }
-
+        
+        $response[] = ["total_contracts" => $contract->getTotalContractLeftJoinDesigner($data["job_id"])];
         echo json_encode($response);
         die;
     }

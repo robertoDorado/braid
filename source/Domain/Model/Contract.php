@@ -47,6 +47,16 @@ class Contract
         }
     }
 
+    public function getTotalContractLeftJoinDesigner(int $jobId)
+    {
+        $this->contract = new ModelsContract();
+        $contractData = $this->contract
+        ->find("job_id=:job_id", ":job_id=" . $jobId . "", "id")
+        ->advancedLeftJoin("designer", 
+        "braid.designer.id = braid.contract.designer_id", null, null, "id")->count();
+        return $contractData;
+    }
+
     public function getContractLeftJoinDesigner(int $jobId, bool $getDataObject = false)
     {
         $this->contract = new ModelsContract();
