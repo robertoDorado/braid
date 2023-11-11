@@ -81,7 +81,6 @@ if (url.getCurrentEndpoint() == "braid-system/client-report") {
                     enpointDeleteProject = enpointDeleteProject[url.getHostName()] || ''
                     const requestUrlDeleteProject = url.getUrlOrigin(enpointDeleteProject)
 
-                    
                     const totalJobsObject = response.pop()
                     const paginate = Math.ceil(totalJobsObject.total_jobs / limit)
 

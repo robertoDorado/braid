@@ -69,6 +69,24 @@ class BusinessMan
         }
     }
 
+    public function updateNameEmailPhotoBusinessMan(array $data)
+    {
+        $this->businessMan = new ModelsBusinessMan();
+        $businessManData = $this->businessMan
+            ->find("full_email=:full_email", ":full_email=" . $data["fullEmail"] . "")->fetch();
+        
+        if (empty($businessManData)) {
+            return;
+        }
+
+        $businessManData->full_name = $data["fullName"];
+        $businessManData->full_email = $data["fullEmail"];
+        $businessManData->path_photo = $data["pathPhoto"];
+        if (!$businessManData->save()) {
+            throw new \Exception($businessManData->fail());
+        }
+    }
+
     public function getPathPhoto()
     {
         return $this->pathPhoto;
@@ -92,8 +110,8 @@ class BusinessMan
 
         $this->businessMan = new ModelsBusinessMan();
         $businessMan = $this->businessMan
-        ->find("full_email=:full_email", ":full_email=" . $email . "")
-        ->fetch();
+            ->find("full_email=:full_email", ":full_email=" . $email . "")
+            ->fetch();
 
         return $businessMan;
     }
@@ -130,8 +148,8 @@ class BusinessMan
     public function setEmail(string $email)
     {
         $emailData = (new ModelsBusinessMan())
-        ->find('full_email=:full_email', ':full_email=' . $email . '', 'email')
-        ->fetch();
+            ->find('full_email=:full_email', ':full_email=' . $email . '', 'email')
+            ->fetch();
 
         if (!empty($emailData)) {
             echo json_encode(['email_already_exists' => true]);

@@ -107,7 +107,8 @@ class Admin extends Controller
         $contract = new Contract();
         $contractData = $contract->getContractLeftJoinDesigner($data["job_id"]);
         $contractData = $contractData
-            ->offset($data["page"])->limit($data["max"])->order("braid.contract.id", true)->fetch(true);
+            ->offset($data["page"])->limit($data["max"])
+            ->order("braid.contract.id", true)->fetch(true);
 
         foreach ($contractData as $contract) {
             array_push($response, $contract->data());
@@ -739,6 +740,17 @@ class Admin extends Controller
             }
 
             $resultUpdate = $user->updateUserByEmail($post);
+            $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+            if (!empty($userData)) {
+                if ($userData->user_type == "designer") {
+                    $designer = new Designer();
+                    $designer->updateNameEmailPhotoDesigner($post);
+                }else {
+                    $businessMan = new BusinessMan();
+                    $businessMan->updateNameEmailPhotoBusinessMan($post);
+                }
+            }
 
             if ($resultUpdate) {
                 echo json_encode(["update_success" => true]);

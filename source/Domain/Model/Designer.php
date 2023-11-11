@@ -73,6 +73,24 @@ class Designer
         }
     }
 
+    public function updateNameEmailPhotoDesigner(array $data)
+    {
+        $this->designer = new ModelsDesigner();
+        $designerData = $this->designer
+            ->find("full_email=:full_email", ":full_email=" . $data["fullEmail"] . "")->fetch();
+
+        if (empty($designerData)) {
+            return;
+        }
+
+        $designerData->full_name = $data["fullName"];
+        $designerData->full_email = $data["fullEmail"];
+        $designerData->path_photo = $data["pathPhoto"];
+        if (!$designerData->save()) {
+            throw new \Exception($designerData->fail());
+        }
+    }
+
     public function getPathPhoto()
     {
         return $this->pathPhoto;
@@ -95,7 +113,7 @@ class Designer
         $designer = new ModelsDesigner();
 
         $designerData = $designer
-        ->find("full_email=:full_email", ":full_email=" . $email . "")->fetch();
+            ->find("full_email=:full_email", ":full_email=" . $email . "")->fetch();
 
         return $designerData;
     }
