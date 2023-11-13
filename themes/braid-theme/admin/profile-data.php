@@ -76,7 +76,7 @@
                         <div class="description-data-designer">
                             <form id="evaluationProfile" class="stars-container-evaluete">
                                 <b>Avalie o perfil desse usuário</b>
-                                <div class="stars">
+                                <div class="stars pointer">
                                     <input type="radio" id="cm_star-empty" name="fb" value="" checked />
                                     <label for="cm_star-1"><i class="fa"></i></label>
                                     <input type="radio" id="cm_star-1" name="fb" value="1" />

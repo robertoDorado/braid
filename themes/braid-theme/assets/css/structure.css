@@ -734,7 +734,11 @@ footer {
 }
 
 .stars label i.fa {
-    font-size: 1em
+    font-size: 1em;
+}
+
+.pointer label i.fa {
+    cursor: pointer;
 }
 
 .stars label i.fa:before {
