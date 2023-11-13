@@ -89,9 +89,19 @@ if (endpointData == "braid-system/project-detail") {
                                 const descriptionData = createNewElement("p")
                                 const btnSeeProfileCandidate = createNewElement("a")
 
+                                let endpointProfileData = {
+                                    "localhost": "/braid/braid-system/profile-data",
+                                    "clientes.laborcode.com.br": "/braid/braid-system/profile-data",
+                                    "braid.com.br": "/braid-system/profile-data",
+                                    "www.braid.com.br": "/braid-system/profile-data",
+                                }
+            
+                                endpointProfileData = endpointProfileData[url.getHostName()] || ''
+                                const requestUrlProfileData = url.getUrlOrigin(endpointProfileData)
+
                                 containerDesigner.dataset.hash = btoa(item.designer_id)
                                 btnSeeProfileCandidate.innerHTML = "Ver perfil do candidato"
-                                btnSeeProfileCandidate.href = "#"
+                                btnSeeProfileCandidate.href = requestUrlProfileData + "/" + btoa(item.designer_id)
 
                                 if (item.path_photo == null) {
                                     photoDesigner.src = requestUrl + "/default.png"
