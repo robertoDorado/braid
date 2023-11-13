@@ -693,6 +693,13 @@ footer {
     margin-left: 1rem;
 }
 
+.description-data-designer {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    width: 100%;
+}
+
 .designer-data {
     display: flex;
     flex-direction: column;
@@ -715,6 +722,40 @@ footer {
     align-items: center;
     justify-content: center;
     margin: 1rem 0;
+}
+
+.see-profile {
+    text-decoration: none !important;
+    color: #ffffff !important;
+}
+
+.stars input[type=radio] {
+    display: none;
+}
+
+.stars label i.fa {
+    font-size: 1em
+}
+
+.stars label i.fa:before {
+    content: '\f005';
+    color: #FC0;
+}
+
+.stars input[type=radio]:checked~label i.fa:before {
+    color: #CCC;
+}
+
+.stars-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.stars-container-evaluete {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
 }
 
 @media screen and (min-width: 1200px) {

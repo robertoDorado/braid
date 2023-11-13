@@ -87,8 +87,11 @@ if (endpointData == "braid-system/project-detail") {
                                 const freelancerName = createNewElement("p")
                                 const descriptionDataDesigner = createNewElement("div")
                                 const descriptionData = createNewElement("p")
+                                const btnSeeProfileCandidate = createNewElement("a")
 
                                 containerDesigner.dataset.hash = btoa(item.designer_id)
+                                btnSeeProfileCandidate.innerHTML = "Ver perfil do candidato"
+                                btnSeeProfileCandidate.href = "#"
 
                                 if (item.path_photo == null) {
                                     photoDesigner.src = requestUrl + "/default.png"
@@ -105,8 +108,10 @@ if (endpointData == "braid-system/project-detail") {
                                 setAttributesToElement("class", "designer-data", designerData)
                                 setAttributesToElement("class", "photo-designer", photoDesigner)
                                 setAttributesToElement("class", "description-data-designer", descriptionDataDesigner)
+                                setAttributesToElement("class", "btn btn-primary see-profile", btnSeeProfileCandidate)
 
                                 descriptionDataDesigner.appendChild(descriptionData)
+                                descriptionDataDesigner.appendChild(btnSeeProfileCandidate)
                                 designerData.append(photoDesigner, freelancerName)
                                 containerDesigner.append(designerData, descriptionDataDesigner)
                                 containerCandidates.appendChild(containerDesigner)

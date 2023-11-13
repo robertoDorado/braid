@@ -49,6 +49,7 @@
                             </div>
                             <div class="description-data-designer">
                                 <p><?= $candidate->additional_description ?></p>
+                                <a href="<?= url("/braid-system/profile-data/" . base64_encode($candidate->designer_id) . "") ?>" class="btn btn-primary see-profile">Ver perfil do candidato</a>
                             </div>
                         </div>
                     <?php endforeach ?>

@@ -79,6 +79,7 @@ $route->post("/edit-project", "Admin:editProject");
 $route->post("/delete-project", "Admin:deleteProject");
 $route->get("/project-detail/{hash}", "Admin:projectDetail");
 $route->post("/project-detail", "Admin:projectDetail");
+$route->get("/profile-data/{hash}", "Admin:profileData");
 
 /**
  * Cookies

@@ -26,6 +26,42 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function profileData(array $data = [])
+    {
+        $designerId = base64_decode($data["hash"], true);
+
+        if (!$designerId) {
+            redirect("braid-system/client-report");
+        }
+
+        if (!preg_match("/^\d+$/", $designerId)) {
+            redirect("braid-system/client-report");
+        }
+
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+
+        $user = new User();
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        echo $this->view->render("admin/profile-data", [
+            "menuSelected" => $menuSelected,
+            "breadCrumbTitle" => "Detalhes do perfil",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function chargeOnDemandCandidates(array $data = [])
     {
         header('Content-Type: application/json');
