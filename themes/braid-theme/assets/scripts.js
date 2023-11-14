@@ -249,7 +249,15 @@ if(data.update_success){window.location.href=window.location.href}}).catch(funct
 btnSubmit.style.display='block'
 loaderImage.style.display='none'
 errorMessage.style.display='block'
-errorMessage.innerHTML=error})})};if(/braid-system/.test(url.getCurrentEndpoint())){const exit=document.getElementById("exit")
+errorMessage.innerHTML=error})})};const endpointProfileData=removeParamFromEndpoint(url.getCurrentEndpoint(),!0)
+const paramProfileData=endpointProfileData.pop()
+if(endpointProfileData.join("/")=="braid-system/profile-data"){const evaluationProfileForm=document.getElementById("evaluationProfile")
+evaluationProfileForm.addEventListener("submit",function(event){event.preventDefault()
+if(this.evaluateDescription.value.length>1000){this.evaluateDescription.style.borderColor="#ff0000"
+throw new Error("Descrição da avaliação está acima de 1000 caracteres")}else{this.evaluateDescription.style.borderColor="#ced4da"}
+if(this.fb.value>5){throw new Error("Avaliação de estrelas não pode ser acima de 5")}
+console.log(this.fb.value)
+console.log(this.evaluateDescription.value)})};if(/braid-system/.test(url.getCurrentEndpoint())){const exit=document.getElementById("exit")
 exit.addEventListener('click',function(event){event.preventDefault()
 let endpoint={"localhost":"/braid/braid-system/exit","clientes.laborcode.com.br":"/braid/braid-system/exit","braid.com.br":"/braid-system/exit","www.braid.com.br":"/braid-system/exit",}
 endpoint=endpoint[url.getHostName()]||''
@@ -295,7 +303,9 @@ errorMessage.innerHTML=error})})};const response=removeParamFromEndpoint(url.get
 const endpointParamValue=response.pop()
 const endpointData=response.join("/")
 if(endpointData=="braid-system/project-detail"){const loadCandidates=document.getElementById("loadCandidates")
-let page=2
+const containerCandidates=document.getElementById("containerCandidates")
+let page=1
+const limit=3
 if(loadCandidates){loadCandidates.addEventListener("click",function(event){event.preventDefault()
 const loaderBtn=this
 const imgLoader=this.firstElementChild
@@ -308,7 +318,7 @@ endpoint=endpoint[url.getHostName()]||''
 let requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl).then(response=>response.json()).then(function(response){if(!response.tokenData){throw new Error("Erro ao retornar o token do usuário")}
 response.page=page
-response.max=3
+response.max=limit
 response.job_id=atob(endpointParamValue)
 endpoint={"localhost":"/braid/braid-system/charge-on-demand-candidates","clientes.laborcode.com.br":"/braid/braid-system/charge-on-demand-candidates","braid.com.br":"/braid-system/charge-on-demand-candidates","www.braid.com.br":"/braid-system/charge-on-demand-candidates",}
 endpoint=endpoint[url.getHostName()]||''
@@ -316,8 +326,41 @@ requestUrl=url.getUrlOrigin(endpoint)
 const stringBase64=btoa(JSON.stringify(response))
 fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){imgLoader.style.display="none"
 btnLoader.style.display="block"
-if(!response.length){loaderBtn.style.display="none"}
-console.log(response)})})})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteBtnModal=document.getElementById("deleteBtnModal")
+const totalJobsObject=response.pop()
+const paginate=Math.ceil(totalJobsObject.total_contracts/limit)
+if(paginate==page){loaderBtn.style.display="none"}
+response=Array.from(response)
+response.forEach(function(item){endpoint={"localhost":"/braid/themes/braid-theme/assets/img/user","clientes.laborcode.com.br":"/braid/themes/braid-theme/assets/img/user","braid.com.br":"/themes/braid-theme/assets/img/user","www.braid.com.br":"/themes/braid-theme/assets/img/user",}
+endpoint=endpoint[url.getHostName()]||''
+requestUrl=url.getUrlOrigin(endpoint)
+const containerDesigner=createNewElement("div")
+const designerData=createNewElement("div")
+const photoDesigner=createNewElement("img")
+const freelancerName=createNewElement("p")
+const descriptionDataDesigner=createNewElement("div")
+const descriptionData=createNewElement("p")
+const btnSeeProfileCandidate=createNewElement("a")
+let endpointProfileData={"localhost":"/braid/braid-system/profile-data","clientes.laborcode.com.br":"/braid/braid-system/profile-data","braid.com.br":"/braid-system/profile-data","www.braid.com.br":"/braid-system/profile-data",}
+endpointProfileData=endpointProfileData[url.getHostName()]||''
+const requestUrlProfileData=url.getUrlOrigin(endpointProfileData)
+containerDesigner.dataset.hash=btoa(item.designer_id)
+btnSeeProfileCandidate.innerHTML="Ver perfil do candidato"
+btnSeeProfileCandidate.href=requestUrlProfileData+"/"+btoa(item.designer_id)
+if(item.path_photo==null){photoDesigner.src=requestUrl+"/default.png"
+photoDesigner.alt="default.png"}else{photoDesigner.src=requestUrl+"/"+item.path_photo
+photoDesigner.alt=item.path_photo}
+freelancerName.innerHTML=item.full_name
+descriptionData.innerHTML=item.additional_description
+setAttributesToElement("class","callout callout-danger container-designer",containerDesigner)
+setAttributesToElement("class","designer-data",designerData)
+setAttributesToElement("class","photo-designer",photoDesigner)
+setAttributesToElement("class","description-data-designer",descriptionDataDesigner)
+setAttributesToElement("class","btn btn-primary see-profile",btnSeeProfileCandidate)
+descriptionDataDesigner.appendChild(descriptionData)
+descriptionDataDesigner.appendChild(btnSeeProfileCandidate)
+designerData.append(photoDesigner,freelancerName)
+containerDesigner.append(designerData,descriptionDataDesigner)
+containerCandidates.appendChild(containerDesigner)})})})})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteBtnModal=document.getElementById("deleteBtnModal")
 const launchSureDeleteModal=document.getElementById("launchSureDeleteModal")
 const calloutModalDeleteProject=document.getElementById("calloutModalDeleteProject")
 const loadNewProjects=document.getElementById("loadNewProjects")
@@ -325,6 +368,7 @@ const rows=Array.from(document.querySelectorAll(".row"))
 const cardBody=document.getElementById("cardBody")
 const userType=cardBody.dataset.user
 let page=1
+const limit=3
 if(loadNewProjects){loadNewProjects.addEventListener("click",function(event){event.preventDefault()
 const loaderButton=this
 const loaderImage=this.firstElementChild
@@ -336,13 +380,12 @@ endpoint=endpoint[url.getHostName()]||''
 let requestUrl=url.getUrlOrigin(endpoint)
 fetch(requestUrl).then(response=>response.json()).then(function(response){if(!response.tokenData){throw new Error("Erro ao retornar o token do usuário")}
 response.page=page
-response.max=3
+response.max=limit
 endpoint={"localhost":"/braid/braid-system/charge-on-demand","clientes.laborcode.com.br":"/braid/braid-system/charge-on-demand","braid.com.br":"/braid-system/charge-on-demand","www.braid.com.br":"/braid-system/charge-on-demand",}
 endpoint=endpoint[url.getHostName()]||''
 requestUrl=url.getUrlOrigin(endpoint)
 const stringBase64=btoa(JSON.stringify(response))
-fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){if(!response.length){loaderButton.style.display="none"}
-loaderImage.style.display="none"
+fetch(requestUrl+"/"+stringBase64,{method:"GET",headers:{Authorization:"Bearer "+response.tokenData}}).then(response=>response.json()).then(function(response){loaderImage.style.display="none"
 loaderLabel.style.display="block"
 const wrapElement=rows[2].firstElementChild
 let endpointEditProject={"localhost":"/braid/braid-system/edit-project","clientes.laborcode.com.br":"/braid/braid-system/edit-project","braid.com.br":"/braid-system/edit-project","www.braid.com.br":"/braid-system/edit-project",}
@@ -351,6 +394,9 @@ const requestUrlEditProject=url.getUrlOrigin(endpointEditProject)
 let enpointDeleteProject={"localhost":"/braid/braid-system/delete-project","clientes.laborcode.com.br":"/braid/braid-system/delete-project","braid.com.br":"/braid-system/delete-project","www.braid.com.br":"/braid-system/delete-project",}
 enpointDeleteProject=enpointDeleteProject[url.getHostName()]||''
 const requestUrlDeleteProject=url.getUrlOrigin(enpointDeleteProject)
+const totalJobsObject=response.pop()
+const paginate=Math.ceil(totalJobsObject.total_jobs/limit)
+if(paginate==page){loaderButton.style.display="none"}
 response=Array.from(response)
 response.forEach(function(item){const cardBodyElement=createNewElement("div")
 setAttributesToElement("class","card-body",cardBodyElement)

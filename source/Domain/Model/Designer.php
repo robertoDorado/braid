@@ -16,11 +16,14 @@ class Designer
     /** @var int Ultimo id inserido na tabela Designer */
     private int $id = 0;
 
-    /** @var string Nome do Designer  */
+    /** @var string Nome  */
     private string $fullName;
 
-    /** @var string E-mail do designer */
+    /** @var string E-mail */
     private string $fullEmail = '';
+
+    /** @var string Cargo */
+    private string $positionData = '';
 
     /** @var string Foto */
     private string $pathPhoto = '';
@@ -34,13 +37,13 @@ class Designer
     /** @var string[] Objetivos */
     private array $goalsData = [];
 
-    /** @var string[] Qualificações do designer */
+    /** @var string[] Qualificações */
     private array $qualificationsData = [];
 
-    /** @var string[] Portfólio do designer */
+    /** @var string[] Portfólio */
     private array $portfolioData = [];
 
-    /** @var string[] Experiência do designer */
+    /** @var string[] Experiência */
     private array $experienceData = [];
 
     /** @var Contract[] */
@@ -58,6 +61,7 @@ class Designer
             $this->designer = new ModelsDesigner();
             $this->designer->full_name = $this->getDesignerName();
             $this->designer->full_email = $this->getEmail();
+            $this->designer->position_data = $this->getPositionData();
             $this->designer->path_photo = empty($this->getPathPhoto()) ? null : $this->getPathPhoto();
             $this->designer->document_data = empty($this->getDocument()) ? null : $this->getDocument();
             $this->designer->experience_data = empty($this->getExperienceAsString()) ? null : $this->getExperienceAsString();
@@ -71,6 +75,16 @@ class Designer
 
             $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function getPositionData()
+    {
+        return $this->positionData;
+    }
+
+    public function setPositionData(string $positionData)
+    {
+        $this->positionData = $positionData;
     }
 
     public function updateNameEmailPhotoDesigner(array $data)

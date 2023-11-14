@@ -19,6 +19,9 @@ class Designer extends Model
     /** @var string E-mail completo */
     private string $fullEmail = 'full_email';
 
+    /** @var string Cargo na empresa */
+    private string $positionData = 'position_data';
+
     /** @var string Foto de identificação */
     private string $photoPath = 'photo_path';
 

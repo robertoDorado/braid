@@ -28,13 +28,13 @@ class Admin extends Controller
 
     public function profileData(array $data = [])
     {
-        $designerId = base64_decode($data["hash"], true);
+        $perfilId = base64_decode($data["hash"], true);
 
-        if (!$designerId) {
+        if (!$perfilId) {
             redirect("braid-system/client-report");
         }
 
-        if (!preg_match("/^\d+$/", $designerId)) {
+        if (!preg_match("/^\d+$/", $perfilId)) {
             redirect("braid-system/client-report");
         }
 
@@ -51,7 +51,23 @@ class Admin extends Controller
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
 
+        $designer = new Designer();
+        $profileData = $designer->getDesignerById($perfilId);
+
+        if (empty($profileData)) {
+            $businessMan = new BusinessMan();
+            $profileData = $businessMan->getBusinessManById($perfilId);
+        }
+
+        if (empty($profileData)) {
+            redirect("/braid-system/client-report");
+        }
+
+        $profileType = $user->getUserByEmail($profileData->full_email);
+
         echo $this->view->render("admin/profile-data", [
+            "profileType" => $profileType,
+            "profileData" => $profileData,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Detalhes do perfil",
             "fullName" => $userData->full_name,

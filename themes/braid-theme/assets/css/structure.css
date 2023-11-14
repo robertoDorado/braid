@@ -756,7 +756,7 @@ footer {
     justify-content: space-between;
 }
 
-.stars-container-evaluete {
+.stars-container-evaluate {
     display: flex;
     flex-direction: column;
     padding: 0 1rem;
