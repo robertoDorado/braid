@@ -16,17 +16,17 @@
                                 <div class="stars-container">
                                     <b>Avaliação</b>
                                     <div class="stars">
-                                        <input type="radio" id="cm_star-empty-data" name="fbData" value="" checked disabled />
+                                        <input type="radio" id="cm_star-empty-data" name="fbData" value="" <?= empty($meanEvaluation) ? "checked" : "" ?> checked disabled />
                                         <label for="cm_star-1-data"><i class="fa"></i></label>
-                                        <input type="radio" id="cm_star-1-data" name="fbData" value="1" disabled />
+                                        <input type="radio" id="cm_star-1-data" name="fbData" value="1" <?= $meanEvaluation == 1 ? "checked" : "" ?> disabled />
                                         <label for="cm_star-2-data"><i class="fa"></i></label>
-                                        <input type="radio" id="cm_star-2-data" name="fbData" value="2" disabled />
+                                        <input type="radio" id="cm_star-2-data" name="fbData" value="2" <?= $meanEvaluation == 2 ? "checked" : "" ?> disabled />
                                         <label for="cm_star-3-data"><i class="fa"></i></label>
-                                        <input type="radio" id="cm_star-3-data" name="fbData" value="3" disabled />
+                                        <input type="radio" id="cm_star-3-data" name="fbData" value="3" <?= $meanEvaluation == 3 ? "checked" : "" ?> disabled />
                                         <label for="cm_star-4-data"><i class="fa"></i></label>
-                                        <input type="radio" id="cm_star-4-data" name="fbData" value="4" disabled />
+                                        <input type="radio" id="cm_star-4-data" name="fbData" value="4" <?= $meanEvaluation == 4 ? "checked" : "" ?> disabled />
                                         <label for="cm_star-5-data"><i class="fa"></i></label>
-                                        <input type="radio" id="cm_star-5-data" name="fbData" value="5" disabled />
+                                        <input type="radio" id="cm_star-5-data" name="fbData" value="5" <?= $meanEvaluation == 5 ? "checked" : "" ?> disabled />
                                     </div>
                                 </div>
                             </li>
@@ -92,13 +92,51 @@
                                 </div>
                                 <div class="form-group">
                                     <textarea name="evaluateDescription" id="evaluateDescription" class="form-control"></textarea>
+                                    <input type="hidden" name="csrfToken" value="<?= empty($csrfToken) ? "" : $csrfToken ?>">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Enviar avaliação</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+                                    <span>Enviar Avaliação</span>
+                                </button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <?php if (!empty($evaluationDesignerData)) : ?>
+            <?php foreach ($evaluationDesignerData as $dataEvaluate) : ?>
+                <div class="row">
+                    <div class="col">
+                        <div class="callout callout-danger container-designer">
+                            <div class="description-data-designer">
+                                <div class="stars">
+                                    <input type="radio" id="cm_star-empty-report" value="" <?= empty($dataEvaluate->rating_data) ? "checked" : "" ?> />
+                                    <label for="cm_star-1"><i class="fa"></i></label>
+                                    <input type="radio" id="cm_star-report-1" value="1" <?= $dataEvaluate->rating_data == 1 ? "checked" : "" ?> />
+                                    <label for="cm_star-report-2"><i class="fa"></i></label>
+                                    <input type="radio" id="cm_star-report-2" value="2" <?= $dataEvaluate->rating_data == 2 ? "checked" : "" ?> />
+                                    <label for="cm_star-report-3"><i class="fa"></i></label>
+                                    <input type="radio" id="cm_star-report-3" value="3" <?= $dataEvaluate->rating_data == 3 ? "checked" : "" ?> />
+                                    <label for="cm_star-report-4"><i class="fa"></i></label>
+                                    <input type="radio" id="cm_star-report-4" value="4" <?= $dataEvaluate->rating_data == 4 ? "checked" : "" ?> />
+                                    <label for="cm_star-report-5"><i class="fa"></i></label>
+                                    <input type="radio" id="cm_star-report-5" value="5" <?= $dataEvaluate->rating_data == 5 ? "checked" : "" ?> />
+                                </div>
+                                <p><?= $dataEvaluate->evaluation_description ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach ?>
+            <div class="row">
+                <div class="col load-evaluation">
+                    <a href="#" id="loadEvaluate" class="btn btn-danger">
+                        <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+                        <span>Carregar mais avaliações</span>
+                    </a>
+                </div>
+            </div>
+        <?php endif ?>
     </div>
 </section>

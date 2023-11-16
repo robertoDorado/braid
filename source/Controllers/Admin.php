@@ -7,6 +7,7 @@ use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Credentials;
 use Source\Domain\Model\Designer;
+use Source\Domain\Model\EvaluationDesigner;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\User;
 
@@ -28,13 +29,67 @@ class Admin extends Controller
 
     public function profileData(array $data = [])
     {
-        $perfilId = base64_decode($data["hash"], true);
+        $designer = new Designer();
+        $businessMan = new BusinessMan();
+        $evaluationDesigner = new EvaluationDesigner();
 
-        if (!$perfilId) {
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            header('Content-Type: application/json');
+
+            if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+                throw new \Exception("Cabeçalho de autorização ausente");
+            }
+
+            if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+                throw new \Exception("Formato de autorização inválido.");
+            }
+
+            $profileId = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+            $profileId = base64_decode($profileId, true);
+
+            if (!$profileId) {
+                header("HTTP/1.1 403 Forbidden");
+                echo json_encode(["error" => "Acesso negado"]);
+                die;
+            }
+
+            if (!preg_match("/^\d+$/", $profileId)) {
+                header("HTTP/1.1 403 Forbidden");
+                echo json_encode(["error" => "Acesso negado"]);
+                die;
+            }
+
+            $post = $this->getRequestPost()
+            ->setRequiredFields(["evaluateDescription", "csrf_token", "csrfToken"])
+            ->configureDataPost()->getAllPostData();
+
+            $fb = empty($post["fb"]) ? 0 : $post["fb"];
+
+            $designerData = $designer->getDesignerById($profileId);
+            if (!empty($designerData)) {
+                $designer->setId($designerData->id);
+                $evaluationDesigner->setDesigner($designer);
+                $evaluationDesigner->setRatingData($fb);
+                $evaluationDesigner->setEvaluationDescription($post["evaluateDescription"]);
+                $evaluationDesigner->setEvaluationDesigner($evaluationDesigner);
+
+                echo json_encode(["success" => true,
+                "full_name" => $designerData->full_name,
+                "path_photo" => $designerData->path_photo,
+                "rating" => $evaluationDesigner->getRatingData(),
+                "evaluation_description" => $evaluationDesigner->getEvaluationDescription()
+                ]);
+                die;
+            }
+
+        }
+
+        $profileId = base64_decode($data["hash"], true);
+        if (!$profileId) {
             redirect("braid-system/client-report");
         }
 
-        if (!preg_match("/^\d+$/", $perfilId)) {
+        if (!preg_match("/^\d+$/", $profileId)) {
             redirect("braid-system/client-report");
         }
 
@@ -50,22 +105,45 @@ class Admin extends Controller
 
         $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-
-        $designer = new Designer();
-        $profileData = $designer->getDesignerById($perfilId);
+        $profileData = $designer->getDesignerById($profileId);
 
         if (empty($profileData)) {
-            $businessMan = new BusinessMan();
-            $profileData = $businessMan->getBusinessManById($perfilId);
+            $profileData = $businessMan->getBusinessManById($profileId);
         }
 
         if (empty($profileData)) {
             redirect("/braid-system/client-report");
         }
 
+        $csrfToken = $this->getCurrentSession()->csrf_token;
         $profileType = $user->getUserByEmail($profileData->full_email);
 
+        $meanEvaluation = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId, 3, true);
+
+        if (!empty($evaluationDesignerData)) {
+            foreach ($evaluationDesignerData as &$evaluationData) {
+                $evaluationData = $evaluationData->data();
+            }
+        }
+
+        if (!empty($meanEvaluation)) {
+            foreach ($meanEvaluation as &$dataMeanEvaluation) {
+                $dataMeanEvaluation = $dataMeanEvaluation->rating_data;
+            }
+            $meanEvaluation = round(array_sum($meanEvaluation) / count($meanEvaluation));
+
+            if ($meanEvaluation > 5) {
+                $meanEvaluation = 5;
+            }
+        }else {
+            $meanEvaluation = 0;
+        }
+
         echo $this->view->render("admin/profile-data", [
+            "meanEvaluation" => $meanEvaluation,
+            "evaluationDesignerData" => $evaluationDesignerData,
+            "csrfToken" => $csrfToken,
             "profileType" => $profileType,
             "profileData" => $profileData,
             "menuSelected" => $menuSelected,
@@ -167,7 +245,7 @@ class Admin extends Controller
         foreach ($contractData as $contractValue) {
             array_push($response, $contractValue->data());
         }
-        
+
         $response[] = ["total_contracts" => $contract->getTotalContractLeftJoinDesigner($data["job_id"])];
         echo json_encode($response);
         die;
@@ -801,7 +879,7 @@ class Admin extends Controller
                 if ($userData->user_type == "designer") {
                     $designer = new Designer();
                     $designer->updateNameEmailPhotoDesigner($post);
-                }else {
+                } else {
                     $businessMan = new BusinessMan();
                     $businessMan->updateNameEmailPhotoBusinessMan($post);
                 }

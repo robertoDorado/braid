@@ -27,12 +27,42 @@ class EvaluationDesigner
         if (is_array($getter) && is_array($isMethods)) {
             $this->evaluationDesigner = new ModelsEvaluationDesigner();
             $this->evaluationDesigner->designer_id = $this->getDesigner()->getId();
-            $this->evaluationDesigner->rating_data = $this->getRatingData();
+            $this->evaluationDesigner->rating_data = empty($this->getRatingData()) ? 0 : $this->getRatingData();
             $this->evaluationDesigner->evaluation_description = $this->getEvaluationDescription();
             if (!$this->evaluationDesigner->save()) {
                 throw new \Exception($this->evaluationDesigner->fail());
             }
         }
+    }
+
+    public function getEvaluationLeftJoinDesigner(int $designerId = 0, int $limitValue = 0, bool $orderBy = false)
+    {
+        $this->evaluationDesigner = new ModelsEvaluationDesigner();
+
+        $terms = "";
+        $params = "";
+
+        if (!empty($designerId)) {
+            $terms = "id=:id";
+            $params = ":id=" . $designerId . "";
+        }
+
+        $evaluationDesignerData = $this->evaluationDesigner
+        ->find("", null, "rating_data, evaluation_description")
+        ->advancedLeftJoin("designer",
+        "braid.designer.id = braid.evaluation_designer.designer_id",
+        $terms, $params);
+
+        if (!empty($limitValue)) {
+            $evaluationDesignerData->limit($limitValue);
+        }
+
+        if ($orderBy) {
+            $evaluationDesignerData->order("braid.evaluation_designer.id", $orderBy);
+        }
+
+        $evaluationDesignerData = $evaluationDesignerData->fetch(true);
+        return $evaluationDesignerData;
     }
 
     public function getEvaluationDescription()
