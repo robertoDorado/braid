@@ -74,8 +74,6 @@ class Admin extends Controller
                 $evaluationDesigner->setEvaluationDesigner($evaluationDesigner);
 
                 echo json_encode(["success" => true,
-                "full_name" => $designerData->full_name,
-                "path_photo" => $designerData->path_photo,
                 "rating" => $evaluationDesigner->getRatingData(),
                 "evaluation_description" => $evaluationDesigner->getEvaluationDescription()
                 ]);
