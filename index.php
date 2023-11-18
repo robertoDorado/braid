@@ -72,6 +72,7 @@ $route->post("/client-report-form", "Admin:clientReportForm");
 $route->post("/exit", "Admin:exit");
 $route->get("/charge-on-demand/{hash}", "Admin:chargeOnDemand");
 $route->get("/charge-on-demand-candidates/{hash}", "Admin:chargeOnDemandCandidates");
+$route->get("/charge-on-demand-evaluation/{hash}", "Admin:chargeOnDemandEvaluation");
 $route->get("/token", "Admin:getLoginTokenData");
 $route->get("/search-project", "Admin:searchProject");
 $route->get("/edit-project/{hash}", "Admin:editProject");

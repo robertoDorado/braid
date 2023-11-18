@@ -14,6 +14,9 @@ class EvaluationDesigner extends Model
     /** @var string Nome da tabela */
     private string $tableName = CONF_DB_NAME . ".evaluation_designer";
 
+    /** @var string Id da empresa que fez a avaliação */
+    private string $businessManId = "business_man_id";
+
     /** @var string Id designer */
     private string $designerId = 'designer_id';
 
@@ -28,6 +31,6 @@ class EvaluationDesigner extends Model
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ['id'], [$this->designerId, $this->ratingData, $this->evaluationDescription]);
+        parent::__construct($this->tableName, ['id'], [$this->businessManId, $this->designerId, $this->ratingData, $this->evaluationDescription]);
     }
 }

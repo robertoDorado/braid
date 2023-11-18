@@ -27,8 +27,11 @@ class EvaluationDesigner extends DDL
         $this->setClassProperties();
         $this->removeProperty('table_name');
         $this->setProperty('');
-        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL', 'BIGINT NOT NULL',
-        'VARCHAR(255) NOT NULL', 'CONSTRAINT `evaluation_designer_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)']);
+        $this->setProperty('');
+        $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY', 'BIGINT NOT NULL',
+        'BIGINT NOT NULL', 'BIGINT NOT NULL', 'VARCHAR(255) NOT NULL', 
+        'CONSTRAINT `evaluation_designer_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
+        'CONSTRAINT `evaluation_business_man_ibfk_1` FOREIGN KEY (`business_man_id`) REFERENCES `business_man` (`id`)']);
         $this->dropTableIfExists()->createTableQuery();
         $this->executeQuery();
     }

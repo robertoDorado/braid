@@ -27,11 +27,100 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function chargeOnDemandEvaluation(array $data = [])
+    {
+        header('Content-Type: application/json');
+        if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+            throw new \Exception("Cabeçalho de autorização ausente");
+        }
+
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
+        }
+
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $data = base64_decode($data["hash"], true);
+        if (!$data) {
+            throw new \Exception("Hash base64 inválida");
+        }
+
+        $data = json_decode($data, true);
+        $origin = $this->getServer("SERVER_NAME");
+        $allowOrigin = ["clientes.laborcode.com.br", "braid.com.br"];
+
+        if (!in_array($origin, $allowOrigin)) {
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode(['error' => 'Acesso negado']);
+            die;
+        }
+
+        header("Access-Control-Allow-Origin: {$origin}");
+        $errorMessage = [
+            "invalid_parameter" => true,
+            "msg" => "valor do parametro invalido"
+        ];
+
+        if (empty($data["page"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+
+        if (empty($data["max"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+
+        if (empty($data["profile_id"])) {
+            header("HTTP/1.1 500 Internal Server Error");
+            throw new \Exception(json_encode($errorMessage));
+        }
+
+        foreach ($data as $key => $value) {
+
+            if ($key == "page" || $key == "max" || $key == "profile_id") {
+                if (!preg_match("/^[\d]+$/", $value)) {
+                    header("HTTP/1.1 500 Internal Server Error");
+                    throw new \Exception(json_encode($errorMessage));
+                }
+
+                if ($value < 0) {
+                    header("HTTP/1.1 500 Internal Server Error");
+                    throw new \Exception(json_encode($errorMessage));
+                }
+            }
+        }
+
+        $credentials = new Credentials();
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
+        }
+        
+        $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
+        $evaluationDesigner = new EvaluationDesigner();
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_id"], $data["max"], $offsetValue, true);
+        $totalEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_id"]);
+        
+        if (!empty($evaluationDesignerData)) {
+            foreach ($evaluationDesignerData as &$evaluationData) {
+                $evaluationData = $evaluationData->data();
+            }
+        }
+        $evaluationDesignerData[]["total_evaluation"] = count($totalEvaluationDesigner);
+
+        echo json_encode($evaluationDesignerData);
+        die;
+    }
+
     public function profileData(array $data = [])
     {
         $designer = new Designer();
         $businessMan = new BusinessMan();
         $evaluationDesigner = new EvaluationDesigner();
+        $user = new User();
 
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             header('Content-Type: application/json');
@@ -60,26 +149,36 @@ class Admin extends Controller
             }
 
             $post = $this->getRequestPost()
-            ->setRequiredFields(["evaluateDescription", "csrf_token", "csrfToken"])
-            ->configureDataPost()->getAllPostData();
+                ->setRequiredFields(["evaluateDescription", "csrf_token", "csrfToken"])
+                ->configureDataPost()->getAllPostData();
 
             $fb = empty($post["fb"]) ? 0 : $post["fb"];
 
             $designerData = $designer->getDesignerById($profileId);
+            $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+            if ($userData->user_type != "businessman") {
+                throw new \Exception("Somente usuários do tipo empresa podem enviar avaliações");
+            }
+
+            $businessManData = $businessMan->getBusinessManByEmail($userData->full_email);
             if (!empty($designerData)) {
+
                 $designer->setId($designerData->id);
+                $businessMan->setId($businessManData->id);
                 $evaluationDesigner->setDesigner($designer);
+                $evaluationDesigner->setBusinessMan($businessMan);
                 $evaluationDesigner->setRatingData($fb);
                 $evaluationDesigner->setEvaluationDescription($post["evaluateDescription"]);
                 $evaluationDesigner->setEvaluationDesigner($evaluationDesigner);
 
-                echo json_encode(["success" => true,
-                "rating" => $evaluationDesigner->getRatingData(),
-                "evaluation_description" => $evaluationDesigner->getEvaluationDescription()
+                echo json_encode([
+                    "success" => true,
+                    "rating" => $evaluationDesigner->getRatingData(),
+                    "evaluation_description" => $evaluationDesigner->getEvaluationDescription()
                 ]);
                 die;
             }
-
         }
 
         $profileId = base64_decode($data["hash"], true);
@@ -101,7 +200,6 @@ class Admin extends Controller
         $menuSelected = array_values($menuSelected);
         $menuSelected = $menuSelected[count($menuSelected) - 1];
 
-        $user = new User();
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         $profileData = $designer->getDesignerById($profileId);
 
@@ -116,29 +214,40 @@ class Admin extends Controller
         $csrfToken = $this->getCurrentSession()->csrf_token;
         $profileType = $user->getUserByEmail($profileData->full_email);
 
-        $meanEvaluation = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId);
-        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId, 3, true);
+        $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId , 3, 0, true);
+        $isEvaluatedByBusinessMan = false;
 
-        if (!empty($evaluationDesignerData)) {
+        if (!empty($evaluationDesignerData)) { 
             foreach ($evaluationDesignerData as &$evaluationData) {
                 $evaluationData = $evaluationData->data();
             }
         }
-
-        if (!empty($meanEvaluation)) {
-            foreach ($meanEvaluation as &$dataMeanEvaluation) {
+        
+        if (!empty($arrayEvaluationDesigner)) {
+            $businessManData = $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+            
+            foreach ($arrayEvaluationDesigner as &$dataMeanEvaluation) {
+                if (!empty($businessManData)) {
+                    if ($dataMeanEvaluation->business_man_id == $businessManData->id) {
+                        $isEvaluatedByBusinessMan = true;
+                    }
+                }
                 $dataMeanEvaluation = $dataMeanEvaluation->rating_data;
             }
-            $meanEvaluation = round(array_sum($meanEvaluation) / count($meanEvaluation));
+
+            $meanEvaluation = round(array_sum($arrayEvaluationDesigner) / count($arrayEvaluationDesigner));
 
             if ($meanEvaluation > 5) {
                 $meanEvaluation = 5;
             }
-        }else {
+        } else {
             $meanEvaluation = 0;
         }
 
         echo $this->view->render("admin/profile-data", [
+            "isEvaluatedByBusinessMan" => $isEvaluatedByBusinessMan,
+            "totalEvaluationDesigner" => count($arrayEvaluationDesigner),
             "meanEvaluation" => $meanEvaluation,
             "evaluationDesignerData" => $evaluationDesignerData,
             "csrfToken" => $csrfToken,

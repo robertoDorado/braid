@@ -69,38 +69,44 @@
         <div class="row">
             <div class="col">
                 <div id="containerCandidates">
-                    <div class="callout callout-danger container-designer">
-                        <div class="designer-data">
-                            <img src="<?= empty($profileData->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $profileData->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
-                            <p><?= $profileData->full_name ?></p>
-                        </div>
-                        <div class="description-data-designer">
-                            <form id="evaluationProfile" class="stars-container-evaluate">
-                                <b>Avalie o perfil desse usuário</b>
-                                <div class="stars pointer">
-                                    <input type="radio" id="cm_star-empty" name="fb" value="" checked />
-                                    <label for="cm_star-1"><i class="fa"></i></label>
-                                    <input type="radio" id="cm_star-1" name="fb" value="1" />
-                                    <label for="cm_star-2"><i class="fa"></i></label>
-                                    <input type="radio" id="cm_star-2" name="fb" value="2" />
-                                    <label for="cm_star-3"><i class="fa"></i></label>
-                                    <input type="radio" id="cm_star-3" name="fb" value="3" />
-                                    <label for="cm_star-4"><i class="fa"></i></label>
-                                    <input type="radio" id="cm_star-4" name="fb" value="4" />
-                                    <label for="cm_star-5"><i class="fa"></i></label>
-                                    <input type="radio" id="cm_star-5" name="fb" value="5" />
+                    <?php if ($userType == "businessman") : ?>
+                        <?php if (!$isEvaluatedByBusinessMan) : ?>
+                            <div class="callout callout-danger container-designer">
+                                <div class="designer-data">
+                                    <img src="<?= empty($profileData->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $profileData->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
+                                    <p><?= $profileData->full_name ?></p>
                                 </div>
-                                <div class="form-group">
-                                    <textarea name="evaluateDescription" id="evaluateDescription" class="form-control"></textarea>
-                                    <input type="hidden" name="csrfToken" value="<?= empty($csrfToken) ? "" : $csrfToken ?>">
+                                <div class="description-data-designer">
+                                    <form id="evaluationProfile" class="stars-container-evaluate">
+                                        <b>Avalie o perfil desse usuário</b>
+                                        <div class="stars pointer">
+                                            <input type="radio" id="cm_star-empty" name="fb" value="" checked />
+                                            <label for="cm_star-1"><i class="fa"></i></label>
+                                            <input type="radio" id="cm_star-1" name="fb" value="1" />
+                                            <label for="cm_star-2"><i class="fa"></i></label>
+                                            <input type="radio" id="cm_star-2" name="fb" value="2" />
+                                            <label for="cm_star-3"><i class="fa"></i></label>
+                                            <input type="radio" id="cm_star-3" name="fb" value="3" />
+                                            <label for="cm_star-4"><i class="fa"></i></label>
+                                            <input type="radio" id="cm_star-4" name="fb" value="4" />
+                                            <label for="cm_star-5"><i class="fa"></i></label>
+                                            <input type="radio" id="cm_star-5" name="fb" value="5" />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea name="evaluateDescription" id="evaluateDescription" class="form-control"></textarea>
+                                            <input type="hidden" name="csrfToken" value="<?= empty($csrfToken) ? "" : $csrfToken ?>">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+                                            <span>Enviar Avaliação</span>
+                                        </button>
+                                    </form>
                                 </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
-                                    <span>Enviar Avaliação</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+                        <?php else : ?>
+                            <div class=" alert alert-success">Obrigado por avaliar este perfil</div>
+                        <?php endif ?>
+                    <?php endif ?>
                 </div>
             </div>
         </div>
@@ -129,14 +135,16 @@
                     <?php endforeach ?>
             </div>
         </div>
-        <div class="row">
-            <div class="col load-evaluation">
-                <a href="#" id="loadEvaluate" class="btn btn-danger">
-                    <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
-                    <span>Carregar mais avaliações</span>
-                </a>
+        <?php if ($totalEvaluationDesigner > 3) : ?>
+            <div class="row">
+                <div class="col load-evaluation">
+                    <a href="#" id="loadEvaluate" class="btn btn-danger">
+                        <img style="width:20px;display:none;margin:0 auto;" src="<?= theme("assets/img/loading.gif") ?>" alt="loader">
+                        <span>Carregar mais avaliações</span>
+                    </a>
+                </div>
             </div>
-        </div>
+        <?php endif ?>
     <?php endif ?>
     </div>
 </section>

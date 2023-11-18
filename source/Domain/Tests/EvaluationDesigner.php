@@ -3,6 +3,7 @@ namespace Source\Domain\Tests;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Designer;
 use Source\Domain\Model\EvaluationDesigner as ModelEvaluationDesigner;
 
@@ -15,6 +16,14 @@ use Source\Domain\Model\EvaluationDesigner as ModelEvaluationDesigner;
 class EvaluationDesigner extends TestCase
 {
     private ModelEvaluationDesigner $evaluationDesigner;
+
+    public function testGetBusinessMan()
+    {
+        $this->evaluationDesigner = new ModelEvaluationDesigner();
+        $this->evaluationDesigner->setBusinessMan(new BusinessMan());
+        $businessMan = $this->evaluationDesigner->getBusinessMan();
+        $this->assertInstanceOf(BusinessMan::class, $businessMan);
+    }
 
     public function testGetDesigner()
     {
