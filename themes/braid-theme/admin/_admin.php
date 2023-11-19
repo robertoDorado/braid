@@ -52,10 +52,16 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
                         <a href="<?= url("/braid-system") ?>" class="nav-link <?= $menuSelected == "braid-system" ? "bg-danger" : "" ?>">
-                            <i class="nav-icon fas fa-user"></i>
+                            <i class="nav-icon fas fa-edit"></i>
                             <p>
-                                Meu Perfil
+                                Editar perfil
                             </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-user"></i>
+                            Meu Perfil
                         </a>
                     </li>
                     <li class="nav-item">
@@ -64,9 +70,15 @@
                             <i class="nav-icon fas fa-file"></i>
                             <?php if ($userType == "businessman") : ?>
                                 <p>Lista de projetos</p>
-                            <?php elseif ($userType == "designer"):?>
+                            <?php elseif ($userType == "designer") : ?>
                                 <p>Projetos disponíveis</p>
                             <?php endif ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-bullseye"></i>
+                            Dados adicionais
                         </a>
                     </li>
                 </ul>
