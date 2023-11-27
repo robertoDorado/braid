@@ -76,7 +76,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= url("/braid-system/additional-data") ?>" class="nav-link
+                        <?= $menuSelected == "additional-data" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-bullseye"></i>
                             Dados adicionais
                         </a>

@@ -10,7 +10,7 @@
                             <img class="profile-user-img img-fluid img-circle" src="<?= empty($profileData->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $profileData->path_photo . "") ?>" alt="photo-designer">
                         </div>
                         <h3 class="profile-username text-center"><?= $profileData->full_name ?></h3>
-                        <p class="text-muted text-center"><?= empty($profileData->position_data) ? "Não especificado" : $profileData->position_data ?></p>
+                        <p class="text-muted text-center"><?= empty($positionData) ? "Não especificado" : $positionData ?></p>
                         <?php if ($profileType->user_type == "designer") : ?>
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item">

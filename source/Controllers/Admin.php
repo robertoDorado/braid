@@ -27,6 +27,31 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function additionalData()
+    {
+        $user = new User();
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        echo $this->view->render("admin/additional-data", [
+            "menuSelected" => $menuSelected,
+            "breadCrumbTitle" => "Dados adicionais",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function myProfile()
     {
         $user = new User();
@@ -65,9 +90,14 @@ class Admin extends Controller
             }
         }
 
-        $meanEvaluation = empty($arrayEvaluationDesigner) ? 0 : round(array_sum($arrayEvaluationDesigner) / count($arrayEvaluationDesigner));
+        $meanEvaluation = empty($arrayEvaluationDesigner) ?
+            0 : round(array_sum($arrayEvaluationDesigner) / count($arrayEvaluationDesigner));
+
+        $positionData = $profileType->user_type == "designer" ? 
+            $profileData->position_data : $profileData->branch_of_company;
 
         echo $this->view->render("admin/my-profile", [
+            "positionData" => $positionData,
             "totalEvaluationDesigner" => count($arrayEvaluationDesigner),
             "meanEvaluation" => $meanEvaluation,
             "evaluationDesignerData" => $evaluationDesignerData,
@@ -301,7 +331,11 @@ class Admin extends Controller
             $meanEvaluation = 0;
         }
 
+        $positionData = $profileType->user_type == "designer" ? 
+            $profileData->position_data : $profileData->branch_of_company;
+
         echo $this->view->render("admin/profile-data", [
+            "positionData" => $positionData,
             "isEvaluatedByBusinessMan" => $isEvaluatedByBusinessMan,
             "totalEvaluationDesigner" => count($arrayEvaluationDesigner),
             "meanEvaluation" => $meanEvaluation,

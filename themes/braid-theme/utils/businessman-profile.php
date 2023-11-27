@@ -12,8 +12,3 @@
 <p class="text-muted">
     <?= empty($profileData->qualifications_data) ? "Não específicado" : $profileData->company_description ?>
 </p>
-<hr>
-<strong><i class="fas fa-pencil-alt mr-1"></i> Ramo da empresa</strong>
-<p class="text-muted">
-    <?= empty($profileData->experience_data) ? "Não específicado" : $profileData->branch_of_company ?>
-</p>

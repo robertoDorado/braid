@@ -1,11 +1,11 @@
 const endpointEvaluationCharging = removeParamFromEndpoint(url.getCurrentEndpoint(), true)
-const sectionDataHash = document.querySelector(".content")
 const hashEndpoint = endpointEvaluationCharging.pop()
 
-const paramEvaluationCharging = isBase64(hashEndpoint)
-    ? hashEndpoint : sectionDataHash.dataset.hash
-
 if (endpointEvaluationCharging.join("/") == "braid-system/profile-data" || url.getCurrentEndpoint() == "braid-system/my-profile") {
+    const sectionDataHash = document.querySelector(".content")
+    const paramEvaluationCharging = isBase64(hashEndpoint)
+        ? hashEndpoint : sectionDataHash.dataset.hash
+
     const loadEvaluate = document.getElementById("loadEvaluate")
     let page = 1
     const limit = 3
