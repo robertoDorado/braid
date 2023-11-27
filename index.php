@@ -82,6 +82,7 @@ $route->get("/project-detail/{hash}", "Admin:projectDetail");
 $route->post("/project-detail", "Admin:projectDetail");
 $route->get("/profile-data/{hash}", "Admin:profileData");
 $route->post("/profile-data", "Admin:profileData");
+$route->get("/my-profile", "Admin:myProfile");
 
 /**
  * Cookies

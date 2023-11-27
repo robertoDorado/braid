@@ -408,7 +408,7 @@ footer {
     margin: 0 auto;
     margin-bottom: 1rem;
     width: 100px;
-    height: 100px;
+    height: auto;
     border-radius: 50%;
     overflow: hidden;
 }

@@ -59,7 +59,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="<?= url("braid-system/my-profile") ?>" class="nav-link <?= $menuSelected == "my-profile" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-user"></i>
                             Meu Perfil
                         </a>

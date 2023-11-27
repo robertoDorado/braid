@@ -27,6 +27,62 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function myProfile()
+    {
+        $user = new User();
+        $designer = new Designer();
+        $businessMan = new BusinessMan();
+
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        
+        $profileData = $designer->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
+        
+        if (empty($profileData)) {
+            $profileData = $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+        }
+        
+        if (empty($profileData)) {
+            redirect("/braid-system/client-report");
+        }
+        
+        $profileType = $user->getUserByEmail($profileData->full_email);
+        $evaluationDesigner = new EvaluationDesigner();
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id , 3, 0, true);
+        $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id);
+
+        if (!empty($arrayEvaluationDesigner)) {
+            foreach ($arrayEvaluationDesigner as &$ratingData) {
+                $ratingData = $ratingData->rating_data;
+            }
+        }
+
+        $meanEvaluation = empty($arrayEvaluationDesigner) ? 0 : round(array_sum($arrayEvaluationDesigner) / count($arrayEvaluationDesigner));
+
+        echo $this->view->render("admin/my-profile", [
+            "totalEvaluationDesigner" => count($arrayEvaluationDesigner),
+            "meanEvaluation" => $meanEvaluation,
+            "evaluationDesignerData" => $evaluationDesignerData,
+            "profileType" => $profileType,
+            "profileData" => $profileData,
+            "menuSelected" => $menuSelected,
+            "breadCrumbTitle" => "Detalhes do perfil",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function chargeOnDemandEvaluation(array $data = [])
     {
         header('Content-Type: application/json');

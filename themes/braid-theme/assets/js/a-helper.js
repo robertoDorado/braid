@@ -70,3 +70,14 @@ function removeParamFromEndpoint(endpoint, getEndpointParam=false) {
         return endpoint
     }
 }
+
+function isBase64(str) {
+    try {
+      const decodedString = atob(str);
+      const base64String = btoa(decodedString);
+      
+      return base64String === str;
+    } catch (error) {
+      return false;
+    }
+  }
