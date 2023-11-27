@@ -376,7 +376,7 @@ class User extends Controller
                         setcookie("user_password", $password, time() + 3600, url("user/login"));
                     }
 
-                    echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
+                    echo json_encode(['success_login' => true, "url" => url("/braid-system/my-profile")]);
                     die;
                 } else {
                     echo json_encode([
@@ -401,7 +401,7 @@ class User extends Controller
                     setcookie("user_password", $password, time() + 3600, url("user/login"));
                 }
 
-                echo json_encode(['success_login' => true, "url" => url("/braid-system")]);
+                echo json_encode(['success_login' => true, "url" => url("/braid-system/my-profile")]);
             }
 
             die;

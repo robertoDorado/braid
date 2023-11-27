@@ -51,17 +51,17 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
+                        <a href="<?= url("braid-system/my-profile") ?>" class="nav-link <?= $menuSelected == "my-profile" ? "bg-danger" : "" ?>">
+                            <i class="nav-icon fas fa-user"></i>
+                            Meu Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="<?= url("/braid-system") ?>" class="nav-link <?= $menuSelected == "braid-system" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-edit"></i>
                             <p>
                                 Editar perfil
                             </p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= url("braid-system/my-profile") ?>" class="nav-link <?= $menuSelected == "my-profile" ? "bg-danger" : "" ?>">
-                            <i class="nav-icon fas fa-user"></i>
-                            Meu Perfil
                         </a>
                     </li>
                     <li class="nav-item">

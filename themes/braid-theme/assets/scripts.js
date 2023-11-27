@@ -14,7 +14,8 @@ return element}
 function setAttributesToElement(attributeName,attributeValue,element){element.setAttribute(attributeName,attributeValue)}
 function removeParamFromEndpoint(endpoint,getEndpointParam=!1){endpoint=endpoint.split("/")
 if(!getEndpointParam){endpoint.pop()
-return endpoint.join("/")}else{return endpoint}};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
+return endpoint.join("/")}else{return endpoint}}
+function isBase64(str){try{const decodedString=atob(str);const base64String=btoa(decodedString);return base64String===str}catch(error){return!1}};class Url{endpoint;queryString;stringUrl;urlOrigin;host;getHostName(){this.host=window.location.host
 return this.host}
 getUrlOrigin(endpoint=''){endpoint=endpoint.split('/').filter(value=>value!='').join('/')
 endpoint=endpoint.length>0?"/"+endpoint:''
@@ -253,6 +254,7 @@ errorMessage.innerHTML=error})})};const endpointProfileData=removeParamFromEndpo
 const paramProfileData=endpointProfileData.pop()
 if(endpointProfileData.join("/")=="braid-system/profile-data"){const evaluationProfileForm=document.getElementById("evaluationProfile")
 const containerEvaluation=document.getElementById("containerEvaluation")
+const containerCandidates=document.getElementById("containerCandidates")
 if(evaluationProfileForm){evaluationProfileForm.addEventListener("submit",function(event){event.preventDefault()
 const submitBtn=this.getElementsByTagName("button")[0]
 const loaderImg=submitBtn.firstElementChild
@@ -309,7 +311,12 @@ descriptionDataDesigner.appendChild(stars)
 descriptionDataDesigner.appendChild(evaluateDescription)
 containerDesigner.appendChild(descriptionDataDesigner)
 if(containerEvaluation.children){if(containerEvaluation.children.length>=3){containerEvaluation.removeChild(containerEvaluation.lastElementChild)}
-containerEvaluation.insertBefore(containerDesigner,containerEvaluation.firstElementChild)}else{containerEvaluation.appendChild(containerDesigner)}}})})}};if(/braid-system/.test(url.getCurrentEndpoint())){const exit=document.getElementById("exit")
+containerEvaluation.insertBefore(containerDesigner,containerEvaluation.firstElementChild)}else{containerEvaluation.appendChild(containerDesigner)}
+const alertThaksForEvaluation=createNewElement("div")
+setAttributesToElement("class","alert alert-success",alertThaksForEvaluation)
+alertThaksForEvaluation.innerHTML="Obrigado por avaliar este perfil"
+containerCandidates.innerHTML=""
+containerCandidates.appendChild(alertThaksForEvaluation)}})})}};if(/braid-system/.test(url.getCurrentEndpoint())){const exit=document.getElementById("exit")
 exit.addEventListener('click',function(event){event.preventDefault()
 let endpoint={"localhost":"/braid/braid-system/exit","clientes.laborcode.com.br":"/braid/braid-system/exit","braid.com.br":"/braid-system/exit","www.braid.com.br":"/braid-system/exit",}
 endpoint=endpoint[url.getHostName()]||''
@@ -413,8 +420,10 @@ descriptionDataDesigner.appendChild(btnSeeProfileCandidate)
 designerData.append(photoDesigner,freelancerName)
 containerDesigner.append(designerData,descriptionDataDesigner)
 containerCandidates.appendChild(containerDesigner)})})})})}};const endpointEvaluationCharging=removeParamFromEndpoint(url.getCurrentEndpoint(),!0)
-const paramEvaluationCharging=endpointEvaluationCharging.pop()
-if(endpointEvaluationCharging.join("/")=="braid-system/profile-data"){const loadEvaluate=document.getElementById("loadEvaluate")
+const hashEndpoint=endpointEvaluationCharging.pop()
+if(endpointEvaluationCharging.join("/")=="braid-system/profile-data"||url.getCurrentEndpoint()=="braid-system/my-profile"){const sectionDataHash=document.querySelector(".content")
+const paramEvaluationCharging=isBase64(hashEndpoint)?hashEndpoint:sectionDataHash.dataset.hash
+const loadEvaluate=document.getElementById("loadEvaluate")
 let page=1
 const limit=3
 if(loadEvaluate){loadEvaluate.addEventListener("click",function(event){event.preventDefault()

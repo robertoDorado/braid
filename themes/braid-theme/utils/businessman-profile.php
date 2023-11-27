@@ -3,7 +3,7 @@
     <?= empty($profileData->biography_data) ? "Não especificado" : $profileData->company_name ?>
 </p>
 <hr>
-<strong><i class="fa fa-bullseye mr-1"></i> Número do documento</strong>
+<strong><i class="fa fa-bullseye mr-1"></i> CNPJ</strong>
 <p class="text-muted">
     <?= empty($profileData->goals_data) ? "Não especificado" : $profileData->register_number ?>
 </p>

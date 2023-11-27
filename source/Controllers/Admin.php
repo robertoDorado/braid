@@ -88,6 +88,8 @@ class Admin extends Controller
             foreach ($arrayEvaluationDesigner as &$ratingData) {
                 $ratingData = $ratingData->rating_data;
             }
+        }else {
+            $arrayEvaluationDesigner = [];
         }
 
         $meanEvaluation = empty($arrayEvaluationDesigner) ?
