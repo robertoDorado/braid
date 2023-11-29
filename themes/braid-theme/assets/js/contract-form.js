@@ -39,7 +39,7 @@ if (endpointSystemForm.join("/") == "braid-system/project-detail") {
     const alertMessage = createNewElement("div")
 
     row.style.marginTop = ".9rem"
-    label.innerHTML = "Descrições adicionais"
+    label.innerHTML = "Faça uma proposta para este projeto"
     contractForm.id = "contractForm"
     buttonSubmit.type = "submit"
 
@@ -77,7 +77,7 @@ if (endpointSystemForm.join("/") == "braid-system/project-detail") {
     setAttributesToElement("class", "form-group", formGroup)
     setAttributesToElement("for", "additionalDescription", label)
     setAttributesToElement("class", "form-control", textArea)
-    setAttributesToElement("placeholder", "Descrições adicionais sobre a proposta", textArea)
+    setAttributesToElement("placeholder", "Descrições sobre a proposta", textArea)
     setAttributesToElement("class", "card-footer", cardFooter)
     setAttributesToElement("class", "btn bg-danger", buttonSubmit)
     setAttributesToElement("class", "alert alert-danger", alertMessage)

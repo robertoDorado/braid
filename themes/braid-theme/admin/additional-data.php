@@ -7,7 +7,7 @@
                     <div class="card-header bg-danger">
                         <h3 class="card-title">Dados adicionais</h3>
                     </div>
-                    <form id="clientReportForm">
+                    <form id="additionalDataForm">
                         <div class="card-body">
                             <?php if ($userType == "designer") : ?>
                                 <?= $v->insert("utils/designer-additionaldata-form") ?>

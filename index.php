@@ -84,6 +84,7 @@ $route->get("/profile-data/{hash}", "Admin:profileData");
 $route->post("/profile-data", "Admin:profileData");
 $route->get("/my-profile", "Admin:myProfile");
 $route->get("/additional-data", "Admin:additionalData");
+$route->post("/additional-data", "Admin:additionalData");
 
 /**
  * Cookies

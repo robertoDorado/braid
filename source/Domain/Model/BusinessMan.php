@@ -2,6 +2,7 @@
 
 namespace Source\Domain\Model;
 
+use Bissolli\ValidadorCpfCnpj\CNPJ;
 use Source\Core\Connect;
 use Source\Models\BusinessMan as ModelsBusinessMan;
 
@@ -66,6 +67,27 @@ class BusinessMan
             }
 
             $this->id = Connect::getInstance()->lastInsertId();
+        }
+    }
+
+    public function updateAdditionalData()
+    {
+        $this->businessMan = new ModelsBusinessMan();
+        $businessManData = $this->businessMan
+            ->find("full_email=:full_email", ":full_email=" . $this->getEmail() . "")
+            ->fetch();
+        
+        if (empty($businessManData)) {
+            throw new \Exception("Objeto businessMan não encontrado");
+        }
+
+        $businessManData->company_name = $this->getCompanyName();
+        $businessManData->register_number = $this->getRegisterNumber();
+        $businessManData->company_description = $this->getDescriptionCompany();
+        $businessManData->branch_of_company = $this->getBranchOfCompany();
+        $businessManData->valid_company = !$this->isValidCompany() ? 0 : 1;
+        if (!$businessManData->save()) {
+            throw new \Exception($businessManData->fail());
         }
     }
 
@@ -183,6 +205,16 @@ class BusinessMan
         if (!preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})$/", $number)) {
             throw new \Exception("Número de CNPJ inválido");
         }
+
+        $document = new CNPJ($number);
+        if (!$document->isValid()) {
+            echo json_encode([
+                "invalid_document" => true,
+                "msg" => "CNPJ inválido"
+            ]);
+            die;
+        }
+
         $this->registerNumber = $number;
     }
 

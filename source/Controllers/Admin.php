@@ -30,6 +30,101 @@ class Admin extends Controller
     public function additionalData()
     {
         $user = new User();
+
+        $currentUser = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $personObject = $currentUser->user_type == "designer" ? new Designer() : new BusinessMan();
+
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            header('Content-Type: application/json');
+            if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+                throw new \Exception("Cabeçalho de autorização ausente");
+            }
+
+            if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+                throw new \Exception("Formato de autorização inválido.");
+            }
+
+            $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+
+            $credentials = new Credentials();
+            $credentials = $credentials->getCredentials([
+                "token_data" => $tokenData
+            ]);
+
+            if (empty($credentials)) {
+                throw new \Exception(json_encode(["invalid_token_data" => true]));
+            }
+
+            $requiredFields = $currentUser->user_type == "designer" ?
+                [
+                    "csrf_token",
+                    "csrfToken",
+                    "documentData",
+                    "biographyData",
+                    "goalsData",
+                    "qualificationsData",
+                    "portfolioData",
+                    "experienceData",
+                    "positionData"
+                ] :
+                [
+                    "csrf_token",
+                    "csrfToken",
+                    "companyName",
+                    "registerNumber",
+                    "companyDescription",
+                    "branchOfCompany"
+                ];
+
+            $post = $this->getRequestPost()
+                ->setRequiredFields($requiredFields)
+                ->configureDataPost()->getAllPostData();
+
+            $oneThousendLengthValidation = [
+                "biographyData",
+                "goalsData",
+                "qualificationsData",
+                "portfolioData",
+                "experienceData",
+                "companyDescription"
+            ];
+
+            foreach ($post as $key => $value) {
+                if (in_array($key, $oneThousendLengthValidation)) {
+                    if (strlen($value) > 1000) {
+                        echo json_encode([
+                            "invalid_length" => true,
+                            "msg" => "Um dos campos utrapassa o limite de caracteres."
+                        ]);
+                        die;
+                    }
+                }
+            }
+
+            if ($currentUser->user_type == "designer") {
+                $personObject->setEmail($this->getCurrentSession()->login_user->fullEmail);
+                $personObject->setDocument($post["documentData"]);
+                $personObject->setBiography($post["biographyData"]);
+                $personObject->setGoals($post["goalsData"]);
+                $personObject->setQualifications($post["qualificationsData"]);
+                $personObject->setPortfolio($post["portfolioData"]);
+                $personObject->setExperience($post["experienceData"]);
+                $personObject->setPositionData($post["positionData"]);
+                $personObject->updateAdditionalData();
+            }else {
+                $personObject->setEmail($this->getCurrentSession()->login_user->fullEmail);
+                $personObject->setCompanyName($post["companyName"]);
+                $personObject->setRegisterNumber($post["registerNumber"]);
+                $personObject->setDescriptionCompany($post["companyDescription"]);
+                $personObject->setBranchOfCompany($post["branchOfCompany"]);
+                $personObject->setValidCompany(true);
+                $personObject->updateAdditionalData();
+            }
+
+            echo json_encode(["success" => true, "url" => url("/braid-system/my-profile")]);
+            die;
+        }
+
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
         $menuSelected = explode("/", $menuSelected);
         $menuSelected = array_filter($menuSelected, function ($item) {
@@ -40,8 +135,15 @@ class Admin extends Controller
         $menuSelected = array_values($menuSelected);
         $menuSelected = $menuSelected[count($menuSelected) - 1];
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+
+        $personData = $currentUser->user_type == "designer" ?
+            $personObject->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail) : 
+            $personObject->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         echo $this->view->render("admin/additional-data", [
+            "personData" => $personData,
+            "csrfToken" => $csrfToken,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Dados adicionais",
             "fullName" => $userData->full_name,
@@ -68,35 +170,37 @@ class Admin extends Controller
         $menuSelected = array_values($menuSelected);
         $menuSelected = $menuSelected[count($menuSelected) - 1];
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        
-        $profileData = $designer->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail);
-        
+
+        $profileData = $userData->user_type == "designer" ?
+            $designer->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail) : 
+            $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
+
         if (empty($profileData)) {
             $profileData = $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
         }
-        
+
         if (empty($profileData)) {
             redirect("/braid-system/client-report");
         }
-        
+
         $profileType = $user->getUserByEmail($profileData->full_email);
         $evaluationDesigner = new EvaluationDesigner();
-        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id , 3, 0, true);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id, 3, 0, true);
         $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id);
 
         if (!empty($arrayEvaluationDesigner)) {
             foreach ($arrayEvaluationDesigner as &$ratingData) {
                 $ratingData = $ratingData->rating_data;
             }
-        }else {
+        } else {
             $arrayEvaluationDesigner = [];
         }
 
         $meanEvaluation = empty($arrayEvaluationDesigner) ?
             0 : round(array_sum($arrayEvaluationDesigner) / count($arrayEvaluationDesigner));
 
-        $positionData = $profileType->user_type == "designer" ? 
-            $profileData->position_data : $profileData->branch_of_company;
+        $positionData = $profileType->user_type == "designer" ?
+            $profileData->position_data : $profileData->company_name;
 
         echo $this->view->render("admin/my-profile", [
             "positionData" => $positionData,
@@ -186,12 +290,12 @@ class Admin extends Controller
         if (empty($credentials)) {
             throw new \Exception(json_encode(["invalid_token_data" => true]));
         }
-        
+
         $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
         $evaluationDesigner = new EvaluationDesigner();
         $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_id"], $data["max"], $offsetValue, true);
         $totalEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_id"]);
-        
+
         if (!empty($evaluationDesignerData)) {
             foreach ($evaluationDesignerData as &$evaluationData) {
                 $evaluationData = $evaluationData->data();
@@ -303,18 +407,18 @@ class Admin extends Controller
         $profileType = $user->getUserByEmail($profileData->full_email);
 
         $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId);
-        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId , 3, 0, true);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId, 3, 0, true);
         $isEvaluatedByBusinessMan = false;
 
-        if (!empty($evaluationDesignerData)) { 
+        if (!empty($evaluationDesignerData)) {
             foreach ($evaluationDesignerData as &$evaluationData) {
                 $evaluationData = $evaluationData->data();
             }
         }
-        
+
         if (!empty($arrayEvaluationDesigner)) {
             $businessManData = $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
-            
+
             foreach ($arrayEvaluationDesigner as &$dataMeanEvaluation) {
                 if (!empty($businessManData)) {
                     if ($dataMeanEvaluation->business_man_id == $businessManData->id) {
@@ -333,7 +437,7 @@ class Admin extends Controller
             $meanEvaluation = 0;
         }
 
-        $positionData = $profileType->user_type == "designer" ? 
+        $positionData = $profileType->user_type == "designer" ?
             $profileData->position_data : $profileData->branch_of_company;
 
         echo $this->view->render("admin/profile-data", [

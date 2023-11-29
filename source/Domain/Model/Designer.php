@@ -2,6 +2,7 @@
 
 namespace Source\Domain\Model;
 
+use Bissolli\ValidadorCpfCnpj\CPF;
 use Source\Core\Connect;
 use Source\Models\Designer as ModelsDesigner;
 
@@ -34,17 +35,17 @@ class Designer
     /** @var string $biografia */
     private string $biographyData = '';
 
-    /** @var string[] Objetivos */
-    private array $goalsData = [];
+    /** @var string Objetivos */
+    private string $goalsData = '';
 
-    /** @var string[] Qualificações */
-    private array $qualificationsData = [];
+    /** @var string Qualificações */
+    private string $qualificationsData = '';
 
-    /** @var string[] Portfólio */
-    private array $portfolioData = [];
+    /** @var string Portfólio */
+    private string $portfolioData = '';
 
-    /** @var string[] Experiência */
-    private array $experienceData = [];
+    /** @var string Experiência */
+    private string $experienceData = '';
 
     /** @var Contract[] */
     private array $contracts = [];
@@ -64,16 +65,38 @@ class Designer
             $this->designer->position_data = $this->getPositionData();
             $this->designer->path_photo = empty($this->getPathPhoto()) ? null : $this->getPathPhoto();
             $this->designer->document_data = empty($this->getDocument()) ? null : $this->getDocument();
-            $this->designer->experience_data = empty($this->getExperienceAsString()) ? null : $this->getExperienceAsString();
-            $this->designer->portfolio_data = empty($this->getPortfolioAsString()) ? null : $this->getPortfolioAsString();
-            $this->designer->qualifications_data = empty($this->getQualificationAsString()) ? null : $this->getQualificationAsString();
+            $this->designer->experience_data = empty($this->getExperience()) ? null : $this->getExperience();
+            $this->designer->portfolio_data = empty($this->getPortfolio()) ? null : $this->getPortfolio();
+            $this->designer->qualifications_data = empty($this->getQualifications()) ? null : $this->getQualifications();
             $this->designer->biography_data = empty($this->getBiography()) ? null : $this->getBiography();
-            $this->designer->goals_data = empty($this->getGoalsAsString()) ? null : $this->getGoalsAsString();
+            $this->designer->goals_data = empty($this->getGoals()) ? null : $this->getGoals();
             if (!$this->designer->save()) {
                 throw new \Exception($this->designer->fail());
             }
 
             $this->id = Connect::getInstance()->lastInsertId();
+        }
+    }
+
+    public function updateAdditionalData()
+    {
+        $this->designer = new ModelsDesigner();
+        $designerData = $this->designer
+        ->find("full_email=:full_email", ":full_email=" . $this->getEmail() . "")->fetch();
+
+        if (empty($designerData)) {
+            throw new \Exception("Erro ao atualizar o objeto Designer");
+        }
+
+        $designerData->document_data = $this->getDocument();
+        $designerData->biography_data = $this->getBiography();
+        $designerData->goals_data = $this->getGoals();
+        $designerData->qualifications_data = $this->getQualifications();
+        $designerData->portfolio_data = $this->getPortfolio();
+        $designerData->experience_data = $this->getExperience();
+        $designerData->position_data = $this->getPositionData();
+        if (!$designerData->save()) {
+            throw new \Exception($designerData->fail());
         }
     }
 
@@ -144,6 +167,15 @@ class Designer
             throw new \Exception("Número de CPF Inválido");
         }
 
+        $document = new CPF($number);
+        if (!$document->isValid()) {
+            echo json_encode([
+                "invalid_document" => true,
+                "msg" => "CPF inválido"
+            ]);
+            die;
+        }
+
         $this->documentData = $number;
     }
 
@@ -162,7 +194,7 @@ class Designer
         return $this->id;
     }
 
-    public function setExperience(array $experience)
+    public function setExperience(string $experience)
     {
         $this->experienceData = $experience;
     }
@@ -175,17 +207,7 @@ class Designer
         return $this->experienceData;
     }
 
-    public function getExperienceAsString()
-    {
-        if (empty($this->experienceData)) {
-            return null;
-        }
-
-        $experience = implode(";", $this->experienceData);
-        return $experience;
-    }
-
-    public function setPortfolio(array $portfolio)
+    public function setPortfolio(string $portfolio)
     {
         $this->portfolioData = $portfolio;
     }
@@ -198,17 +220,7 @@ class Designer
         return $this->portfolioData;
     }
 
-    public function getPortfolioAsString()
-    {
-        if (empty($this->portfolioData)) {
-            return null;
-        }
-
-        $portfolio = implode(";", $this->portfolioData);
-        return $portfolio;
-    }
-
-    public function setQualifications(array $qualifications)
+    public function setQualifications(string $qualifications)
     {
         $this->qualificationsData = $qualifications;
     }
@@ -216,14 +228,6 @@ class Designer
     public function getQualifications()
     {
         return $this->qualificationsData;
-    }
-
-    public function getQualificationAsString()
-    {
-        if (!empty($this->qualificationsData)) {
-            $qualifications = implode(";", $this->qualificationsData);
-            return $qualifications;
-        }
     }
 
     public function getDesignerName()
@@ -265,7 +269,7 @@ class Designer
         return $this->biographyData;
     }
 
-    public function setGoals(array $goals)
+    public function setGoals(string $goals)
     {
         $this->goalsData = $goals;
     }
@@ -273,14 +277,6 @@ class Designer
     public function getGoals()
     {
         return $this->goalsData;
-    }
-
-    public function getGoalsAsString()
-    {
-        if (!empty($this->goalsData)) {
-            $goals = implode(";", $this->goalsData);
-            return $goals;
-        }
     }
 
     public function setContract(Contract $contract)
