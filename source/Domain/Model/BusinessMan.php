@@ -203,7 +203,11 @@ class BusinessMan
     public function setRegisterNumber(string $number)
     {
         if (!preg_match("/^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})$/", $number)) {
-            throw new \Exception("Número de CNPJ inválido");
+            echo json_encode([
+                "invalid_document" => true,
+                "msg" => "CNPJ inválido"
+            ]);
+            die;
         }
 
         $document = new CNPJ($number);

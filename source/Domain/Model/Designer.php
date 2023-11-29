@@ -164,7 +164,11 @@ class Designer
     public function setDocument(string $number)
     {
         if (!preg_match("/^\d{3}\.\d{3}\.\d{3}-\d{2}$/", $number)) {
-            throw new \Exception("Número de CPF Inválido");
+            echo json_encode([
+                "invalid_document" => true,
+                "msg" => "CPF inválido"
+            ]);
+            die;
         }
 
         $document = new CPF($number);
