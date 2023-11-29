@@ -66,7 +66,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="<?= url("/braid-system/client-report") ?>" class="nav-link 
-                        <?= $menuSelected == "client-report" || $menuSelected == "client-report-form" ? "bg-danger" : "" ?>">
+                        <?= $menuSelected == "client-report" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-file"></i>
                             <?php if ($userType == "businessman") : ?>
                                 <p>Lista de projetos</p>
@@ -99,7 +99,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= url("/braid-system") ?>">Home</a></li>
+                            <li class="breadcrumb-item"><a href="<?= empty($breadCrumbBefore) ? url("/braid-system/my-profile") : $breadCrumbBefore["url"] ?>"><?= empty($breadCrumbBefore) ? "Home" : $breadCrumbBefore["slug"] ?></a></li>
                             <li class="breadcrumb-item active"><?= !empty($breadCrumbTitle) ? $breadCrumbTitle : "" ?></li>
                         </ol>
                     </div><!-- /.col -->

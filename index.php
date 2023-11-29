@@ -85,6 +85,8 @@ $route->post("/profile-data", "Admin:profileData");
 $route->get("/my-profile", "Admin:myProfile");
 $route->get("/additional-data", "Admin:additionalData");
 $route->post("/additional-data", "Admin:additionalData");
+$route->get("/company-profile/{hash}", "Admin:companyProfile");
+$route->post("/save-breadcrumb-link", "Admin:saveBreadCrumbLink");
 
 /**
  * Cookies

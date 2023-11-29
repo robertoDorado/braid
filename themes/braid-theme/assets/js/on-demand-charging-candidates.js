@@ -95,12 +95,13 @@ if (endpointData == "braid-system/project-detail") {
                                     "braid.com.br": "/braid-system/profile-data",
                                     "www.braid.com.br": "/braid-system/profile-data",
                                 }
-            
+
                                 endpointProfileData = endpointProfileData[url.getHostName()] || ''
                                 const requestUrlProfileData = url.getUrlOrigin(endpointProfileData)
 
                                 containerDesigner.dataset.hash = btoa(item.designer_id)
                                 btnSeeProfileCandidate.innerHTML = "Ver perfil do candidato"
+                                btnSeeProfileCandidate.dataset.csrf = containerCandidates.dataset.csrf
                                 btnSeeProfileCandidate.href = requestUrlProfileData + "/" + btoa(item.designer_id)
 
                                 if (item.path_photo == null) {
@@ -119,6 +120,41 @@ if (endpointData == "braid-system/project-detail") {
                                 setAttributesToElement("class", "photo-designer", photoDesigner)
                                 setAttributesToElement("class", "description-data-designer", descriptionDataDesigner)
                                 setAttributesToElement("class", "btn btn-primary see-profile", btnSeeProfileCandidate)
+
+                                btnSeeProfileCandidate.addEventListener("click", function () {
+                                    endpoint = {
+                                        "localhost": "/braid/braid-system/project-detail",
+                                        "clientes.laborcode.com.br": "/braid/braid-system/project-detail",
+                                        "braid.com.br": "/braid-system/project-detail",
+                                        "www.braid.com.br": "/braid-system/project-detail",
+                                    }
+
+                                    endpoint = endpoint[url.getHostName()] || ''
+                                    const link = url.getUrlOrigin(endpoint) + "/" + paramEndpointProjectDetail
+                                    const linkRedirect = this.href
+
+                                    endpoint = {
+                                        "localhost": "/braid/braid-system/save-breadcrumb-link",
+                                        "clientes.laborcode.com.br": "/braid/braid-system/save-breadcrumb-link",
+                                        "braid.com.br": "/braid-system/save-breadcrumb-link",
+                                        "www.braid.com.br": "/braid-system/save-breadcrumb-link",
+                                    }
+
+                                    endpoint = endpoint[url.getHostName()] || ''
+                                    const requestUrl = url.getUrlOrigin(endpoint)
+                                    const form = new FormData()
+                                    form.append("linkBreadCrumbBefore", link)
+                                    form.append("csrfToken", this.dataset.csrf)
+
+                                    fetch(requestUrl, {
+                                        method: "POST",
+                                        body: form
+                                    }).then(response => response.json()).then(function (response) {
+                                        if (response.success) {
+                                            window.location.href = linkRedirect
+                                        }
+                                    })
+                                })
 
                                 descriptionDataDesigner.appendChild(descriptionData)
                                 descriptionDataDesigner.appendChild(btnSeeProfileCandidate)

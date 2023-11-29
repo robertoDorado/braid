@@ -27,10 +27,74 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function saveBreadCrumbLink()
+    {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
+        $post = $this->getRequestPost()
+            ->setRequiredFields(["linkBreadCrumbBefore", "csrfToken", "csrf_token"])
+            ->configureDataPost()->getAllPostData();
+
+        $this->getCurrentSession()->set("linkBreadCrumbBefore", $post["linkBreadCrumbBefore"]);
+        echo json_encode(["success" => true]);
+    }
+
+    public function companyProfile(array $data = [])
+    {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
+        $user = new User();
+        $businessMan = new BusinessMan();
+
+        $profileId = base64_decode($data["hash"], true);
+        if (!$profileId) {
+            redirect("braid-system/my-profile");
+        }
+
+        if (!preg_match("/^\d+$/", $profileId)) {
+            redirect("braid-system/my-profile");
+        }
+
+        $profileData = $businessMan->getBusinessManById($profileId);
+        if (empty($profileData)) {
+            redirect("braid-system/my-profile");
+        }
+
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        echo $this->view->render("admin/company-profile", [
+            "positionData" => $profileData->company_name,
+            "menuSelected" => $menuSelected,
+            "profileData" => $profileData,
+            "breadCrumbTitle" => "Detalhes do perfil",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function additionalData()
     {
-        $user = new User();
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
 
+        $user = new User();
         $currentUser = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         $personObject = $currentUser->user_type == "designer" ? new Designer() : new BusinessMan();
 
@@ -111,7 +175,7 @@ class Admin extends Controller
                 $personObject->setExperience($post["experienceData"]);
                 $personObject->setPositionData($post["positionData"]);
                 $personObject->updateAdditionalData();
-            }else {
+            } else {
                 $personObject->setEmail($this->getCurrentSession()->login_user->fullEmail);
                 $personObject->setCompanyName($post["companyName"]);
                 $personObject->setRegisterNumber($post["registerNumber"]);
@@ -138,7 +202,7 @@ class Admin extends Controller
         $csrfToken = $this->getCurrentSession()->csrf_token;
 
         $personData = $currentUser->user_type == "designer" ?
-            $personObject->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail) : 
+            $personObject->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail) :
             $personObject->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         echo $this->view->render("admin/additional-data", [
@@ -156,6 +220,10 @@ class Admin extends Controller
 
     public function myProfile()
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         $user = new User();
         $designer = new Designer();
         $businessMan = new BusinessMan();
@@ -172,7 +240,7 @@ class Admin extends Controller
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         $profileData = $userData->user_type == "designer" ?
-            $designer->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail) : 
+            $designer->getDesignerByEmail($this->getCurrentSession()->login_user->fullEmail) :
             $businessMan->getBusinessManByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         if (empty($profileData)) {
@@ -221,6 +289,10 @@ class Admin extends Controller
 
     public function chargeOnDemandEvaluation(array $data = [])
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         header('Content-Type: application/json');
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
@@ -309,6 +381,10 @@ class Admin extends Controller
 
     public function profileData(array $data = [])
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         $designer = new Designer();
         $businessMan = new BusinessMan();
         $evaluationDesigner = new EvaluationDesigner();
@@ -375,11 +451,11 @@ class Admin extends Controller
 
         $profileId = base64_decode($data["hash"], true);
         if (!$profileId) {
-            redirect("braid-system/client-report");
+            redirect("braid-system/my-profile");
         }
 
         if (!preg_match("/^\d+$/", $profileId)) {
-            redirect("braid-system/client-report");
+            redirect("braid-system/my-profile");
         }
 
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
@@ -396,16 +472,10 @@ class Admin extends Controller
         $profileData = $designer->getDesignerById($profileId);
 
         if (empty($profileData)) {
-            $profileData = $businessMan->getBusinessManById($profileId);
-        }
-
-        if (empty($profileData)) {
-            redirect("/braid-system/client-report");
+            redirect("/braid-system/my-profile");
         }
 
         $csrfToken = $this->getCurrentSession()->csrf_token;
-        $profileType = $user->getUserByEmail($profileData->full_email);
-
         $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId);
         $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId, 3, 0, true);
         $isEvaluatedByBusinessMan = false;
@@ -437,17 +507,19 @@ class Admin extends Controller
             $meanEvaluation = 0;
         }
 
-        $positionData = $profileType->user_type == "designer" ?
-            $profileData->position_data : $profileData->branch_of_company;
+        $breadCrumbBefore = [
+            "slug" => "Detalhes do projeto",
+            "url" => $this->getCurrentSession()->linkBreadCrumbBefore
+        ];
 
         echo $this->view->render("admin/profile-data", [
-            "positionData" => $positionData,
+            "breadCrumbBefore" => $breadCrumbBefore,
+            "positionData" => $profileData->position_data,
             "isEvaluatedByBusinessMan" => $isEvaluatedByBusinessMan,
             "totalEvaluationDesigner" => count($arrayEvaluationDesigner),
             "meanEvaluation" => $meanEvaluation,
             "evaluationDesignerData" => $evaluationDesignerData,
             "csrfToken" => $csrfToken,
-            "profileType" => $profileType,
             "profileData" => $profileData,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Detalhes do perfil",
@@ -461,6 +533,10 @@ class Admin extends Controller
 
     public function chargeOnDemandCandidates(array $data = [])
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         header('Content-Type: application/json');
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
@@ -556,6 +632,10 @@ class Admin extends Controller
 
     public function projectDetail(array $data = [])
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $data = json_decode(file_get_contents('php://input'), true);
 
@@ -602,11 +682,11 @@ class Admin extends Controller
         $jobId = base64_decode($data["hash"], true);
 
         if (!$jobId) {
-            redirect("braid-system/client-report");
+            redirect("braid-system/my-profile");
         }
 
         if (!preg_match("/^\d+$/", $jobId)) {
-            redirect("braid-system/client-report");
+            redirect("braid-system/my-profile");
         }
 
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
@@ -640,11 +720,14 @@ class Admin extends Controller
             ->limit(3)->offset(0)->order("braid.contract.id", true)->fetch(true);
 
         $totalCandidatesDesigner = $candidatesDesigner->count();
+        $csrfToken = $this->getCurrentSession()->csrf_token;
+
         if (empty($jobData)) {
-            redirect("braid-system/client-report");
+            redirect("braid-system/my-profile");
         }
 
         echo $this->view->render("admin/project-detail", [
+            "csrfToken" => $csrfToken,
             "totalCandidatesDesigner" => $totalCandidatesDesigner,
             "candidatesDesigner" => $candidatesDesignerData,
             "contractData" => $contractData ?? null,
@@ -661,6 +744,10 @@ class Admin extends Controller
 
     public function deleteProject()
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
                 throw new \Exception("Cabeçalho de autorização ausente");
@@ -690,6 +777,10 @@ class Admin extends Controller
 
     public function editProject(array $data = [])
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
                 throw new \Exception("Cabeçalho de autorização ausente");
@@ -756,7 +847,7 @@ class Admin extends Controller
             $response = $jobs->updateJobById($post);
             echo $response ? json_encode([
                 "success_update_job" => true,
-                "url" => url("braid-system/client-report")
+                "url" => url("braid-system/my-profile")
             ]) : json_encode([
                 "general_error" => true,
                 "msg" => "Erro geral ao tentar atualizar os dados do projeto"
@@ -813,6 +904,10 @@ class Admin extends Controller
 
     public function searchProject()
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         header("Content-Type: application/json");
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
@@ -883,6 +978,10 @@ class Admin extends Controller
 
     public function chargeOnDemand(array $data = [])
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         header('Content-Type: application/json');
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
@@ -975,6 +1074,10 @@ class Admin extends Controller
 
     public function clientReportForm()
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $post = $this->getRequestPost()
                 ->setRequiredFields([
@@ -1061,7 +1164,7 @@ class Admin extends Controller
 
         if ($this->getServer("REQUEST_METHOD") == "GET") {
             if ($userData->user_type != "businessman") {
-                redirect("/braid-system/client-report");
+                redirect("/braid-system/my-profile");
             }
         }
 
@@ -1082,6 +1185,10 @@ class Admin extends Controller
 
     public function clientReport()
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
         $menuSelected = explode("/", $menuSelected);
         $menuSelected = array_filter($menuSelected, function ($item) {
@@ -1128,6 +1235,10 @@ class Admin extends Controller
 
     public function exit()
     {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
         if ($this->getServer('REQUEST_METHOD') == "POST") {
 
             $data = json_decode(file_get_contents('php://input'), true);
