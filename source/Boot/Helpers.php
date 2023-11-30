@@ -1,5 +1,9 @@
 <?php
 
+function session() {
+    return new \Source\Core\Session();
+}
+
 function removeQueryStringFromEndpoint($url) {
     $urlParts = parse_url($url);
 

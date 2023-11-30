@@ -31,7 +31,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <a href="#" class="btn btn-primary btn-block"><b>Chat</b></a>
+                        <a href="#" id="btnOpenChat" data-csrf="<?= empty($csrfToken) ? "" : $csrfToken ?>" class="btn btn-primary btn-block"><b>Chat</b></a>
                     </div>
                 </div>
             </div>

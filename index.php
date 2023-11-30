@@ -87,6 +87,8 @@ $route->get("/additional-data", "Admin:additionalData");
 $route->post("/additional-data", "Admin:additionalData");
 $route->get("/company-profile/{hash}", "Admin:companyProfile");
 $route->post("/save-breadcrumb-link", "Admin:saveBreadCrumbLink");
+$route->get("/chat-panel", "Admin:chatPanel");
+$route->post("/chat-panel", "Admin:chatPanel");
 
 /**
  * Cookies

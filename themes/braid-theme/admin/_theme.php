@@ -29,9 +29,7 @@
 
 <body class="hold-transition register-page">
   <?= $v->section("content") ?>
-  
-  <!-- Braid js -->
-  <script src="<?= theme("assets/scripts.js") ?>"></script>
+
   <!-- Bootstrap 4 -->
   <script src="<?= url("/vendor/almasaeed2010/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js") ?>"></script>
   <!-- AdminLTE App -->
@@ -40,6 +38,8 @@
     <!-- Compiled Materialize and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <?php endif ?>
+  <!-- Braid js -->
+  <script src="<?= theme("assets/scripts.js") ?>"></script>
 </body>
 
 </html>

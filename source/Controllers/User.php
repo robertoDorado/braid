@@ -104,6 +104,7 @@ class User extends Controller
                 }
 
                 $this->getCurrentSession()->set("login_user", [
+                    "isChatClosed" => true,
                     "fullEmail" => $credentialsData["fullEmail"],
                     "tokenData" => $credentialsData["tokenData"],
                 ]);
@@ -159,6 +160,7 @@ class User extends Controller
             }
 
             $this->getCurrentSession()->set("login_user", [
+                "isChatClosed" => true,
                 "fullEmail" => $credentialsData["fullEmail"],
                 "tokenData" => $credentialsData["tokenData"],
             ]);

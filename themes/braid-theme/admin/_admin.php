@@ -82,6 +82,13 @@
                             Dados adicionais
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="<?= url("/braid-system/chat-panel") ?>" class="nav-link
+                        <?= $menuSelected == "chat-panel" ? "bg-danger" : "" ?>">
+                            <i class="nav-icon fas fa-comments"></i>
+                            Chat
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
@@ -108,6 +115,7 @@
         </div>
         <!-- /.content-header -->
         <?= $v->section('content') ?>
+        <?php $v->insert("utils/chat-box") ?>
     </div>
 
     <!-- Main Footer -->

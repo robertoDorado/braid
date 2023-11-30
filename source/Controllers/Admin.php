@@ -27,6 +27,88 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function chatPanel()
+    {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
+        $designer = new Designer();
+        if ($this->getServer("REQUEST_METHOD") == "POST") {
+            $post = $this->getRequestPost()
+                ->setRequiredFields(["csrfToken", "csrf_token"])
+                ->configureDataPost()->getAllPostData();
+
+            
+            if (!empty($post["paramProfileData"])) {
+                $profileId = base64_decode($post["paramProfileData"], true);
+    
+                if (!$profileId) {
+                    throw new \Exception("Parametro designer_id inválido");
+                }
+    
+                if (!preg_match("/^\d+$/", $profileId)) {
+                    throw new \Exception("Parametro designer_id inválido");
+                }
+            }
+
+            if ($post["closeChat"]) {
+                $this->getCurrentSession()->set("login_user", [
+                    "isChatClosed" => true,
+                    "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
+                    "tokenData" => $this->getCurrentSession()->login_user->tokenData
+                ]);
+            }
+
+            if ($post["openChat"]) {
+                $this->getCurrentSession()->set("login_user", [
+                    "isChatClosed" => false,
+                    "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
+                    "tokenData" => $this->getCurrentSession()->login_user->tokenData
+                ]);
+            }
+
+            $designerData = $designer->getDesignerById($profileId);
+            
+            if (empty($designerData)) {
+                throw new \Exception("Objeto designer não encontrado");
+            }
+
+            $chatData = [
+                "success" => true, 
+                "headerChat" => $designerData->full_name,
+                "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
+                "tokenData" => $this->getCurrentSession()->login_user->tokenData
+            ];
+
+            $this->getCurrentSession()->set("login_user", $chatData);
+            echo json_encode($chatData);
+            die;
+        }
+
+        $user = new User();
+        $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
+        $menuSelected = explode("/", $menuSelected);
+        $menuSelected = array_filter($menuSelected, function ($item) {
+            if (!empty($item)) {
+                return $item;
+            }
+        });
+        $menuSelected = array_values($menuSelected);
+        $menuSelected = $menuSelected[count($menuSelected) - 1];
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+
+        echo $this->view->render("admin/chat-panel", [
+            "menuSelected" => $menuSelected,
+            "breadCrumbTitle" => "Painel de chat",
+            "fullName" => $userData->full_name,
+            "fullEmail" => $userData->full_email,
+            "nickName" => $userData->nick_name,
+            "pathPhoto" => $userData->path_photo,
+            "userType" => $userData->user_type
+        ]);
+    }
+
     public function saveBreadCrumbLink()
     {
         if (empty($this->getCurrentSession()->login_user)) {
