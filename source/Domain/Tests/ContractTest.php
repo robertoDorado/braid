@@ -2,9 +2,7 @@
 
 namespace Source\Domain\Tests;
 
-use DateTime;
 use PHPUnit\Framework\TestCase;
-use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Designer;
 use Source\Domain\Model\Jobs;

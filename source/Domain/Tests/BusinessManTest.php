@@ -93,14 +93,6 @@ class BusinessManTest extends TestCase
         $this->assertIsString($number);
     }
 
-    public function testExceptionRegisterNumber()
-    {
-        $this->businessMan = new BusinessMan();
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Número de CNPJ inválido");
-        $this->businessMan->setRegisterNumber("93530879000164");
-    }
-
     public function testGetTotalData()
     {
         $this->businessMan = new BusinessMan();

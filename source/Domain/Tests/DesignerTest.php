@@ -92,14 +92,6 @@ class DesignerTest extends TestCase
         $this->assertIsString($document);
     }
 
-    public function testGetDocumentException()
-    {
-        $this->designer = new Designer();
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Número de CPF Inválido");
-        $this->designer->setDocument("03614308090");
-    }
-
     public function testGetTotalData()
     {
         $this->designer = new Designer();

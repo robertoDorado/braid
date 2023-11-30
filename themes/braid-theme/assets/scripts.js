@@ -438,6 +438,7 @@ endpointProfileData=endpointProfileData[url.getHostName()]||''
 const requestUrlProfileData=url.getUrlOrigin(endpointProfileData)
 containerDesigner.dataset.hash=btoa(item.designer_id)
 btnSeeProfileCandidate.innerHTML="Ver perfil do candidato"
+btnSeeProfileCandidate.dataset.csrf=containerCandidates.dataset.csrf
 btnSeeProfileCandidate.href=requestUrlProfileData+"/"+btoa(item.designer_id)
 if(item.path_photo==null){photoDesigner.src=requestUrl+"/default.png"
 photoDesigner.alt="default.png"}else{photoDesigner.src=requestUrl+"/"+item.path_photo
@@ -449,6 +450,17 @@ setAttributesToElement("class","designer-data",designerData)
 setAttributesToElement("class","photo-designer",photoDesigner)
 setAttributesToElement("class","description-data-designer",descriptionDataDesigner)
 setAttributesToElement("class","btn btn-primary see-profile",btnSeeProfileCandidate)
+btnSeeProfileCandidate.addEventListener("click",function(){endpoint={"localhost":"/braid/braid-system/project-detail","clientes.laborcode.com.br":"/braid/braid-system/project-detail","braid.com.br":"/braid-system/project-detail","www.braid.com.br":"/braid-system/project-detail",}
+endpoint=endpoint[url.getHostName()]||''
+const link=url.getUrlOrigin(endpoint)+"/"+paramEndpointProjectDetail
+const linkRedirect=this.href
+endpoint={"localhost":"/braid/braid-system/save-breadcrumb-link","clientes.laborcode.com.br":"/braid/braid-system/save-breadcrumb-link","braid.com.br":"/braid-system/save-breadcrumb-link","www.braid.com.br":"/braid-system/save-breadcrumb-link",}
+endpoint=endpoint[url.getHostName()]||''
+const requestUrl=url.getUrlOrigin(endpoint)
+const form=new FormData()
+form.append("linkBreadCrumbBefore",link)
+form.append("csrfToken",this.dataset.csrf)
+fetch(requestUrl,{method:"POST",body:form}).then(response=>response.json()).then(function(response){if(response.success){window.location.href=linkRedirect}})})
 descriptionDataDesigner.appendChild(descriptionData)
 descriptionDataDesigner.appendChild(btnSeeProfileCandidate)
 designerData.append(photoDesigner,freelancerName)
@@ -779,7 +791,21 @@ obs={changeParam:(params,option)=>{params.userType=option
 return params}}
 params=obs.changeParam(params,this.option.value)
 params=url.stringfyQueryStringData(params)
-window.location.href=url.getStringUrl()+"?"+params})}};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteBtnModal=document.getElementById("deleteBtnModal")
+window.location.href=url.getStringUrl()+"?"+params})}};const endpointProjectDetail=removeParamFromEndpoint(url.getCurrentEndpoint(),!0)
+const paramEndpointProjectDetail=endpointProjectDetail.pop()
+if(endpointProjectDetail.join("/")=="braid-system/project-detail"){const seeProfile=Array.from(document.querySelectorAll(".see-profile"))
+seeProfile.forEach(function(link){link.addEventListener("click",function(event){event.preventDefault()
+let endpoint={"localhost":"/braid/braid-system/project-detail","clientes.laborcode.com.br":"/braid/braid-system/project-detail","braid.com.br":"/braid-system/project-detail","www.braid.com.br":"/braid-system/project-detail",}
+endpoint=endpoint[url.getHostName()]||''
+const link=url.getUrlOrigin(endpoint)+"/"+paramEndpointProjectDetail
+const linkRedirect=this.href
+endpoint={"localhost":"/braid/braid-system/save-breadcrumb-link","clientes.laborcode.com.br":"/braid/braid-system/save-breadcrumb-link","braid.com.br":"/braid-system/save-breadcrumb-link","www.braid.com.br":"/braid-system/save-breadcrumb-link",}
+endpoint=endpoint[url.getHostName()]||''
+const requestUrl=url.getUrlOrigin(endpoint)
+const form=new FormData()
+form.append("linkBreadCrumbBefore",link)
+form.append("csrfToken",this.dataset.csrf)
+fetch(requestUrl,{method:"POST",body:form}).then(response=>response.json()).then(function(response){if(response.success){window.location.href=linkRedirect}})})})};if(url.getCurrentEndpoint()=="braid-system/client-report"){const deleteBtnModal=document.getElementById("deleteBtnModal")
 const launchSureDeleteModal=document.getElementById("launchSureDeleteModal")
 const calloutModalDeleteProject=document.getElementById("calloutModalDeleteProject")
 const formSearchProject=document.getElementById("formSearchProject")

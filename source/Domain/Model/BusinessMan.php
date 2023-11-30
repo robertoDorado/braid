@@ -47,7 +47,7 @@ class BusinessMan
     /** @var ModelsBusinessMan Objeto BusinessMan */
     private ModelsBusinessMan $businessMan;
 
-    public function  setModelBusinessMan(BusinessMan $obj)
+    public function setModelBusinessMan(BusinessMan $obj)
     {
         $getters = checkGettersFilled($obj);
         $isMethods = checkIsMethodsFilled($obj);
