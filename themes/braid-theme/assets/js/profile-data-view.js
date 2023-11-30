@@ -10,31 +10,30 @@ if (endpointViewProfileData.join("/") == "braid-system/profile-data") {
         const headerChatBox = chatBox.firstElementChild.firstElementChild
 
         let endpointChat = {
-            "localhost": "/braid/braid-system/chat-panel",
-            "clientes.laborcode.com.br": "/braid/braid-system/chat-panel",
-            "braid.com.br": "/braid-system/chat-panel",
-            "www.braid.com.br": "/braid-system/chat-panel",
+            "localhost": "/braid/braid-system/chat-panel-user",
+            "clientes.laborcode.com.br": "/braid/braid-system/chat-panel-user",
+            "braid.com.br": "/braid-system/chat-panel-user",
+            "www.braid.com.br": "/braid-system/chat-panel-user",
         }
-        
+
         endpointChat = endpointChat[url.getHostName()] || ''
         const requestUrlChat = url.getUrlOrigin(endpointChat)
         const form = new FormData()
-        
+
         form.append("csrfToken", this.dataset.csrf)
         form.append("openChat", true)
         form.append("paramProfileData", paramViewProfileData)
-        
+
         fetch(requestUrlChat, {
             method: "POST",
             body: form
         }).then(response => response.json())
-        .then(function(response) {
+            .then(function (response) {
 
-            if (response.success) {
-                headerChatBox.innerHTML = response.headerChat
-                chatBox.style.display = "block"
-            }
-        })
-
+                if (response.success) {
+                    headerChatBox.innerHTML = response.headerChat
+                    chatBox.style.display = "block"
+                }
+            })
     })
 }

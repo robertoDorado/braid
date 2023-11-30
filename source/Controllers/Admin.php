@@ -27,63 +27,74 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function chatPanelUser()
+    {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+
+        $post = $this->getRequestPost()
+            ->setRequiredFields(["csrfToken", "csrf_token", "paramProfileData"])
+            ->configureDataPost()->getAllPostData();
+
+        $designer = new Designer();
+        $profileId = base64_decode($post["paramProfileData"], true);
+
+        if (!$profileId) {
+            throw new \Exception("Parametro designer_id inválido");
+        }
+
+        if (!preg_match("/^\d+$/", $profileId)) {
+            throw new \Exception("Parametro designer_id inválido");
+        }
+
+        $designerData = $designer->getDesignerById($profileId);
+
+        if (empty($designerData)) {
+            throw new \Exception("Objeto designer não encontrado");
+        }
+
+        $chatData = [
+            "success" => true,
+            "headerChat" => $designerData->full_name,
+            "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
+            "tokenData" => $this->getCurrentSession()->login_user->tokenData
+        ];
+
+        $this->getCurrentSession()->set("login_user", $chatData);
+        echo json_encode($chatData);
+    }
+
     public function chatPanel()
     {
         if (empty($this->getCurrentSession()->login_user)) {
             redirect("/user/login");
         }
 
-        $designer = new Designer();
         if ($this->getServer("REQUEST_METHOD") == "POST") {
             $post = $this->getRequestPost()
                 ->setRequiredFields(["csrfToken", "csrf_token"])
                 ->configureDataPost()->getAllPostData();
 
-            
-            if (!empty($post["paramProfileData"])) {
-                $profileId = base64_decode($post["paramProfileData"], true);
-    
-                if (!$profileId) {
-                    throw new \Exception("Parametro designer_id inválido");
-                }
-    
-                if (!preg_match("/^\d+$/", $profileId)) {
-                    throw new \Exception("Parametro designer_id inválido");
+            if (isset($post["closeChat"])) {
+                if ($post["closeChat"]) {
+                    $this->getCurrentSession()->set("login_user", [
+                        "isChatClosed" => true,
+                        "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
+                        "tokenData" => $this->getCurrentSession()->login_user->tokenData
+                    ]);
                 }
             }
 
-            if ($post["closeChat"]) {
-                $this->getCurrentSession()->set("login_user", [
-                    "isChatClosed" => true,
-                    "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
-                    "tokenData" => $this->getCurrentSession()->login_user->tokenData
-                ]);
+            if (isset($post["openChat"])) {
+                if ($post["openChat"]) {
+                    $this->getCurrentSession()->set("login_user", [
+                        "isChatClosed" => false,
+                        "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
+                        "tokenData" => $this->getCurrentSession()->login_user->tokenData
+                    ]);
+                }
             }
-
-            if ($post["openChat"]) {
-                $this->getCurrentSession()->set("login_user", [
-                    "isChatClosed" => false,
-                    "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
-                    "tokenData" => $this->getCurrentSession()->login_user->tokenData
-                ]);
-            }
-
-            $designerData = $designer->getDesignerById($profileId);
-            
-            if (empty($designerData)) {
-                throw new \Exception("Objeto designer não encontrado");
-            }
-
-            $chatData = [
-                "success" => true, 
-                "headerChat" => $designerData->full_name,
-                "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
-                "tokenData" => $this->getCurrentSession()->login_user->tokenData
-            ];
-
-            $this->getCurrentSession()->set("login_user", $chatData);
-            echo json_encode($chatData);
-            die;
         }
 
         $user = new User();

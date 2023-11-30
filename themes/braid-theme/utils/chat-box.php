@@ -1,6 +1,6 @@
-<div style="<?= !session()->login_user->isChatClosed ? "display:block" : "display:none" ?>" class="card card-danger direct-chat direct-chat-danger chat-box" id="chatBox" data-csrf="<?= session()->csrf_token ?>">
+<div style="<?= empty(session()->login_user->isChatClosed) ? "display:block" : "display:none" ?>" class="card card-danger direct-chat direct-chat-danger chat-box" id="chatBox" data-csrf="<?= session()->csrf_token ?>">
     <div class="card-header">
-        <h3 class="card-title"><?= !session()->login_user->success ? "Chat" : session()->login_user->headerChat ?></h3>
+        <h3 class="card-title"><?= empty(session()->login_user->success) ? "Chat" : session()->login_user->headerChat ?></h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fas fa-minus"></i>
