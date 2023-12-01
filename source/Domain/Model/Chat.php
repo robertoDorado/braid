@@ -34,7 +34,11 @@ class Chat
             $this->chat->designer_id = $this->getDesigner()->getId();
             $this->chat->chat_message = $this->getChatMessage();
             if (!$this->chat->save()) {
-                throw new \Exception($this->chat->fail());
+                if (!empty($this->chat->fail())) {
+                    throw new \PDOException($this->chat->fail()->getMessage());
+                }else {
+                    throw new \PDOException($this->chat->message());
+                }
             }
         }
     }

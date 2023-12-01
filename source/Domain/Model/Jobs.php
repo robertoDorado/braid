@@ -45,7 +45,11 @@ class Jobs
             $this->jobs->remuneration_data = $this->getRemuneration();
             $this->jobs->delivery_time = $this->getDeliveryTime();
             if (!$this->jobs->save()) {
-                throw new \Exception($this->jobs->fail());
+                if (!empty($this->jobs->fail())) {
+                    throw new \PDOException($this->jobs->fail()->getMessage());
+                }else {
+                    throw new \PDOException($this->jobs->message());
+                }
             }
 
             $this->id = Connect::getInstance()->lastInsertId();
@@ -62,7 +66,11 @@ class Jobs
         }
 
         if (!$job->destroy()) {
-            throw new \Exception($job->fail());
+            if (!empty($job->fail())) {
+                throw new \PDOException($job->fail()->getMessage());
+            }else {
+                throw new \PDOException($job->message());
+            }
         }
     }
 
@@ -80,7 +88,11 @@ class Jobs
         $jobData->remuneration_data = $post["remunerationData"];
         $jobData->delivery_time = $post["deliveryTime"];
         if (!$jobData->save()) {
-            throw new \Exception($jobData->fail());
+            if (!empty($jobData->fail())) {
+                throw new \PDOException($jobData->fail()->getMessage());
+            }else {
+                throw new \PDOException($jobData->message());
+            }
         }
 
         return true;

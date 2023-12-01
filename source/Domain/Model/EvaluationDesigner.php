@@ -33,7 +33,11 @@ class EvaluationDesigner
             $this->evaluationDesigner->rating_data = empty($this->getRatingData()) ? 0 : $this->getRatingData();
             $this->evaluationDesigner->evaluation_description = $this->getEvaluationDescription();
             if (!$this->evaluationDesigner->save()) {
-                throw new \Exception($this->evaluationDesigner->fail());
+                if (!empty($this->evaluationDesigner->fail())) {
+                    throw new \PDOException($this->evaluationDesigner->fail()->getMessage());
+                }else {
+                    throw new \PDOException($this->evaluationDesigner->message());
+                }
             }
         }
     }

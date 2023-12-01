@@ -54,11 +54,12 @@
         </div>
     </div>
     <div class="card-footer">
-        <form action="#" method="post">
+        <form action="#" method="post" id="formChatBox" data-receiver="<?= empty(session()->login_user->paramReceiver) ? "" : session()->login_user->paramReceiver ?>">
             <div class="input-group">
-                <input type="text" name="message" placeholder="Mensagem..." class="form-control">
+                <input type="text" name="messageData" placeholder="Mensagem..." class="form-control">
+                <input type="hidden" name="csrfToken" value="<?= empty(session()->csrf_token) ? "" : session()->csrf_token ?>">
                 <span class="input-group-append">
-                    <button type="button" class="btn btn-primary">Enviar</button>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
                 </span>
             </div>
         </form>

@@ -42,7 +42,11 @@ class Contract
             $this->contract->signature_business_man = empty($this->getSignatureBusinessMan()) ? 0 : 1;
             $this->contract->signature_designer = empty($this->getSignatureDesigner()) ? 0 : 1;
             if (!$this->contract->save()) {
-                throw new \Exception($this->contract->fail());
+                if (!empty($this->contract->fail())) {
+                    throw new \PDOException($this->contract->fail()->getMessage());
+                }else {
+                    throw new \PDOException($this->contract->message());
+                }
             }
         }
     }

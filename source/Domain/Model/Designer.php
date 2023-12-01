@@ -71,7 +71,11 @@ class Designer
             $this->designer->biography_data = empty($this->getBiography()) ? null : $this->getBiography();
             $this->designer->goals_data = empty($this->getGoals()) ? null : $this->getGoals();
             if (!$this->designer->save()) {
-                throw new \Exception($this->designer->fail());
+                if (!empty($this->designer->fail())) {
+                    throw new \PDOException($this->designer->fail()->getMessage());
+                }else {
+                    throw new \PDOException($this->designer->message());
+                }
             }
 
             $this->id = Connect::getInstance()->lastInsertId();
@@ -96,7 +100,11 @@ class Designer
         $designerData->experience_data = $this->getExperience();
         $designerData->position_data = $this->getPositionData();
         if (!$designerData->save()) {
-            throw new \Exception($designerData->fail());
+            if (!empty($designerData->fail())) {
+                throw new \PDOException($designerData->fail()->getMessage());
+            }else {
+                throw new \PDOException($designerData->message());
+            }
         }
     }
 
@@ -124,7 +132,11 @@ class Designer
         $designerData->full_email = $data["fullEmail"];
         $designerData->path_photo = $data["pathPhoto"];
         if (!$designerData->save()) {
-            throw new \Exception($designerData->fail());
+            if (!empty($designerData->fail())) {
+                throw new \PDOException($designerData->fail()->getMessage());
+            }else {
+                throw new \PDOException($designerData->message());
+            }
         }
     }
 

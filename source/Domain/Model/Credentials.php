@@ -69,7 +69,11 @@ class Credentials
             $this->credentials->json_credentials = $data["jsonCredentials"];
             $this->credentials->token_data = $data["tokenData"];
             if (!$this->credentials->save()) {
-                throw new \Exception($this->credentials->fail());
+                if (!empty($this->credentials->fail())) {
+                    throw new \PDOException($this->credentials->fail()->getMessage());
+                }else {
+                    throw new \PDOException($this->credentials->message());
+                }
             }
         } else {
             throw new \Exception("Erro ao tentar encontrar instância de credenciais");

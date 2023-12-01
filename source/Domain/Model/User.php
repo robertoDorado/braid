@@ -251,7 +251,11 @@ class User
         $recoverPassword->is_valid = 1;
         $recoverPassword->expires_in = date('Y-m-d H:i:s', strtotime('+5 minute', time()));
         if (!$recoverPassword->save()) {
-            throw new \Exception($recoverPassword->fail());
+            if (!empty($recoverPassword->fail())) {
+                throw new \PDOException($recoverPassword->fail()->getMessage());
+            }else {
+                throw new \PDOException($recoverPassword->message());
+            }
         }
 
         $data = $recoverPassword->find("hash_data=:hash_data", ":hash_data=" . $hash . "")

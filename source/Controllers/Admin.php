@@ -4,6 +4,7 @@ namespace Source\Controllers;
 
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Chat;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Credentials;
 use Source\Domain\Model\Designer;
@@ -27,6 +28,125 @@ class Admin extends Controller
         parent::__construct();
     }
 
+    public function profileDataJson(array $data = [])
+    {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+        
+        header('Content-Type: application/json');
+        if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+            throw new \Exception("Cabeçalho de autorização ausente");
+        }
+
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
+        }
+
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $credentials = new Credentials();
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
+        }
+
+        $profileId = base64_decode($data["hash"], true);
+
+        if (!$profileId) {
+            throw new \Exception("hash inválida");
+        }
+
+        if (!preg_match("/^\d+$/", $profileId)) {
+            throw new \Exception("parametro profile_id inválido");
+        }
+
+        $businessMan = new BusinessMan();
+        $designer = new Designer();
+
+        $receiverData = $designer->getDesignerById($profileId);
+
+        if (empty($receiverData)) {
+            $receiverData = $businessMan->getBusinessManById($profileId);
+        }
+
+        if (empty($receiverData)) {
+            throw new \Exception("Objeto receptor não existe");
+        }
+        
+        echo json_encode(["success" => true, "receiverEmail" => $receiverData->full_email]);
+    }
+
+    public function chatMessages(array $data = [])
+    {
+        if (empty($this->getCurrentSession()->login_user)) {
+            redirect("/user/login");
+        }
+        
+        if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+            throw new \Exception("Cabeçalho de autorização ausente");
+        }
+
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
+        }
+
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+        $credentials = new Credentials();
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
+        }
+
+        $chatData = base64_decode($data["hash"], true);
+
+        if (!$chatData) {
+            throw new \Exception("parametro chat box inválido");
+        }
+
+        $chatData = json_decode($chatData, true);
+        $post = $this->getRequestPost()
+            ->setRequiredFields(["csrf_token", "csrfToken"])
+            ->configureDataPost()->getAllPostData();
+            
+        if (empty($post["messageData"])) {
+            die;
+        }
+
+        $user = new User();
+        $designer = new Designer();
+        $businessMan = new BusinessMan();
+
+        $receiverData = $designer->getDesignerByEmail($chatData["receiverEmail"]);
+
+        if (empty($receiverData)) {
+            $receiverData = $businessMan->getBusinessManByEmail($chatData["receiverEmail"]);
+        }
+
+        if (empty($receiverData)) {
+            throw new \Exception("Objeto receptor não existe");
+        }
+
+        $receiverType = $user->getUserByEmail($receiverData->full_email);
+        $receiverType->user_type == "designer" ? $designer->setId($receiverData->id) :
+            $businessMan->setId($receiverData->id);
+        
+        $transmitterData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $transmitterData->user_type == "designer" ? $designer->setId($transmitterData->id) :
+            $businessMan->setId($transmitterData->id);
+
+        $chat = new Chat();
+        $chat->setDesigner($designer);
+        $chat->setBusinessMan($businessMan);
+        $chat->setChatMessage($post["messageData"]);
+        $chat->setModelChatMessage($chat);
+    }
+
     public function chatPanelUser()
     {
         if (empty($this->getCurrentSession()->login_user)) {
@@ -38,6 +158,7 @@ class Admin extends Controller
             ->configureDataPost()->getAllPostData();
 
         $designer = new Designer();
+        $businessMan = new BusinessMan();
         $profileId = base64_decode($post["paramProfileData"], true);
 
         if (!$profileId) {
@@ -48,15 +169,21 @@ class Admin extends Controller
             throw new \Exception("Parametro designer_id inválido");
         }
 
-        $designerData = $designer->getDesignerById($profileId);
+        $receiver = $designer->getDesignerById($profileId);
 
-        if (empty($designerData)) {
-            throw new \Exception("Objeto designer não encontrado");
+        if (empty($receiver)) {
+            $receiver = $businessMan->getBusinessManById($profileId);
+        }
+
+        if (empty($receiver)) {
+            throw new \Exception("Objeto receptor não existe");
         }
 
         $chatData = [
             "success" => true,
-            "headerChat" => $designerData->full_name,
+            "headerChat" => $receiver->full_name,
+            "receiverEmail" => $receiver->full_email,
+            "paramReceiver" => $post["paramProfileData"],
             "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
             "tokenData" => $this->getCurrentSession()->login_user->tokenData
         ];
