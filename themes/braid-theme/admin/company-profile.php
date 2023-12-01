@@ -1,7 +1,4 @@
 <?php $v->layout("admin/_admin") ?>
-
-<?php $v->layout("admin/_admin")  ?>
-
 <section class="content">
     <div class="container-fluid">
         <div class="row">
