@@ -4,7 +4,6 @@ namespace Source\Controllers;
 
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
-use Source\Domain\Model\Chat;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Credentials;
 use Source\Domain\Model\Designer;
@@ -139,12 +138,6 @@ class Admin extends Controller
             $transmitterData = $businessMan->getBusinessManByEmail($transmitterData->full_email);
             $businessMan->setId($transmitterData->id);
         }
-
-        $chat = new Chat();
-        $chat->setDesigner($designer);
-        $chat->setBusinessMan($businessMan);
-        $chat->setChatMessage($post["messageData"]);
-        $chat->setModelChatMessage($chat);
     }
 
     public function chatPanelUser()
