@@ -122,23 +122,23 @@ class Admin extends Controller
         $designer = new Designer();
         $businessMan = new BusinessMan();
 
-        $receiverData = $designer->getDesignerByEmail($chatData["receiverEmail"]);
-
-        if (empty($receiverData)) {
-            $receiverData = $businessMan->getBusinessManByEmail($chatData["receiverEmail"]);
-        }
-
-        if (empty($receiverData)) {
-            throw new \Exception("Objeto receptor não existe");
-        }
-
-        $receiverType = $user->getUserByEmail($receiverData->full_email);
-        $receiverType->user_type == "designer" ? $designer->setId($receiverData->id) :
+        $receiverData = $user->getUserByEmail($chatData["receiverEmail"]);
+        if ($receiverData->user_type == "designer") {
+            $receiverData = $designer->getDesignerByEmail($receiverData->full_email);
+            $designer->setId($receiverData->id);
+        }else {
+            $receiverData = $businessMan->getBusinessManByEmail($receiverData->full_email);
             $businessMan->setId($receiverData->id);
+        }
         
         $transmitterData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        $transmitterData->user_type == "designer" ? $designer->setId($transmitterData->id) :
+        if ($transmitterData->user_type == "designer") {
+            $transmitterData = $designer->getDesignerByEmail($transmitterData->full_email);
+            $designer->setId($transmitterData->id);
+        }else {
+            $transmitterData = $businessMan->getBusinessManByEmail($transmitterData->full_email);
             $businessMan->setId($transmitterData->id);
+        }
 
         $chat = new Chat();
         $chat->setDesigner($designer);

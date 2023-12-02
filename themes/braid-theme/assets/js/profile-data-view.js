@@ -10,6 +10,7 @@ if (endpointViewProfileData.join("/") == "braid-system/profile-data") {
         event.preventDefault()
         const headerChatBox = chatBox.firstElementChild.firstElementChild
         const csrfToken = this.dataset.csrf
+        formChatBoxProfileDataView.dataset.receiver = paramViewProfileData
 
         let endpointChat = {
             "localhost": "/braid/braid-system/token",
@@ -54,40 +55,10 @@ if (endpointViewProfileData.join("/") == "braid-system/profile-data") {
                 .then(function (response) {
     
                     if (response.success) {
-                        headerChatBox.innerHTML = response.headerChat
-                        chatBox.style.display = "block"
-    
-                        formChatBoxProfileDataView.addEventListener("submit", function (event) {
-                            event.preventDefault()
-                            const messageData = this.messageData.value
-                            this.messageData.value = ""
-                            
-                            endpointChat = {
-                                "localhost": "/braid/braid-system/chat-messages",
-                                "clientes.laborcode.com.br": "/braid/braid-system/chat-messages",
-                                "braid.com.br": "/braid-system/chat-messages",
-                                "www.braid.com.br": "/braid-system/chat-messages",
-                            }
-    
-                            endpointChat = endpointChat[url.getHostName()] || ''
-                            requestUrlChat = url.getUrlOrigin(endpointChat)
-                            
-                            const form = new FormData()
-                            form.append("messageData", messageData)
-                            form.append("csrfToken", this.csrfToken.value)
-
-                            delete response.success
-                            delete response.headerChat
-                            delete response.tokenData
-    
-                            const endpointChatMessage = JSON.stringify(response)
-                            fetch(requestUrlChat + "/" + btoa(endpointChatMessage), {
-                                method: "POST",
-                                headers: {
-                                    Authorization: "Bearer " + tokenData
-                                },
-                                body: form
-                            })
+                        window.location.href = window.location.href
+                        window.addEventListener("load", function() {
+                            headerChatBox.innerHTML = response.headerChat
+                            chatBox.style.display = "block"
                         })
                     }
                 })
