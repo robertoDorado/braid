@@ -32,7 +32,7 @@ class Conversation extends DDL
         "BIGINT NOT NULL", "BIGINT NOT NULL",
         "CONSTRAINT `conversation_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)",
         "CONSTRAINT `conversation_ibfk_2` FOREIGN KEY (`id_message`) REFERENCES `messages` (`id`)"]);
-        $this->dropTableIfExists()->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 }

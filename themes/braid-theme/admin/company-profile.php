@@ -12,6 +12,7 @@
                         <strong>
                             <p class="text-muted text-center"><?= empty($positionData) ? "Não especificado" : $positionData ?></p>
                         </strong>
+                        <a href="#" id="btnOpenChat" data-csrf="<?= empty($csrfToken) ? "" : $csrfToken ?>" class="btn btn-primary btn-block"><b>Chat</b></a>
                     </div>
                 </div>
             </div>

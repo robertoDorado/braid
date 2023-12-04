@@ -42,16 +42,16 @@ class EvaluationDesigner
         }
     }
 
-    public function getEvaluationLeftJoinDesigner(int $designerId = 0, int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false)
+    public function getEvaluationLeftJoinDesigner(string $designerEmail = '', int $limitValue = 0, int $offsetValue = 0, bool $orderBy = false)
     {
         $this->evaluationDesigner = new ModelsEvaluationDesigner();
 
         $terms = "";
         $params = "";
 
-        if (!empty($designerId)) {
-            $terms = "id=:id";
-            $params = ":id=" . $designerId . "";
+        if (!empty($designerEmail)) {
+            $terms = "full_email=:full_email";
+            $params = ":full_email=" . $designerEmail . "";
         }
 
         $evaluationDesignerData = $this->evaluationDesigner

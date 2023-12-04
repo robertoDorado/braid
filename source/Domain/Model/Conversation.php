@@ -2,6 +2,7 @@
 namespace Source\Domain\Model;
 
 use PDOException;
+use Source\Core\Connect;
 use Source\Models\Conversation as ModelsConversation;
 
 /**
@@ -12,6 +13,9 @@ use Source\Models\Conversation as ModelsConversation;
  */
 class Conversation
 {
+    /** @var int Id da conversa */
+    private int $id = 0;
+
     /** @var User Id do usuário que possui a conversa atual */
     private User $user;
 
@@ -37,16 +41,32 @@ class Conversation
                     throw new PDOException($this->conversation->message());
                 }
             }
+
+            $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
     }
 
     public function getConversationAndMessages(array $users)
     {
         $this->conversation = new ModelsConversation();
         $conversationData = $this->conversation
-        ->find("", "id_user IN(" . implode(",", $users). ")")
-        ->advancedJoin("messages", "conversation.id_message = messages.id", "", "", "sender_id, receiver_id, content, date_time")
-        ->advancedJoin("user", "conversation.id_user = user.id", "", "", "full_name, path_photo")->fetch(true);
+        ->find("")
+        ->advancedJoin("messages", "conversation.id_message = messages.id",
+        "sender_id IN(" . implode(",", $users). ") AND receiver_id IN(" . implode(",", $users). ")",
+        "sender_id IN(" . implode(",", $users). ") AND receiver_id IN(" . implode(",", $users). ")", 
+        "sender_id, receiver_id, content, date_time")
+        ->advancedJoin("user", "conversation.id_user = user.id", "", "", "full_name, path_photo")
+        ->fetch(true);
 
         return $conversationData;
     }

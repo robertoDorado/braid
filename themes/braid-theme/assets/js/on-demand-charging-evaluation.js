@@ -39,7 +39,7 @@ if (endpointEvaluationCharging.join("/") == "braid-system/profile-data" || url.g
 
                 response["page"] = page
                 response["max"] = limit
-                response["profile_id"] = atob(paramEvaluationCharging)
+                response["profile_email"] = atob(paramEvaluationCharging)
 
                 endpoint = {
                     "localhost": "/braid/braid-system/charge-on-demand-evaluation",

@@ -98,11 +98,10 @@ if (endpointData == "braid-system/project-detail") {
 
                                 endpointProfileData = endpointProfileData[url.getHostName()] || ''
                                 const requestUrlProfileData = url.getUrlOrigin(endpointProfileData)
-
-                                containerDesigner.dataset.hash = btoa(item.designer_id)
+                                containerDesigner.dataset.hash = btoa(item.full_email)
                                 btnSeeProfileCandidate.innerHTML = "Ver perfil do candidato"
                                 btnSeeProfileCandidate.dataset.csrf = containerCandidates.dataset.csrf
-                                btnSeeProfileCandidate.href = requestUrlProfileData + "/" + btoa(item.designer_id)
+                                btnSeeProfileCandidate.href = requestUrlProfileData + "/" + btoa(item.full_email)
 
                                 if (item.path_photo == null) {
                                     photoDesigner.src = requestUrl + "/default.png"

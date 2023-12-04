@@ -67,7 +67,7 @@ class Contract
         $contractData = $this->contract
         ->find("job_id=:job_id", ":job_id=" . $jobId . "", "additional_description, designer_id")
         ->advancedLeftJoin("designer", 
-        "braid.designer.id = braid.contract.designer_id", null, null, "full_name, path_photo");
+        "braid.designer.id = braid.contract.designer_id", null, null, "full_name, full_email, path_photo");
 
         if ($getDataObject) {
             return $contractData->fetch(true);

@@ -24,7 +24,7 @@
                             <dt>Prazo de entrega</dt>
                             <dd><?= date("d/m/Y H:i", strtotime($jobData->delivery_time)) ?></dd>
                             <dt>Perfil da empresa</dt>
-                            <dd><a href="<?= url("/braid-system/company-profile/" . base64_encode($jobData->business_man_id) . "") ?>" class="btn btn-primary mt-2">Ver o perfil da empresa</a></dd>
+                            <dd><a href="<?= url("/braid-system/company-profile/" . base64_encode($jobData->full_email) . "") ?>" class="btn btn-primary mt-2">Ver o perfil da empresa</a></dd>
                         </dl>
                     </div>
                 </div>
@@ -44,14 +44,14 @@
             <?php if (!empty($candidatesDesigner)) : ?>
                 <div id="containerCandidates" data-csrf="<?= empty($csrfToken) ? "" : $csrfToken ?>">
                     <?php foreach ($candidatesDesigner as $candidate) : ?>
-                        <div class="callout callout-danger container-designer" data-hash="<?= base64_encode($candidate->designer_id) ?>">
+                        <div class="callout callout-danger container-designer" data-hash="<?= base64_encode($candidate->full_email) ?>">
                             <div class="designer-data">
                                 <img src="<?= empty($candidate->path_photo) ? theme("assets/img/user/default.png") : theme("assets/img/user/" . $candidate->path_photo . "") ?>" class="photo-designer" alt="photo-designer">
                                 <p><?= $candidate->full_name ?></p>
                             </div>
                             <div class="description-data-designer">
                                 <p><?= $candidate->additional_description ?></p>
-                                <a data-csrf="<?= empty($csrfToken) ? "" : $csrfToken ?>" href="<?= url("/braid-system/profile-data/" . base64_encode($candidate->designer_id) . "") ?>" class="btn btn-primary see-profile">Ver perfil do candidato</a>
+                                <a data-csrf="<?= empty($csrfToken) ? "" : $csrfToken ?>" href="<?= url("/braid-system/profile-data/" . base64_encode($candidate->full_email) . "") ?>" class="btn btn-primary see-profile">Ver perfil do candidato</a>
                             </div>
                         </div>
                     <?php endforeach ?>

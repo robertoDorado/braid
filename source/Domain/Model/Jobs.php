@@ -100,7 +100,12 @@ class Jobs
 
     public function getJobsById(int $id)
     {
-        return (new ModelsJobs())->findById($id);
+        $this->jobs = new ModelsJobs();
+        $jobData = $this->jobs->find("id=:id", ":id=" . $id . "")
+        ->advancedJoin("business_man", "jobs.business_man_id = business_man.id", "", "", "full_email")
+        ->fetch();
+
+        return $jobData;
     }
 
     public function getJobsLikeQuery(array $data, int $limit = 0)

@@ -11,6 +11,7 @@ use Source\Domain\Model\Designer;
 use Source\Domain\Model\EvaluationDesigner;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\Messages;
+use Source\Domain\Model\Participants;
 use Source\Domain\Model\User;
 
 /**
@@ -66,6 +67,7 @@ class Admin extends Controller
 
         $businessMan = new BusinessMan();
         $designer = new Designer();
+        $user = new User();
 
         $receiverData = $designer->getDesignerById($profileId);
 
@@ -73,6 +75,11 @@ class Admin extends Controller
             $receiverData = $businessMan->getBusinessManById($profileId);
         }
 
+        if (empty($receiverData)) {
+            throw new \Exception("Objeto receptor não existe");
+        }
+        
+        $receiverData = $user->getUserByEmail($receiverData->full_email);
         if (empty($receiverData)) {
             throw new \Exception("Objeto receptor não existe");
         }
@@ -165,19 +172,19 @@ class Admin extends Controller
         $businessMan = new BusinessMan();
         $user = new User();
 
-        $profileId = base64_decode($post["paramProfileData"], true);
-        if (!$profileId) {
+        $profileEmail = base64_decode($post["paramProfileData"], true);
+        if (!$profileEmail) {
             throw new \Exception("Parametro designer_id inválido");
         }
 
-        if (!preg_match("/^\d+$/", $profileId)) {
+        if (!isValidEmail($profileEmail)) {
             throw new \Exception("Parametro designer_id inválido");
         }
 
-        $receiverData = $designer->getDesignerById($profileId);
+        $receiverData = $designer->getDesignerByEmail($profileEmail);
 
         if (empty($receiverData)) {
-            $receiverData = $businessMan->getBusinessManById($profileId);
+            $receiverData = $businessMan->getBusinessManByEmail($profileEmail);
         }
 
         $receiverData = $user->getUserByEmail($receiverData->full_email);
@@ -185,10 +192,20 @@ class Admin extends Controller
             throw new \Exception("Objeto receptor não existe");
         }
 
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        if (empty($userData)) {
+            throw new \Exception("Objeto usuário não existe");
+        }
+        $user->setId($userData->id);
+        
+        $receiverUser = new User();
+        $receiverUser->setId($receiverData->id);
+
         $chatData = [
             "success" => true,
             "receiverName" => $receiverData->full_name,
-            "receiverId" => base64_encode($receiverData->id),
+            "receiverUser" => $receiverUser,
+            "user" => $user,
             "paramProfileData" => $post["paramProfileData"],
             "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
             "tokenData" => $this->getCurrentSession()->login_user->tokenData
@@ -276,16 +293,16 @@ class Admin extends Controller
         $user = new User();
         $businessMan = new BusinessMan();
 
-        $profileId = base64_decode($data["hash"], true);
-        if (!$profileId) {
+        $profileEmail = base64_decode($data["hash"], true);
+        if (!$profileEmail) {
             redirect("braid-system/my-profile");
         }
 
-        if (!preg_match("/^\d+$/", $profileId)) {
+        if (!isValidEmail($profileEmail)) {
             redirect("braid-system/my-profile");
         }
 
-        $profileData = $businessMan->getBusinessManById($profileId);
+        $profileData = $businessMan->getBusinessManByEmail($profileEmail);
         if (empty($profileData)) {
             redirect("braid-system/my-profile");
         }
@@ -300,8 +317,10 @@ class Admin extends Controller
         $menuSelected = array_values($menuSelected);
         $menuSelected = $menuSelected[count($menuSelected) - 1];
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $csrfToken = $this->getCurrentSession()->csrf_token;
 
         echo $this->view->render("admin/company-profile", [
+            "csrfToken" => $csrfToken,
             "positionData" => $profileData->company_name,
             "menuSelected" => $menuSelected,
             "profileData" => $profileData,
@@ -479,8 +498,8 @@ class Admin extends Controller
 
         $profileType = $user->getUserByEmail($profileData->full_email);
         $evaluationDesigner = new EvaluationDesigner();
-        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id, 3, 0, true);
-        $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->id);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->full_email, 3, 0, true);
+        $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->full_email);
 
         if (!empty($arrayEvaluationDesigner)) {
             foreach ($arrayEvaluationDesigner as &$ratingData) {
@@ -591,8 +610,8 @@ class Admin extends Controller
 
         $offsetValue = ($data["page"] * $data["max"]) - $data["max"];
         $evaluationDesigner = new EvaluationDesigner();
-        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_id"], $data["max"], $offsetValue, true);
-        $totalEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_id"]);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_email"], $data["max"], $offsetValue, true);
+        $totalEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($data["profile_email"]);
 
         if (!empty($evaluationDesignerData)) {
             foreach ($evaluationDesignerData as &$evaluationData) {
@@ -675,12 +694,12 @@ class Admin extends Controller
             }
         }
 
-        $profileId = base64_decode($data["hash"], true);
-        if (!$profileId) {
+        $profileEmail = base64_decode($data["hash"], true);
+        if (!$profileEmail) {
             redirect("braid-system/my-profile");
         }
 
-        if (!preg_match("/^\d+$/", $profileId)) {
+        if (!isValidEmail($profileEmail)) {
             redirect("braid-system/my-profile");
         }
 
@@ -695,15 +714,15 @@ class Admin extends Controller
         $menuSelected = $menuSelected[count($menuSelected) - 1];
 
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        $profileData = $designer->getDesignerById($profileId);
+        $profileData = $designer->getDesignerByEmail($profileEmail);
 
         if (empty($profileData)) {
             redirect("/braid-system/my-profile");
         }
 
         $csrfToken = $this->getCurrentSession()->csrf_token;
-        $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId);
-        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileId, 3, 0, true);
+        $arrayEvaluationDesigner = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->full_email);
+        $evaluationDesignerData = $evaluationDesigner->getEvaluationLeftJoinDesigner($profileData->full_email, 3, 0, true);
         $isEvaluatedByBusinessMan = false;
 
         if (!empty($evaluationDesignerData)) {

@@ -1,37 +1,8 @@
 <?php
-if (!empty(session()->login_user->paramProfileData)) {
-    $designer = new \Source\Domain\Model\Designer();
-    $businessMan = new \Source\Domain\Model\BusinessMan();
-    $user = new \Source\Domain\Model\User();
-    $conversation = new \Source\Domain\Model\Conversation();
-
-    $profileId = base64_decode(session()->login_user->paramProfileData, true);
-    if (!$profileId) {
-        throw new \Exception("Parametro designer_id inválido");
-    }
-
-    if (!preg_match("/^\d+$/", $profileId)) {
-        throw new \Exception("Parametro designer_id inválido");
-    }
-
-    $receiverData = $designer->getDesignerById($profileId);
-
-    if (empty($receiverData)) {
-        $receiverData = $businessMan->getBusinessManById($profileId);
-    }
-
-    $receiverData = $user->getUserByEmail($receiverData->full_email);
-    if (empty($receiverData)) {
-        throw new \Exception("Objeto receptor não existe");
-    }
-
-    $userData = $user->getUserByEmail(session()->login_user->fullEmail);
-    if (empty($userData)) {
-        throw new \Exception("Usuário não existe");
-    }
-    $conversationData = $conversation->getConversationAndMessages([$receiverData->id, $userData->id]);
+if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user->user)) {
+    $participants = new \Source\Domain\Model\Conversation();
+    $participantsData = $participants->getConversationAndMessages([session()->login_user->user->getId(), session()->login_user->receiverUser->getId()]);
 }
-
 ?>
 <div style="<?= empty(session()->login_user->isChatClosed) ? "display:block" : "display:none" ?>" class="card card-danger direct-chat direct-chat-danger chat-box" id="chatBox" data-csrf="<?= session()->csrf_token ?>">
     <div class="card-header">
@@ -50,32 +21,32 @@ if (!empty(session()->login_user->paramProfileData)) {
     </div>
     <div class="card-body">
         <div class="direct-chat-messages">
-            <?php if (!empty($conversationData)) : ?>
-                <?php foreach ($conversationData as $conversation) : ?>
-                    <?php if ($conversation->id_user == $conversation->receiver_id) : ?>
+            <?php if (!empty($participantsData)) : ?>
+                <?php foreach ($participantsData as $participants) : ?>
+                    <?php if (session()->login_user->user->getId() == $participants->receiver_id) : ?>
                         <div class="direct-chat-msg">
                             <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-left"><?= $conversation->full_name ?></span>
-                                <span class="direct-chat-timestamp float-right"><?= $conversation->date_time ?></span>
+                                <span class="direct-chat-name float-left"><?= $participants->full_name ?></span>
+                                <span class="direct-chat-timestamp float-right"><?= date("d/m/Y H:i", strtotime($participants->date_time)) ?></span>
                             </div>
-                            <img class="direct-chat-img" src="<?= empty($conversation->path_photo) ?
+                            <img class="direct-chat-img" src="<?= empty($participants->path_photo) ?
                                                                     theme("assets/img/user/default.png") :
-                                                                    theme("assets/img/user/" . $conversation->path_photo . "") ?>" alt="message user image">
+                                                                    theme("assets/img/user/" . $participants->path_photo . "") ?>" alt="message user image">
                             <div class="direct-chat-text">
-                                <?= $conversation->content ?>
+                                <?= $participants->content ?>
                             </div>
                         </div>
-                    <?php elseif ($conversation->id_user == $conversation->sender_id) : ?>
+                    <?php elseif (session()->login_user->user->getId() == $participants->sender_id) : ?>
                         <div class="direct-chat-msg right">
                             <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-right"><?= $conversation->full_name ?></span>
-                                <span class="direct-chat-timestamp float-left"><?= $conversation->date_time ?></span>
+                                <span class="direct-chat-name float-right"><?= $participants->full_name ?></span>
+                                <span class="direct-chat-timestamp float-left"><?= $participants->date_time ?></span>
                             </div>
-                            <img class="direct-chat-img" src="<?= empty($conversation->path_photo) ?
+                            <img class="direct-chat-img" src="<?= empty($participants->path_photo) ?
                                                                     theme("assets/img/user/default.png") :
-                                                                    theme("assets/img/user/" . $conversation->path_photo . "") ?>" alt="message user image">
+                                                                    theme("assets/img/user/" . $participants->path_photo . "") ?>" alt="message user image">
                             <div class="direct-chat-text">
-                                <?= $conversation->content ?>
+                                <?= $participants->content ?>
                             </div>
                         </div>
                     <?php endif ?>

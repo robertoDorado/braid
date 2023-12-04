@@ -1,7 +1,7 @@
 const endpointViewProfileData = removeParamFromEndpoint(url.getCurrentEndpoint(), true)
 const paramViewProfileData = endpointViewProfileData.pop()
 
-if (endpointViewProfileData.join("/") == "braid-system/profile-data") {
+if (endpointViewProfileData.join("/") == "braid-system/profile-data" || endpointViewProfileData.join("/") == "braid-system/company-profile") {
     const btnOpenChat = document.getElementById("btnOpenChat")
     const chatBox = document.getElementById("chatBox")
     const formChatBoxProfileDataView = document.getElementById("formChatBox")
