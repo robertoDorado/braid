@@ -57,7 +57,7 @@ if (endpointViewProfileData.join("/") == "braid-system/profile-data") {
                     if (response.success) {
                         window.location.href = window.location.href
                         window.addEventListener("load", function() {
-                            headerChatBox.innerHTML = response.headerChat
+                            headerChatBox.innerHTML = response.receiverName
                             chatBox.style.display = "block"
                         })
                     }

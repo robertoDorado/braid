@@ -5,10 +5,12 @@ namespace Source\Controllers;
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
 use Source\Domain\Model\Contract;
+use Source\Domain\Model\Conversation;
 use Source\Domain\Model\Credentials;
 use Source\Domain\Model\Designer;
 use Source\Domain\Model\EvaluationDesigner;
 use Source\Domain\Model\Jobs;
+use Source\Domain\Model\Messages;
 use Source\Domain\Model\User;
 
 /**
@@ -118,26 +120,35 @@ class Admin extends Controller
         }
 
         $user = new User();
-        $designer = new Designer();
-        $businessMan = new BusinessMan();
+        $message = new Messages();
+        $conversation = new Conversation();
+
+        $senderData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail); 
+        if (empty($senderData)) {
+            throw new \Exception("usuário sender não existe");
+        }
 
         $receiverData = $user->getUserByEmail($chatData["receiverEmail"]);
-        if ($receiverData->user_type == "designer") {
-            $receiverData = $designer->getDesignerByEmail($receiverData->full_email);
-            $designer->setId($receiverData->id);
-        }else {
-            $receiverData = $businessMan->getBusinessManByEmail($receiverData->full_email);
-            $businessMan->setId($receiverData->id);
+        if (empty($receiverData)) {
+            throw new \Exception("usuário receiver não existe");
         }
-        
-        $transmitterData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
-        if ($transmitterData->user_type == "designer") {
-            $transmitterData = $designer->getDesignerByEmail($transmitterData->full_email);
-            $designer->setId($transmitterData->id);
-        }else {
-            $transmitterData = $businessMan->getBusinessManByEmail($transmitterData->full_email);
-            $businessMan->setId($transmitterData->id);
-        }
+
+        $senderUser = new User();
+        $senderUser->setId($senderData->id);
+
+        $receiverUser = new User();
+        $receiverUser->setId($receiverData->id);
+
+        $message->setSenderUser($senderUser);
+        $message->setReceiverUser($receiverUser);
+        $message->setContent($post["messageData"]);
+        $message->setDateTime(date("Y-m-d H:i:s"));
+        $message->setModelMessage($message);
+        $message->setId($message->getId());
+
+        $conversation->setUser($senderUser);
+        $conversation->setMessage($message);
+        $conversation->setModelConversation($conversation);
     }
 
     public function chatPanelUser()
@@ -152,8 +163,9 @@ class Admin extends Controller
 
         $designer = new Designer();
         $businessMan = new BusinessMan();
-        $profileId = base64_decode($post["paramProfileData"], true);
+        $user = new User();
 
+        $profileId = base64_decode($post["paramProfileData"], true);
         if (!$profileId) {
             throw new \Exception("Parametro designer_id inválido");
         }
@@ -162,21 +174,22 @@ class Admin extends Controller
             throw new \Exception("Parametro designer_id inválido");
         }
 
-        $receiver = $designer->getDesignerById($profileId);
+        $receiverData = $designer->getDesignerById($profileId);
 
-        if (empty($receiver)) {
-            $receiver = $businessMan->getBusinessManById($profileId);
+        if (empty($receiverData)) {
+            $receiverData = $businessMan->getBusinessManById($profileId);
         }
 
-        if (empty($receiver)) {
+        $receiverData = $user->getUserByEmail($receiverData->full_email);
+        if (empty($receiverData)) {
             throw new \Exception("Objeto receptor não existe");
         }
 
         $chatData = [
             "success" => true,
-            "headerChat" => $receiver->full_name,
-            "receiverEmail" => $receiver->full_email,
-            "paramReceiver" => $post["paramProfileData"],
+            "receiverName" => $receiverData->full_name,
+            "receiverId" => base64_encode($receiverData->id),
+            "paramProfileData" => $post["paramProfileData"],
             "fullEmail" => $this->getCurrentSession()->login_user->fullEmail,
             "tokenData" => $this->getCurrentSession()->login_user->tokenData
         ];

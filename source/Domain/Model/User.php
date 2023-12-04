@@ -13,6 +13,9 @@ use Source\Models\User as ModelsUser;
  */
 class User
 {
+    /** @var int Id do usuário */
+    private int $id = 0;
+
     /** @var string Tipo de usuario */
     private $userType;
 
@@ -59,6 +62,16 @@ class User
 
             return true;
         }
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
     }
 
     public function getUserType()
