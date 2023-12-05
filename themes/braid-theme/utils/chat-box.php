@@ -1,7 +1,7 @@
 <?php
 if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user->user)) {
-    $participants = new \Source\Domain\Model\Conversation();
-    $participantsData = $participants->getConversationAndMessages([session()->login_user->user->getId(), session()->login_user->receiverUser->getId()]);
+    $conversation = new \Source\Domain\Model\Conversation();
+    $conversationData = $conversation->getConversationAndMessages([session()->login_user->user->getId(), session()->login_user->receiverUser->getId()]);
 }
 ?>
 <div style="<?= empty(session()->login_user->isChatClosed) ? "display:block" : "display:none" ?>" class="card card-danger direct-chat direct-chat-danger chat-box" id="chatBox" data-csrf="<?= session()->csrf_token ?>">
@@ -21,32 +21,32 @@ if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user-
     </div>
     <div class="card-body">
         <div class="direct-chat-messages">
-            <?php if (!empty($participantsData)) : ?>
-                <?php foreach ($participantsData as $participants) : ?>
-                    <?php if (session()->login_user->user->getId() == $participants->receiver_id) : ?>
+            <?php if (!empty($conversationData)) : ?>
+                <?php foreach ($conversationData as $conversation) : ?>
+                    <?php if (session()->login_user->user->getId() == $conversation->receiver_id) : ?>
                         <div class="direct-chat-msg">
                             <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-left"><?= $participants->full_name ?></span>
-                                <span class="direct-chat-timestamp float-right"><?= date("d/m/Y H:i", strtotime($participants->date_time)) ?></span>
+                                <span class="direct-chat-name float-left"><?= $conversation->full_name ?></span>
+                                <span class="direct-chat-timestamp float-right"><?= $conversation->date_time ?></span>
                             </div>
-                            <img class="direct-chat-img" src="<?= empty($participants->path_photo) ?
+                            <img class="direct-chat-img" src="<?= empty($conversation->path_photo) ?
                                                                     theme("assets/img/user/default.png") :
-                                                                    theme("assets/img/user/" . $participants->path_photo . "") ?>" alt="message user image">
+                                                                    theme("assets/img/user/" . $conversation->path_photo . "") ?>" alt="message user image">
                             <div class="direct-chat-text">
-                                <?= $participants->content ?>
+                                <?= $conversation->content ?>
                             </div>
                         </div>
-                    <?php elseif (session()->login_user->user->getId() == $participants->sender_id) : ?>
+                    <?php elseif (session()->login_user->user->getId() == $conversation->sender_id) : ?>
                         <div class="direct-chat-msg right">
                             <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-right"><?= $participants->full_name ?></span>
-                                <span class="direct-chat-timestamp float-left"><?= $participants->date_time ?></span>
+                                <span class="direct-chat-name float-right"><?= $conversation->full_name ?></span>
+                                <span class="direct-chat-timestamp float-left"><?= $conversation->date_time ?></span>
                             </div>
-                            <img class="direct-chat-img" src="<?= empty($participants->path_photo) ?
+                            <img class="direct-chat-img" src="<?= empty($conversation->path_photo) ?
                                                                     theme("assets/img/user/default.png") :
-                                                                    theme("assets/img/user/" . $participants->path_photo . "") ?>" alt="message user image">
+                                                                    theme("assets/img/user/" . $conversation->path_photo . "") ?>" alt="message user image">
                             <div class="direct-chat-text">
-                                <?= $participants->content ?>
+                                <?= $conversation->content ?>
                             </div>
                         </div>
                     <?php endif ?>

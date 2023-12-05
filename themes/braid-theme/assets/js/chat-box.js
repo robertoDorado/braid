@@ -29,7 +29,7 @@ window.addEventListener("load", function () {
 
             endpointChat = endpointChat[url.getHostName()] || ''
             requestUrl = url.getUrlOrigin(endpointChat)
-
+            
             if (formChatBox.dataset.receiver) {
                 fetch(requestUrl + "/" + formChatBox.dataset.receiver, {
                     method: "GET",

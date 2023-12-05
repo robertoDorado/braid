@@ -55,13 +55,13 @@ class Admin extends Controller
             throw new \Exception(json_encode(["invalid_token_data" => true]));
         }
 
-        $profileId = base64_decode($data["hash"], true);
+        $profileEmail = base64_decode($data["hash"], true);
 
-        if (!$profileId) {
+        if (!$profileEmail) {
             throw new \Exception("hash inválida");
         }
 
-        if (!preg_match("/^\d+$/", $profileId)) {
+        if (!isValidEmail($profileEmail)) {
             throw new \Exception("parametro profile_id inválido");
         }
 
@@ -69,10 +69,10 @@ class Admin extends Controller
         $designer = new Designer();
         $user = new User();
 
-        $receiverData = $designer->getDesignerById($profileId);
+        $receiverData = $designer->getDesignerByEmail($profileEmail);
 
         if (empty($receiverData)) {
-            $receiverData = $businessMan->getBusinessManById($profileId);
+            $receiverData = $businessMan->getBusinessManByEmail($profileEmail);
         }
 
         if (empty($receiverData)) {
@@ -259,7 +259,22 @@ class Admin extends Controller
         $menuSelected = $menuSelected[count($menuSelected) - 1];
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
 
+        if (!empty($this->getCurrentSession()->login_user->receiverUser) && !empty($this->getCurrentSession()->login_user->user)) {
+            $participants = new Conversation();
+            $conversationData = $participants->getConversationAndMessages([$this->getCurrentSession()->login_user->user->getId(), $this->getCurrentSession()->login_user->receiverUser->getId()]);
+        }
+
+        $receiverName = empty($this->getCurrentSession()->login_user->success) ? "Chat" : $this->getCurrentSession()->login_user->receiverName;
+        if (!empty($conversationData)) {
+            foreach($conversationData as &$conversation) {
+                $conversation->is_receiver = $this->getCurrentSession()->login_user->user->getId() == $conversation->receiver_id ? true : false;
+                $conversation->is_sender = $this->getCurrentSession()->login_user->user->getId() == $conversation->sender_id ? true : false;
+            }
+        }
+
         echo $this->view->render("admin/chat-panel", [
+            "receiverName" => $receiverName,
+            "conversationData" => $conversationData,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Painel de chat",
             "fullName" => $userData->full_name,

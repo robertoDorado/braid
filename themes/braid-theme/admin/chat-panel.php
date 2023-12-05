@@ -4,9 +4,11 @@
         <div class="col">
             <div class="card card-danger direct-chat direct-chat-danger">
                 <div class="card-header ui-sortable-handle">
-                    <h3 class="card-title">Conversas Recentes</h3>
+                    <h3 class="card-title"><?= $receiverName ?></h3>
                     <div class="card-tools">
-                        <span data-toggle="tooltip" title="3 New Messages" class="badge badge-light">3 Novas mensagens</span>
+                        <?php if (!empty($conversationData)) : ?>
+                            <span data-toggle="tooltip" title="3 New Messages" class="badge badge-light"><?= count($conversationData) . " Mensagens" ?></span>
+                        <?php endif ?>
                         <button type="button" id="contactsTrigger" style="display:none" class="btn btn-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
                             <i class="fas fa-comments"></i>
                         </button>
@@ -14,26 +16,37 @@
                 </div>
                 <div class="card-body">
                     <div class="direct-chat-messages">
-                        <div class="direct-chat-msg">
-                            <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-left">Alexander Pierce</span>
-                                <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
-                            </div>
-                            <img class="direct-chat-img" src="#" alt="message user image">
-                            <div class="direct-chat-text">
-                                Is this template really for free? That's unbelievable!
-                            </div>
-                        </div>
-                        <div class="direct-chat-msg right">
-                            <div class="direct-chat-infos clearfix">
-                                <span class="direct-chat-name float-right">Sarah Bullock</span>
-                                <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
-                            </div>
-                            <img class="direct-chat-img" src="#" alt="message user image">
-                            <div class="direct-chat-text">
-                                You better believe it!
-                            </div>
-                        </div>
+                        <?php if (!empty($conversationData)) : ?>
+                            <?php foreach ($conversationData as $conversation) : ?>
+                                <?php if ($conversation->is_receiver) : ?>
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-left"><?= $conversation->full_name ?></span>
+                                            <span class="direct-chat-timestamp float-right"><?= $conversation->date_time ?></span>
+                                        </div>
+                                        <img class="direct-chat-img" src="<?= empty($conversation->path_photo) ?
+                                                                                theme("assets/img/user/default.png") :
+                                                                                theme("assets/img/user/" . $conversation->path_photo . "") ?>" alt="message user image">
+                                        <div class="direct-chat-text">
+                                            <?= $conversation->content ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($conversation->is_sender) : ?>
+                                    <div class="direct-chat-msg right">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-right"><?= $conversation->full_name ?></span>
+                                            <span class="direct-chat-timestamp float-left"><?= $conversation->date_time ?></span>
+                                        </div>
+                                        <img class="direct-chat-img" src="<?= empty($conversation->path_photo) ?
+                                                                                theme("assets/img/user/default.png") :
+                                                                                theme("assets/img/user/" . $conversation->path_photo . "") ?>" alt="message user image">
+                                        <div class="direct-chat-text">
+                                            <?= $conversation->content ?>
+                                        </div>
+                                    </div>
+                                <?php endif ?>
+                            <?php endforeach ?>
+                        <?php endif ?>
                     </div>
                     <div class="direct-chat-contacts">
                         <ul class="contacts-list">

@@ -62,11 +62,21 @@ class Conversation
         $conversationData = $this->conversation
         ->find("")
         ->advancedJoin("messages", "conversation.id_message = messages.id",
-        "sender_id IN(" . implode(",", $users). ") AND receiver_id IN(" . implode(",", $users). ")",
-        "sender_id IN(" . implode(",", $users). ") AND receiver_id IN(" . implode(",", $users). ")", 
+        "",
+        "", 
         "sender_id, receiver_id, content, date_time")
+        ->in("braid.messages.sender_id IN(" . implode(",", $users). ") AND braid.messages.receiver_id IN(" . implode(",", $users). ")")
         ->advancedJoin("user", "conversation.id_user = user.id", "", "", "full_name, path_photo")
         ->fetch(true);
+
+        if (!empty($conversationData)) {
+            foreach($conversationData as &$conversation) {
+                $conversation->date_time = date("d/m/Y H:i", strtotime($conversation->date_time));
+                $conversation->full_name = empty($conversation->full_name) ? "" : $conversation->full_name;
+                $conversation->full_name = explode(" ", $conversation->full_name);
+                $conversation->full_name = $conversation->full_name[0];
+            }
+        }
 
         return $conversationData;
     }
