@@ -4,6 +4,7 @@ namespace Source\Controllers;
 
 use Source\Core\Controller;
 use Source\Domain\Model\BusinessMan;
+use Source\Domain\Model\Contact;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Conversation;
 use Source\Domain\Model\Credentials;
@@ -11,7 +12,6 @@ use Source\Domain\Model\Designer;
 use Source\Domain\Model\EvaluationDesigner;
 use Source\Domain\Model\Jobs;
 use Source\Domain\Model\Messages;
-use Source\Domain\Model\Participants;
 use Source\Domain\Model\User;
 
 /**
@@ -129,6 +129,7 @@ class Admin extends Controller
         $user = new User();
         $message = new Messages();
         $conversation = new Conversation();
+        $contact = new Contact();
 
         $senderData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail); 
         if (empty($senderData)) {
@@ -145,6 +146,13 @@ class Admin extends Controller
 
         $receiverUser = new User();
         $receiverUser->setId($receiverData->id);
+        
+        $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
+        $user->setId($userData->id);
+
+        $contactUser = new User();
+        $userData->id != $receiverData->id ? $contactUser->setId($receiverData->id) :
+            $contactUser->setId($senderData->id);
 
         $message->setSenderUser($senderUser);
         $message->setReceiverUser($receiverUser);
@@ -156,6 +164,10 @@ class Admin extends Controller
         $conversation->setUser($senderUser);
         $conversation->setMessage($message);
         $conversation->setModelConversation($conversation);
+
+        $contact->setUser($user);
+        $contact->setContactUser($contactUser);
+        $contact->setModelContact($contact);
     }
 
     public function chatPanelUser()
@@ -248,6 +260,9 @@ class Admin extends Controller
         }
 
         $user = new User();
+        $conversation = new Conversation();
+        $contact = new Contact();
+
         $menuSelected = removeQueryStringFromEndpoint($this->getServer("REQUEST_URI"));
         $menuSelected = explode("/", $menuSelected);
         $menuSelected = array_filter($menuSelected, function ($item) {
@@ -260,21 +275,27 @@ class Admin extends Controller
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
 
         if (!empty($this->getCurrentSession()->login_user->receiverUser) && !empty($this->getCurrentSession()->login_user->user)) {
-            $participants = new Conversation();
-            $conversationData = $participants->getConversationAndMessages([$this->getCurrentSession()->login_user->user->getId(), $this->getCurrentSession()->login_user->receiverUser->getId()]);
+            $conversationData = $conversation
+                ->getConversationAndMessages([$this->getCurrentSession()->login_user->user->getId(), $this->getCurrentSession()->login_user->receiverUser->getId()]);
         }
 
-        $receiverName = empty($this->getCurrentSession()->login_user->success) ? "Chat" : $this->getCurrentSession()->login_user->receiverName;
+        $receiverName = empty($this->getCurrentSession()->login_user->success) ? "Chat" :
+            $this->getCurrentSession()->login_user->receiverName;
+            
         if (!empty($conversationData)) {
-            foreach($conversationData as &$conversation) {
-                $conversation->is_receiver = $this->getCurrentSession()->login_user->user->getId() == $conversation->receiver_id ? true : false;
-                $conversation->is_sender = $this->getCurrentSession()->login_user->user->getId() == $conversation->sender_id ? true : false;
+            foreach($conversationData as &$conversationValue) {
+                $conversationValue->is_receiver = $this->getCurrentSession()->login_user->user->getId() == $conversationValue->receiver_id ? true : false;
+                $conversationValue->is_sender = $this->getCurrentSession()->login_user->user->getId() == $conversationValue->sender_id ? true : false;
             }
         }
 
+        $user->setId($userData->id);
+        $contactsData = $contact->getContactsUserByIdUser($user);
+
         echo $this->view->render("admin/chat-panel", [
+            "contactsData" => $contactsData,
             "receiverName" => $receiverName,
-            "conversationData" => $conversationData,
+            "conversationData" => $conversationData ?? null,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Painel de chat",
             "fullName" => $userData->full_name,

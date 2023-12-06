@@ -1,4 +1,5 @@
 <?php
+
 namespace Source\Domain\Model;
 
 use PDOException;
@@ -37,7 +38,7 @@ class Conversation
             if (!$this->conversation->save()) {
                 if (!empty($this->conversation->fail())) {
                     throw new PDOException($this->conversation->fail()->getMessage());
-                }else {
+                } else {
                     throw new PDOException($this->conversation->message());
                 }
             }
@@ -60,17 +61,20 @@ class Conversation
     {
         $this->conversation = new ModelsConversation();
         $conversationData = $this->conversation
-        ->find("")
-        ->advancedJoin("messages", "conversation.id_message = messages.id",
-        "",
-        "", 
-        "sender_id, receiver_id, content, date_time")
-        ->in("braid.messages.sender_id IN(" . implode(",", $users). ") AND braid.messages.receiver_id IN(" . implode(",", $users). ")")
-        ->advancedJoin("user", "conversation.id_user = user.id", "", "", "full_name, path_photo")
-        ->fetch(true);
+            ->find("")
+            ->advancedJoin(
+                "messages",
+                "conversation.id_message = messages.id",
+                "",
+                "",
+                "sender_id, receiver_id, content, date_time"
+            )
+            ->in("braid.messages.sender_id IN(" . implode(",", $users) . ") AND braid.messages.receiver_id IN(" . implode(",", $users) . ")")
+            ->advancedJoin("user", "conversation.id_user = user.id", "", "", "full_name, path_photo")
+            ->fetch(true);
 
         if (!empty($conversationData)) {
-            foreach($conversationData as &$conversation) {
+            foreach ($conversationData as &$conversation) {
                 $conversation->date_time = date("d/m/Y H:i", strtotime($conversation->date_time));
                 $conversation->full_name = empty($conversation->full_name) ? "" : $conversation->full_name;
                 $conversation->full_name = explode(" ", $conversation->full_name);

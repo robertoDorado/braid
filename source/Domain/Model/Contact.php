@@ -1,4 +1,5 @@
 <?php
+
 namespace Source\Domain\Model;
 
 use Source\Models\Contact as ModelsContact;
@@ -28,15 +29,48 @@ class Contact
         if (is_array($getters) && is_array($isMethods)) {
             $this->contact = new ModelsContact();
             $this->contact->id_user = $this->getUser()->getId();
-            $this->contact->id_contact = $this->getUser()->getId();
+            $this->contact->id_contact = $this->getContactUser()->getId();
             if (!$this->contact->save()) {
                 if (!empty($this->contact->fail())) {
                     throw new \PDOException($this->contact->fail()->getMessage());
-                }else {
+                } else {
                     throw new \PDOException($this->contact->message());
                 }
             }
         }
+    }
+
+    public function getContactsUserByIdUser(User $user)
+    {
+        $this->contact = new ModelsContact();
+        $contactsDataRepeat = $this->contact
+            ->find("", "id_contact")
+            ->advancedJoin(
+                "messages",
+                "braid.messages.sender_id = braid.contact.id_contact OR braid.messages.receiver_id = braid.contact.id_contact",
+                "receiver_id=:receiver_id OR sender_id=:sender_id",
+                ":receiver_id=" . $user->getId() . "&:sender_id=" . $user->getId() . "",
+                "content, date_time"
+            )
+            ->advancedJoin("user", "user.id = contact.id_contact", "", "", "full_name, path_photo")
+            ->fetch(true);
+
+        $contactsData = [];
+        if (!empty($contactsDataRepeat)) {
+            foreach ($contactsDataRepeat as &$contact) {
+                $contactId = $contact->id_contact;
+                if ($user->getId() != $contactId) {
+                    if (!isset($contactsData[$contactId])) {
+                        $contactsData[$contactId] = [];
+                    }
+
+                    $contactsData[$contactId] = $contact;
+                    $contact->date_time = date("d/m/Y H:i", strtotime($contact->date_time));
+                }
+            }
+        }
+
+        return $contactsData;
     }
 
     public function getContactUser()
@@ -44,9 +78,9 @@ class Contact
         return $this->contactUser;
     }
 
-    public function setContactUser(User $user)
+    public function setContactUser(User $contactUser)
     {
-        $this->user = $user;
+        $this->contactUser = $contactUser;
     }
 
     public function getUser()

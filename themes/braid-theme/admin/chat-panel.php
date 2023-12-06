@@ -7,7 +7,7 @@
                     <h3 class="card-title"><?= $receiverName ?></h3>
                     <div class="card-tools">
                         <?php if (!empty($conversationData)) : ?>
-                            <span data-toggle="tooltip" title="3 New Messages" class="badge badge-light"><?= count($conversationData) . " Mensagens" ?></span>
+                            <span data-toggle="tooltip" class="badge badge-light"><?= number_format(count($conversationData), 0, "", ".") . " Mensagens" ?></span>
                         <?php endif ?>
                         <button type="button" id="contactsTrigger" style="display:none" class="btn btn-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
                             <i class="fas fa-comments"></i>
@@ -50,18 +50,24 @@
                     </div>
                     <div class="direct-chat-contacts">
                         <ul class="contacts-list">
-                            <!-- <li>
-                                <a href="#">
-                                    <img class="contacts-list-img" src="#">
-                                    <div class="contacts-list-info">
-                                        <span class="contacts-list-name">
-                                            Count Dracula
-                                            <small class="contacts-list-date float-right">2/28/2015</small>
-                                        </span>
-                                        <span class="contacts-list-msg">How have you been? I was...</span>
-                                    </div>
-                                </a>
-                            </li> -->
+                            <?php if (!empty($contactsData)) : ?>
+                                <?php foreach ($contactsData as $contact) : ?>
+                                    <li>
+                                        <a href="#">
+                                            <img class="contacts-list-img" src="<?= empty($contact->path_photo) ? 
+                                                theme("assets/img/user/default.png") : 
+                                                theme("assets/img/user/" . $contact->path_photo . "") ?>">
+                                            <div class="contacts-list-info">
+                                                <span class="contacts-list-name">
+                                                    <?= $contact->full_name ?>
+                                                    <small class="contacts-list-date float-right"><?= $contact->date_time ?></small>
+                                                </span>
+                                                <span class="contacts-list-msg"><?= $contact->content ?></span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <?php endforeach ?>
+                            <?php endif ?>
                         </ul>
                     </div>
                 </div>
