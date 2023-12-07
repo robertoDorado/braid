@@ -72,11 +72,12 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <form action="#" method="post" class="form-chat-panel">
+                    <form action="#" method="post" id="formChatPanel" class="form-chat-panel" data-hash="<?= empty($receiverEmail) ? "" : $receiverEmail ?>">
                         <div class="input-group">
-                            <input type="text" name="message" placeholder="Mensagem..." class="form-control">
+                            <input type="text" name="messageData" placeholder="Mensagem..." class="form-control">
+                            <input type="hidden" name="csrfToken" value="<?= empty($csrfToken) ? "" : $csrfToken ?>">
                             <span class="input-group-append">
-                                <button type="button" class="btn btn-primary">Enviar</button>
+                                <button type="submit" class="btn btn-primary">Enviar</button>
                             </span>
                         </div>
                     </form>

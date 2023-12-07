@@ -1,6 +1,6 @@
 <?php $v->layout("admin/_admin")  ?>
 
-<section class="content" data-hash="<?= base64_encode($profileData->id) ?>">
+<section class="content" data-hash="<?= base64_encode($profileData->full_email) ?>">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3">

@@ -74,6 +74,7 @@ class Conversation
             ->fetch(true);
 
         if (!empty($conversationData)) {
+            asort($conversationData);
             foreach ($conversationData as &$conversation) {
                 $conversation->date_time = date("d/m/Y H:i", strtotime($conversation->date_time));
                 $conversation->full_name = empty($conversation->full_name) ? "" : $conversation->full_name;

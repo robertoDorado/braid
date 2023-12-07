@@ -44,7 +44,7 @@ class Contact
     {
         $this->contact = new ModelsContact();
         $contactsResponse = $this->contact
-            ->find("id_user=:id_user", "", "*")
+            ->find("id_user=:id_user", ":id_user=" . $user->getId() . "", "*")
             ->advancedJoin("conversation", "braid.conversation.id = braid.contact.id_conversation")
             ->advancedJoin(
                 "messages",

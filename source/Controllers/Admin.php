@@ -164,9 +164,10 @@ class Admin extends Controller
         $contact->setConversation($conversation);
         $contact->setModelContact($contact);
 
-        $response = [];
+        $data = [];
         if (!empty($senderData)) {
-            $response = [
+            $data = [
+                "success" => true,
                 "pathPhoto" => $senderData->path_photo,
                 "fullName" => $senderData->full_name,
                 "content" => $post["messageData"],
@@ -174,7 +175,7 @@ class Admin extends Controller
             ];
         }
         
-        echo json_encode(["success" => true, "response" => $response]);
+        echo json_encode($data);
     }
 
     public function chatPanelUser()
@@ -308,6 +309,8 @@ class Admin extends Controller
 
         $receiverName = empty($this->getCurrentSession()->login_user->success) ? "Chat" :
             $this->getCurrentSession()->login_user->receiverName;
+        $receiverEmail = empty($this->getCurrentSession()->login_user->paramProfileData) ? null :
+            $this->getCurrentSession()->login_user->paramProfileData;
 
         if (!empty($conversationData)) {
             foreach ($conversationData as &$conversationValue) {
@@ -324,6 +327,7 @@ class Admin extends Controller
             "csrfToken" => $csrfToken,
             "contactsData" => $contactsData,
             "receiverName" => $receiverName,
+            "receiverEmail" => $receiverEmail,
             "conversationData" => $conversationData ?? null,
             "menuSelected" => $menuSelected,
             "breadCrumbTitle" => "Painel de chat",
@@ -644,14 +648,17 @@ class Admin extends Controller
             throw new \Exception(json_encode($errorMessage));
         }
 
-        if (empty($data["profile_id"])) {
+        if (empty($data["profile_email"])) {
             header("HTTP/1.1 500 Internal Server Error");
             throw new \Exception(json_encode($errorMessage));
         }
 
+        $user = new User();
+        $user->getUserByEmail($data["profile_email"]);
+
         foreach ($data as $key => $value) {
 
-            if ($key == "page" || $key == "max" || $key == "profile_id") {
+            if ($key == "page" || $key == "max") {
                 if (!preg_match("/^[\d]+$/", $value)) {
                     header("HTTP/1.1 500 Internal Server Error");
                     throw new \Exception(json_encode($errorMessage));
@@ -711,16 +718,16 @@ class Admin extends Controller
                 throw new \Exception("Formato de autorização inválido.");
             }
 
-            $profileId = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
-            $profileId = base64_decode($profileId, true);
+            $profileEmail = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+            $profileEmail = base64_decode($profileEmail, true);
 
-            if (!$profileId) {
+            if (!$profileEmail) {
                 header("HTTP/1.1 403 Forbidden");
                 echo json_encode(["error" => "Acesso negado"]);
                 die;
             }
 
-            if (!preg_match("/^\d+$/", $profileId)) {
+            if (!isEmail($profileEmail)) {
                 header("HTTP/1.1 403 Forbidden");
                 echo json_encode(["error" => "Acesso negado"]);
                 die;
@@ -732,7 +739,7 @@ class Admin extends Controller
 
             $fb = empty($post["fb"]) ? 0 : $post["fb"];
 
-            $designerData = $designer->getDesignerById($profileId);
+            $designerData = $designer->getDesignerByEmail($profileEmail);
             $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
 
             if ($userData->user_type != "businessman") {
@@ -1079,7 +1086,13 @@ class Admin extends Controller
             }
 
             $jobs = new Jobs();
-            $jobs->deleteJobById($jobId);
+            $contract = new Contract();
+
+            $jobs->setId($jobId);
+            $contract->setJobs($jobs);
+
+            $contract->destroyContractByJob();
+            $jobs->deleteJobs();
 
             echo json_encode(["success_delete_project" => true, "id" => $jobId]);
         }

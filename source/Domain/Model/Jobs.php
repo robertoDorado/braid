@@ -2,6 +2,7 @@
 namespace Source\Domain\Model;
 
 use Source\Core\Connect;
+use Source\Models\Contract as ModelsContract;
 use Source\Models\Jobs as ModelsJobs;
 
 /**
@@ -30,6 +31,7 @@ class Jobs
     /** @var BusinessMan Chave de relacionamento BusinessMan */
     private BusinessMan $businessman;
 
+    /** @var ModelsJobs de persistência jobs */
     private ModelsJobs $jobs;
 
     public function setModelJob(Jobs $jobs)
@@ -56,10 +58,10 @@ class Jobs
         }
     }
 
-    public function deleteJobById(int $id)
+    public function deleteJobs()
     {
         $this->jobs = new ModelsJobs();
-        $job = $this->jobs->findById($id);
+        $job = $this->jobs->findById($this->getId());
 
         if (empty($job)) {
             throw new \Exception("Projeto não identificado");

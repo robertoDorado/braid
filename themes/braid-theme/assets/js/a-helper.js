@@ -60,24 +60,24 @@ function setAttributesToElement(attributeName, attributeValue, element) {
     element.setAttribute(attributeName, attributeValue)
 }
 
-function removeParamFromEndpoint(endpoint, getEndpointParam=false) {
+function removeParamFromEndpoint(endpoint, getEndpointParam = false) {
     endpoint = endpoint.split("/")
-    
+
     if (!getEndpointParam) {
         endpoint.pop()
         return endpoint.join("/")
-    }else {
+    } else {
         return endpoint
     }
 }
 
 function isBase64(str) {
     try {
-      const decodedString = atob(str);
-      const base64String = btoa(decodedString);
-      
-      return base64String === str;
+        const decodedString = atob(str);
+        const base64String = btoa(decodedString);
+
+        return base64String === str;
     } catch (error) {
-      return false;
+        return false;
     }
-  }
+}

@@ -38,14 +38,14 @@
         </div>
       </form>
 
-      <div class="social-auth-links text-center mb-3">
+      <!-- <div class="social-auth-links text-center mb-3">
         <a href="#" class="btn btn-block red">
           <i class="fab fa-facebook mr-2"></i> Login com Facebook
         </a>
         <a href="#" class="btn btn-block red">
           <i class="fab fa-google-plus mr-2"></i> Login com Google
         </a>
-      </div>
+      </div> -->
       <!-- /.social-auth-links -->
 
       <p class="mb-1">
