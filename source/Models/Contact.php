@@ -18,13 +18,13 @@ class Contact extends Model
     private string $idUser = "id_user";
 
     /** @var string Id do contato */
-    private string $idContact = "id_contact";
+    private string $idConversation = "id_conversation";
 
     /**
      * Contact constructor
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ["id"], [$this->idUser, $this->idContact]);
+        parent::__construct($this->tableName, ["id"], [$this->idUser, $this->idConversation]);
     }
 }

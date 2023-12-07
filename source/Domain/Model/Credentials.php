@@ -70,7 +70,7 @@ class Credentials
             $this->credentials->token_data = $data["tokenData"];
             if (!$this->credentials->save()) {
                 if (!empty($this->credentials->fail())) {
-                    throw new \PDOException($this->credentials->fail()->getMessage());
+                    throw new \PDOException($this->credentials->fail()->getMessage() . " " . $this->credentials->queryExecuted());
                 }else {
                     throw new \PDOException($this->credentials->message());
                 }

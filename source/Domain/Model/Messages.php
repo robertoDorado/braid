@@ -44,7 +44,7 @@ class Messages
             $this->messages->date_time = $this->getDateTime();
             if (!$this->messages->save()) {
                 if (!empty($this->messages->fail())) {
-                    throw new \PDOException($this->messages->fail()->getMessage());
+                    throw new \PDOException($this->messages->fail()->getMessage() . " " . $this->messages->queryExecuted());
                 }else {
                     throw new \PDOException($this->messages->message());
                 }

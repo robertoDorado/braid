@@ -64,7 +64,7 @@ class BusinessMan
             $this->businessMan->valid_company = empty($this->isValidCompany()) ? null : $this->isValidCompany();
             if (!$this->businessMan->save()) {
                 if (!empty($this->businessMan->fail())) {
-                    throw new \PDOException($this->businessMan->fail()->getMessage());
+                    throw new \PDOException($this->businessMan->fail()->getMessage() . " " . $this->businessMan->queryExecuted());
                 }else {
                     throw new \PDOException($this->businessMan->message());
                 }
@@ -92,7 +92,7 @@ class BusinessMan
         $businessManData->valid_company = !$this->isValidCompany() ? 0 : 1;
         if (!$businessManData->save()) {
             if (!empty($businessManData->fail())) {
-                throw new \PDOException($businessManData->fail()->getMessage());
+                throw new \PDOException($businessManData->fail()->getMessage() . " " . $businessManData->queryExecuted());
             }else {
                 throw new \PDOException($businessManData->message());
             }
@@ -114,7 +114,7 @@ class BusinessMan
         $businessManData->path_photo = $data["pathPhoto"];
         if (!$businessManData->save()) {
             if (!empty($businessManData->fail())) {
-                throw new \PDOException($businessManData->fail()->getMessage());
+                throw new \PDOException($businessManData->fail()->getMessage() . " " . $businessManData->queryExecuted());
             }else {
                 throw new \PDOException($businessManData->message());
             }

@@ -1,5 +1,9 @@
 <?php
 
+function server() {
+    return (new Source\Core\Controller())->getAllServerData();
+}
+
 function session() {
     return new \Source\Core\Session();
 }

@@ -27,7 +27,7 @@ class Controller
     /** @var RequestPost */
     protected $postData;
 
-    /** @var Seesion */
+    /** @var Session */
     protected $session;
 
     /**

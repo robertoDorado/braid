@@ -72,7 +72,7 @@ class Designer
             $this->designer->goals_data = empty($this->getGoals()) ? null : $this->getGoals();
             if (!$this->designer->save()) {
                 if (!empty($this->designer->fail())) {
-                    throw new \PDOException($this->designer->fail()->getMessage());
+                    throw new \PDOException($this->designer->fail()->getMessage() . " " . $this->designer->queryExecuted());
                 }else {
                     throw new \PDOException($this->designer->message());
                 }
@@ -101,7 +101,7 @@ class Designer
         $designerData->position_data = $this->getPositionData();
         if (!$designerData->save()) {
             if (!empty($designerData->fail())) {
-                throw new \PDOException($designerData->fail()->getMessage());
+                throw new \PDOException($designerData->fail()->getMessage() . " " . $designerData->queryExecuted());
             }else {
                 throw new \PDOException($designerData->message());
             }
@@ -133,7 +133,7 @@ class Designer
         $designerData->path_photo = $data["pathPhoto"];
         if (!$designerData->save()) {
             if (!empty($designerData->fail())) {
-                throw new \PDOException($designerData->fail()->getMessage());
+                throw new \PDOException($designerData->fail()->getMessage() . " " . $designerData->queryExecuted());
             }else {
                 throw new \PDOException($designerData->message());
             }

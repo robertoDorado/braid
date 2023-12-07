@@ -46,7 +46,7 @@ class Jobs
             $this->jobs->delivery_time = $this->getDeliveryTime();
             if (!$this->jobs->save()) {
                 if (!empty($this->jobs->fail())) {
-                    throw new \PDOException($this->jobs->fail()->getMessage());
+                    throw new \PDOException($this->jobs->fail()->getMessage() . " " . $this->jobs->queryExecuted());
                 }else {
                     throw new \PDOException($this->jobs->message());
                 }
@@ -67,7 +67,7 @@ class Jobs
 
         if (!$job->destroy()) {
             if (!empty($job->fail())) {
-                throw new \PDOException($job->fail()->getMessage());
+                throw new \PDOException($job->fail()->getMessage() . " " . $job->queryExecuted());
             }else {
                 throw new \PDOException($job->message());
             }
@@ -89,7 +89,7 @@ class Jobs
         $jobData->delivery_time = $post["deliveryTime"];
         if (!$jobData->save()) {
             if (!empty($jobData->fail())) {
-                throw new \PDOException($jobData->fail()->getMessage());
+                throw new \PDOException($jobData->fail()->getMessage() . " " . $jobData->queryExecuted());
             }else {
                 throw new \PDOException($jobData->message());
             }

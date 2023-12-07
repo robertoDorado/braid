@@ -31,7 +31,7 @@ class Contact extends DDL
         $this->setKeysToProperties(["BIGINT AUTO_INCREMENT PRIMARY KEY",
         "BIGINT NOT NULL", "BIGINT NOT NULL",
         "CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)",
-        "CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`id_contact`) REFERENCES `user` (`id`)"]);
+        "CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`id_conversation`) REFERENCES `conversation` (`id`)"]);
         $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }

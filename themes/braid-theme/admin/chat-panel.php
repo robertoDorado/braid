@@ -53,7 +53,7 @@
                             <?php if (!empty($contactsData)) : ?>
                                 <?php foreach ($contactsData as $contact) : ?>
                                     <li>
-                                        <a href="#">
+                                        <a href="#" class="btnOpenChat" data-csrf="<?= empty($csrfToken) ? "" : $csrfToken ?>" data-hash="<?= base64_encode($contact->full_email) ?>">
                                             <img class="contacts-list-img" src="<?= empty($contact->path_photo) ? 
                                                 theme("assets/img/user/default.png") : 
                                                 theme("assets/img/user/" . $contact->path_photo . "") ?>">

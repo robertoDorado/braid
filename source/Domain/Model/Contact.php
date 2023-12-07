@@ -15,8 +15,8 @@ class Contact
     /** @var User Usuário que possui os contatos */
     private User $user;
 
-    /** @var User Contato do usuário */
-    private User $contactUser;
+    /** @var Conversation Contato do usuário */
+    private Conversation $conversation;
 
     /** @var ModelsContact Objeto de persistência */
     private ModelsContact $contact;
@@ -29,10 +29,10 @@ class Contact
         if (is_array($getters) && is_array($isMethods)) {
             $this->contact = new ModelsContact();
             $this->contact->id_user = $this->getUser()->getId();
-            $this->contact->id_contact = $this->getContactUser()->getId();
+            $this->contact->id_conversation = $this->getConversation()->getId();
             if (!$this->contact->save()) {
                 if (!empty($this->contact->fail())) {
-                    throw new \PDOException($this->contact->fail()->getMessage());
+                    throw new \PDOException($this->contact->fail()->getMessage() . " " . $this->contact->queryExecuted());
                 } else {
                     throw new \PDOException($this->contact->message());
                 }
@@ -43,29 +43,54 @@ class Contact
     public function getContactsUserByIdUser(User $user)
     {
         $this->contact = new ModelsContact();
-        $contactsDataRepeat = $this->contact
-            ->find("", "id_contact")
+        $contactsResponse = $this->contact
+            ->find("id_user=:id_user", "", "*")
+            ->advancedJoin("conversation", "braid.conversation.id = braid.contact.id_conversation")
             ->advancedJoin(
                 "messages",
-                "braid.messages.sender_id = braid.contact.id_contact OR braid.messages.receiver_id = braid.contact.id_contact",
-                "receiver_id=:receiver_id OR sender_id=:sender_id",
-                ":receiver_id=" . $user->getId() . "&:sender_id=" . $user->getId() . "",
-                "content, date_time"
-            )
-            ->advancedJoin("user", "user.id = contact.id_contact", "", "", "full_name, path_photo")
-            ->fetch(true);
+                "braid.messages.id = braid.conversation.id_message",
+                "sender_id=:sender_id OR receiver_id=:receiver_id",
+                ":sender_id=" . $user->getId() . "&:receiver_id=" . $user->getId() . "&:id_user=" . $user->getId() . "",
+                "content, date_time, receiver_id, sender_id"
+            )->fetch(true);
 
         $contactsData = [];
-        if (!empty($contactsDataRepeat)) {
-            foreach ($contactsDataRepeat as &$contact) {
-                $contactId = $contact->id_contact;
-                if ($user->getId() != $contactId) {
-                    if (!isset($contactsData[$contactId])) {
-                        $contactsData[$contactId] = [];
-                    }
+        $userIds = [];
 
-                    $contactsData[$contactId] = $contact;
-                    $contact->date_time = date("d/m/Y H:i", strtotime($contact->date_time));
+        if (!empty($contactsResponse)) {
+            foreach ($contactsResponse as $ids) {
+                $userIds[] = $ids->sender_id;
+                $userIds[] = $ids->receiver_id;
+            }
+
+            if (!empty($userIds)) {
+                $userIds = array_filter($userIds, function ($id) use ($user) {
+                    return $id != $user->getId();
+                });
+
+                $userIds = array_values($userIds);
+
+                foreach ($userIds as $id) {
+                    $user->setId($id);
+                    $userData = $user->getUserById($user);
+
+                    if (!isset($contactsData[$userData->id])) {
+                        $contactsData[$userData->id] = [];
+                    }
+                    $contactsData[$userData->id] = $userData;
+                }
+            }
+
+            foreach ($contactsResponse as &$contactValue) {
+
+                foreach ($contactsData as &$contact) {
+                    if ($contact->id == $contactValue->sender_id) {
+                        $contact->content = $contactValue->content;
+                        $contact->date_time = date("d/m/Y H:i", strtotime($contactValue->date_time));
+                    }else if ($contact->id == $contactValue->receiver_id) {
+                        $contact->content = $contactValue->content;
+                        $contact->date_time = date("d/m/Y H:i", strtotime($contactValue->date_time));
+                    }
                 }
             }
         }
@@ -73,14 +98,14 @@ class Contact
         return $contactsData;
     }
 
-    public function getContactUser()
+    public function getConversation()
     {
-        return $this->contactUser;
+        return $this->conversation;
     }
 
-    public function setContactUser(User $contactUser)
+    public function setConversation(Conversation $conversation)
     {
-        $this->contactUser = $contactUser;
+        $this->conversation = $conversation;
     }
 
     public function getUser()

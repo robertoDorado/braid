@@ -34,7 +34,7 @@ class EvaluationDesigner
             $this->evaluationDesigner->evaluation_description = $this->getEvaluationDescription();
             if (!$this->evaluationDesigner->save()) {
                 if (!empty($this->evaluationDesigner->fail())) {
-                    throw new \PDOException($this->evaluationDesigner->fail()->getMessage());
+                    throw new \PDOException($this->evaluationDesigner->fail()->getMessage() . " " . $this->evaluationDesigner->queryExecuted());
                 }else {
                     throw new \PDOException($this->evaluationDesigner->message());
                 }

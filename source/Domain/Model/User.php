@@ -64,6 +64,11 @@ class User
         }
     }
 
+    public function getUserById(User $user)
+    {
+        return (new ModelsUser())->findById($user->getId());
+    }
+
     public function getId()
     {
         return $this->id;
@@ -265,7 +270,7 @@ class User
         $recoverPassword->expires_in = date('Y-m-d H:i:s', strtotime('+5 minute', time()));
         if (!$recoverPassword->save()) {
             if (!empty($recoverPassword->fail())) {
-                throw new \PDOException($recoverPassword->fail()->getMessage());
+                throw new \PDOException($recoverPassword->fail()->getMessage() . " " . $recoverPassword->queryExecuted());
             }else {
                 throw new \PDOException($recoverPassword->message());
             }

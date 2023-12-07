@@ -17,7 +17,7 @@ class Contract
     /** @var Jobs */
     private Jobs $jobs;
 
-    /** @var ModelosContract Modelo de contrato para persistência */
+    /** @var ModelsContract Modelo de contrato para persistência */
     private ModelsContract $contract;
 
     /** @var string Descrições adicionais sobre o trabalho que será feito */
@@ -43,7 +43,7 @@ class Contract
             $this->contract->signature_designer = empty($this->getSignatureDesigner()) ? 0 : 1;
             if (!$this->contract->save()) {
                 if (!empty($this->contract->fail())) {
-                    throw new \PDOException($this->contract->fail()->getMessage());
+                    throw new \PDOException($this->contract->fail()->getMessage() . " " . $this->contract->queryExecuted());
                 }else {
                     throw new \PDOException($this->contract->message());
                 }

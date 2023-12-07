@@ -35,7 +35,7 @@ class Admin extends Controller
         if (empty($this->getCurrentSession()->login_user)) {
             redirect("/user/login");
         }
-        
+
         header('Content-Type: application/json');
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
@@ -78,12 +78,12 @@ class Admin extends Controller
         if (empty($receiverData)) {
             throw new \Exception("Objeto receptor não existe");
         }
-        
+
         $receiverData = $user->getUserByEmail($receiverData->full_email);
         if (empty($receiverData)) {
             throw new \Exception("Objeto receptor não existe");
         }
-        
+
         echo json_encode(["success" => true, "receiverEmail" => $receiverData->full_email]);
     }
 
@@ -92,7 +92,7 @@ class Admin extends Controller
         if (empty($this->getCurrentSession()->login_user)) {
             redirect("/user/login");
         }
-        
+
         if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
             throw new \Exception("Cabeçalho de autorização ausente");
         }
@@ -121,7 +121,7 @@ class Admin extends Controller
         $post = $this->getRequestPost()
             ->setRequiredFields(["csrf_token", "csrfToken"])
             ->configureDataPost()->getAllPostData();
-            
+
         if (empty($post["messageData"])) {
             die;
         }
@@ -131,7 +131,7 @@ class Admin extends Controller
         $conversation = new Conversation();
         $contact = new Contact();
 
-        $senderData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail); 
+        $senderData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         if (empty($senderData)) {
             throw new \Exception("usuário sender não existe");
         }
@@ -146,34 +146,61 @@ class Admin extends Controller
 
         $receiverUser = new User();
         $receiverUser->setId($receiverData->id);
-        
+
         $userData = $user->getUserByEmail($this->getCurrentSession()->login_user->fullEmail);
         $user->setId($userData->id);
-
-        $contactUser = new User();
-        $userData->id != $receiverData->id ? $contactUser->setId($receiverData->id) :
-            $contactUser->setId($senderData->id);
 
         $message->setSenderUser($senderUser);
         $message->setReceiverUser($receiverUser);
         $message->setContent($post["messageData"]);
         $message->setDateTime(date("Y-m-d H:i:s"));
         $message->setModelMessage($message);
-        $message->setId($message->getId());
 
         $conversation->setUser($senderUser);
         $conversation->setMessage($message);
         $conversation->setModelConversation($conversation);
 
         $contact->setUser($user);
-        $contact->setContactUser($contactUser);
+        $contact->setConversation($conversation);
         $contact->setModelContact($contact);
+
+        $response = [];
+        if (!empty($senderData)) {
+            $response = [
+                "pathPhoto" => $senderData->path_photo,
+                "fullName" => $senderData->full_name,
+                "content" => $post["messageData"],
+                "dateTime" => date("d/m/Y H:i")
+            ];
+        }
+        
+        echo json_encode(["success" => true, "response" => $response]);
     }
 
     public function chatPanelUser()
     {
+        header('Content-Type: application/json');
         if (empty($this->getCurrentSession()->login_user)) {
             redirect("/user/login");
+        }
+
+        if (!isset($this->getAllServerData()["HTTP_AUTHORIZATION"])) {
+            throw new \Exception("Cabeçalho de autorização ausente");
+        }
+
+        if (strpos($this->getAllServerData()["HTTP_AUTHORIZATION"], 'Bearer ') !== 0) {
+            throw new \Exception("Formato de autorização inválido.");
+        }
+
+        $tokenData = str_replace("Bearer ", "", $this->getAllServerData()["HTTP_AUTHORIZATION"]);
+
+        $credentials = new Credentials();
+        $credentials = $credentials->getCredentials([
+            "token_data" => $tokenData
+        ]);
+
+        if (empty($credentials)) {
+            throw new \Exception(json_encode(["invalid_token_data" => true]));
         }
 
         $post = $this->getRequestPost()
@@ -209,7 +236,7 @@ class Admin extends Controller
             throw new \Exception("Objeto usuário não existe");
         }
         $user->setId($userData->id);
-        
+
         $receiverUser = new User();
         $receiverUser->setId($receiverData->id);
 
@@ -281,9 +308,9 @@ class Admin extends Controller
 
         $receiverName = empty($this->getCurrentSession()->login_user->success) ? "Chat" :
             $this->getCurrentSession()->login_user->receiverName;
-            
+
         if (!empty($conversationData)) {
-            foreach($conversationData as &$conversationValue) {
+            foreach ($conversationData as &$conversationValue) {
                 $conversationValue->is_receiver = $this->getCurrentSession()->login_user->user->getId() == $conversationValue->receiver_id ? true : false;
                 $conversationValue->is_sender = $this->getCurrentSession()->login_user->user->getId() == $conversationValue->sender_id ? true : false;
             }
@@ -291,8 +318,10 @@ class Admin extends Controller
 
         $user->setId($userData->id);
         $contactsData = $contact->getContactsUserByIdUser($user);
+        $csrfToken = $this->getCurrentSession()->csrf_token;
 
         echo $this->view->render("admin/chat-panel", [
+            "csrfToken" => $csrfToken,
             "contactsData" => $contactsData,
             "receiverName" => $receiverName,
             "conversationData" => $conversationData ?? null,

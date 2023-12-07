@@ -37,7 +37,7 @@ class Conversation
             $this->conversation->id_message = $this->getMessage()->getId();
             if (!$this->conversation->save()) {
                 if (!empty($this->conversation->fail())) {
-                    throw new PDOException($this->conversation->fail()->getMessage());
+                    throw new PDOException($this->conversation->fail()->getMessage() . " " . $this->conversation->queryExecuted());
                 } else {
                     throw new PDOException($this->conversation->message());
                 }
