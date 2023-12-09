@@ -57,16 +57,14 @@ class Contract
         $contracts = $this->contract->find("job_id=:job_id", ":job_id=" . $this->jobs->getId() . "")
         ->fetch(true);
 
-        if (empty($contracts)) {
-            throw new \Exception("Nenhum contrato foi encontrado");
-        }
-
-        foreach($contracts as $contract) {
-            if (!$contract->destroy()) {
-                if (!empty($contract->fail())) {
-                    throw new \PDOException($contract->fail()->getMessage() . " " . $contract->queryExecuted());
-                }else {
-                    throw new \Exception($contract->message());
+        if (!empty($contracts)) {
+            foreach($contracts as $contract) {
+                if (!$contract->destroy()) {
+                    if (!empty($contract->fail())) {
+                        throw new \PDOException($contract->fail()->getMessage() . " " . $contract->queryExecuted());
+                    }else {
+                        throw new \Exception($contract->message());
+                    }
                 }
             }
         }
