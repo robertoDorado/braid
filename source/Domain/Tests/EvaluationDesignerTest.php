@@ -13,7 +13,7 @@ use Source\Domain\Model\EvaluationDesigner as ModelEvaluationDesigner;
  * @author Roberto Dorado <robertodorado7@gmail.com>
  * @package Source\Domain\Tests
  */
-class EvaluationDesigner extends TestCase
+class EvaluationDesignerTest extends TestCase
 {
     private ModelEvaluationDesigner $evaluationDesigner;
 
