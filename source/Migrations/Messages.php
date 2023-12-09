@@ -29,7 +29,7 @@ class Messages extends DDL
         $this->setProperty('');
         $this->setProperty('');
         $this->setKeysToProperties(["BIGINT AUTO_INCREMENT PRIMARY KEY",
-        "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(1000) NOT NULL", "DATETIME NOT NULL",
+        "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(1000) NOT NULL", "DATETIME NOT NULL", "TINYINT NOT NULL",
         "CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`)",
         "CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `user` (`id`)"]);
         $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);

@@ -31,6 +31,9 @@ class Messages
     /** @var ModelsMessages Objeto de persistência */
     private ModelsMessages $messages;
 
+    /** @var bool Atributo para saber se a mensagem foi lida */
+    private bool $isRead;
+
     public function setModelMessage(Messages $obj)
     {
         $getters = checkGettersFilled($obj);
@@ -42,6 +45,7 @@ class Messages
             $this->messages->receiver_id = $this->getReceiverUser()->getId();
             $this->messages->content = $this->getContent();
             $this->messages->date_time = $this->getDateTime();
+            $this->messages->is_read = !$this->isRead() ? 0 : 1;
             if (!$this->messages->save()) {
                 if (!empty($this->messages->fail())) {
                     throw new \PDOException($this->messages->fail()->getMessage() . " " . $this->messages->queryExecuted());
@@ -52,6 +56,38 @@ class Messages
 
             $this->id = Connect::getInstance()->lastInsertId();
         }
+    }
+
+    public function updateIsReadByUser(User $senderUser, User $receiverUser)
+    {
+        $this->messages = new ModelsMessages();
+        $messages = $this->messages->find("receiver_id=:receiver_id AND sender_id=:sender_id",
+            ":receiver_id=" . $receiverUser->getId() . "&:sender_id=" . $senderUser->getId() . "")->fetch(true);
+        
+        if (empty($messages)) {
+            throw new \Exception("mensagens do usuário não existe");
+        }
+
+        foreach ($messages as $message) {
+            $message->is_read = 1;
+            if (!$message->save()) {
+                if (!empty($message->fail())) {
+                    throw new \PDOException($message->fail()->getMessage() . " " . $message->queryExecuted());
+                }else {
+                    throw new \PDOException($message->message());
+                }
+            }
+        }
+    }
+
+    public function setRead(bool $isRead)
+    {
+        $this->isRead = $isRead;
+    }
+
+    public function isRead()
+    {
+        return $this->isRead;
     }
 
     public function getDateTime()

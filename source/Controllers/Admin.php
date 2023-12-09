@@ -154,6 +154,7 @@ class Admin extends Controller
         $message->setReceiverUser($receiverUser);
         $message->setContent($post["messageData"]);
         $message->setDateTime(date("Y-m-d H:i:s"));
+        $message->setRead(false);
         $message->setModelMessage($message);
 
         $conversation->setUser($senderUser);
@@ -208,10 +209,7 @@ class Admin extends Controller
             ->setRequiredFields(["csrfToken", "csrf_token", "paramProfileData"])
             ->configureDataPost()->getAllPostData();
 
-        $designer = new Designer();
-        $businessMan = new BusinessMan();
         $user = new User();
-
         $profileEmail = base64_decode($post["paramProfileData"], true);
         if (!$profileEmail) {
             throw new \Exception("Parametro designer_id inválido");
@@ -221,13 +219,7 @@ class Admin extends Controller
             throw new \Exception("Parametro designer_id inválido");
         }
 
-        $receiverData = $designer->getDesignerByEmail($profileEmail);
-
-        if (empty($receiverData)) {
-            $receiverData = $businessMan->getBusinessManByEmail($profileEmail);
-        }
-
-        $receiverData = $user->getUserByEmail($receiverData->full_email);
+        $receiverData = $user->getUserByEmail($profileEmail);
         if (empty($receiverData)) {
             throw new \Exception("Objeto receptor não existe");
         }
@@ -240,6 +232,11 @@ class Admin extends Controller
 
         $receiverUser = new User();
         $receiverUser->setId($receiverData->id);
+
+        $messages = new Messages();
+        if (!empty($post["updateIsRead"])) {
+            $messages->updateIsReadByUser($receiverUser, $user);
+        }
 
         $chatData = [
             "success" => true,

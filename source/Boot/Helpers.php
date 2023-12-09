@@ -1,11 +1,36 @@
 <?php
 
-function server() {
-    return (new Source\Core\Controller())->getAllServerData();
+function checkContactsOnHeader()
+{
+    $user = new \Source\Domain\Model\User();
+    $contact = new \Source\Domain\Model\Contact();
+    $userData = $user->getUserByEmail((new \Source\Core\Session())->login_user->fullEmail);
+    $user->setId($userData->id);
+    $contactsData = $contact->getContactsUserByIdUser($user);
+    asort($contactsData);
+    $contactsData = array_filter($contactsData, function ($item) use ($userData) {
+        return $item->is_read == 0 && $userData->id != $item->sender_id;
+    });
+    $contactsData = array_map(function ($item) {
+        $item->full_name = explode(" ", $item->full_name)[0];
+        return $item;
+    }, $contactsData);
+    return $contactsData;
 }
 
-function session() {
-    return new \Source\Core\Session();
+function checkConversationData() {
+    $conversationData = [];
+    if (!empty((new \Source\Core\Session())->login_user->user) && (new \Source\Core\Session())->login_user->receiverUser) {
+        $conversation = new \Source\Domain\Model\Conversation();
+        $conversationData = $conversation
+            ->getConversationAndMessages([(new \Source\Core\Session())->login_user->user->getId(), (new \Source\Core\Session())->login_user->receiverUser->getId()]);
+    }
+
+    return $conversationData;
+}
+
+function server() {
+    return (new Source\Core\Controller())->getAllServerData();
 }
 
 function removeQueryStringFromEndpoint($url) {

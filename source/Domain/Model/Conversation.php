@@ -57,7 +57,7 @@ class Conversation
         $this->id = $id;
     }
 
-    public function getConversationAndMessages(array $users)
+    public function getConversationAndMessages(array $users): array
     {
         $this->conversation = new ModelsConversation();
         $conversationData = $this->conversation
@@ -83,7 +83,7 @@ class Conversation
             }
         }
 
-        return $conversationData;
+        return empty($conversationData) ? [] : $conversationData;
     }
 
     public function getMessage()

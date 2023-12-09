@@ -51,7 +51,7 @@ class Contact
                 "braid.messages.id = braid.conversation.id_message",
                 "sender_id=:sender_id OR receiver_id=:receiver_id",
                 ":sender_id=" . $user->getId() . "&:receiver_id=" . $user->getId() . "&:id_user=" . $user->getId() . "",
-                "content, date_time, receiver_id, sender_id"
+                "content, date_time, receiver_id, sender_id, is_read"
             )->fetch(true);
 
         $contactsData = [];
@@ -87,15 +87,19 @@ class Contact
                     if ($contact->id == $contactValue->sender_id) {
                         $contact->content = $contactValue->content;
                         $contact->date_time = date("d/m/Y H:i", strtotime($contactValue->date_time));
-                    }else if ($contact->id == $contactValue->receiver_id) {
+                        $contact->is_read = $contactValue->is_read;
+                        $contact->sender_id = $contactValue->sender_id;
+                    } else if ($contact->id == $contactValue->receiver_id) {
                         $contact->content = $contactValue->content;
                         $contact->date_time = date("d/m/Y H:i", strtotime($contactValue->date_time));
+                        $contact->is_read = $contactValue->is_read;
+                        $contact->sender_id = $contactValue->sender_id;
                     }
                 }
             }
         }
 
-        return $contactsData;
+        return empty($contactsData) ? [] : $contactsData;
     }
 
     public function getConversation()

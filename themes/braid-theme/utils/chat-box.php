@@ -1,13 +1,7 @@
-<?php
-if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user->user)) {
-    $conversation = new \Source\Domain\Model\Conversation();
-    $conversationData = $conversation->getConversationAndMessages([session()->login_user->user->getId(), session()->login_user->receiverUser->getId()]);
-}
-?>
 <?php if (!preg_match("/braid-system\/chat-panel/", server()["REQUEST_URI"])) : ?>
-    <div style="<?= empty(session()->login_user->isChatClosed) ? "display:block" : "display:none" ?>" class="card card-danger direct-chat direct-chat-danger chat-box" id="chatBox" data-csrf="<?= session()->csrf_token ?>">
+    <div style="<?= empty((new \Source\Core\Session())->login_user->isChatClosed) ? "display:block" : "display:none" ?>" class="card card-danger direct-chat direct-chat-danger chat-box" id="chatBox" data-csrf="<?= (new \Source\Core\Session())->csrf_token ?>">
         <div class="card-header">
-            <h3 class="card-title"><?= empty(session()->login_user->success) ? "Chat" : session()->login_user->receiverName ?></h3>
+            <h3 class="card-title"><?= empty((new \Source\Core\Session())->login_user->success) ? "Chat" : (new \Source\Core\Session())->login_user->receiverName ?></h3>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
@@ -22,9 +16,9 @@ if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user-
         </div>
         <div class="card-body">
             <div class="direct-chat-messages">
-                <?php if (!empty($conversationData)) : ?>
-                    <?php foreach ($conversationData as $conversation) : ?>
-                        <?php if (session()->login_user->user->getId() == $conversation->receiver_id) : ?>
+                <?php if (!empty(checkConversationData())) : ?>
+                    <?php foreach (checkConversationData() as $conversation) : ?>
+                        <?php if ((new \Source\Core\Session())->login_user->user->getId() == $conversation->receiver_id) : ?>
                             <div class="direct-chat-msg">
                                 <div class="direct-chat-infos clearfix">
                                     <span class="direct-chat-name float-left"><?= $conversation->full_name ?></span>
@@ -37,7 +31,7 @@ if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user-
                                     <?= $conversation->content ?>
                                 </div>
                             </div>
-                        <?php elseif (session()->login_user->user->getId() == $conversation->sender_id) : ?>
+                        <?php elseif ((new \Source\Core\Session())->login_user->user->getId() == $conversation->sender_id) : ?>
                             <div class="direct-chat-msg right">
                                 <div class="direct-chat-infos clearfix">
                                     <span class="direct-chat-name float-right"><?= $conversation->full_name ?></span>
@@ -59,10 +53,10 @@ if (!empty(session()->login_user->receiverUser) && !empty(session()->login_user-
             </div>
         </div>
         <div class="card-footer">
-            <form action="#" method="post" id="formChatBox" data-receiver="<?= empty(session()->login_user->paramProfileData) ? "" : session()->login_user->paramProfileData ?>">
+            <form action="#" method="post" id="formChatBox" data-receiver="<?= empty((new \Source\Core\Session())->login_user->paramProfileData) ? "" : (new \Source\Core\Session())->login_user->paramProfileData ?>">
                 <div class="input-group">
                     <input type="text" name="messageData" placeholder="Mensagem..." class="form-control">
-                    <input type="hidden" name="csrfToken" value="<?= empty(session()->csrf_token) ? "" : session()->csrf_token ?>">
+                    <input type="hidden" name="csrfToken" value="<?= empty((new \Source\Core\Session())->csrf_token) ? "" : (new \Source\Core\Session())->csrf_token ?>">
                     <span class="input-group-append">
                         <button type="submit" class="btn btn-primary">Enviar</button>
                     </span>

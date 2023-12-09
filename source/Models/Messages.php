@@ -23,14 +23,17 @@ class Messages extends Model
     /** @var string conteúdo da mensagem */
     private string $content = 'content';
 
-    /** Data e hora da mensagem */
+    /** @var string Data e hora da mensagem */
     private string $dateTime = 'date_time';
+
+    /** @var string Booleano para saber se a mensagem foi lida */
+    private string $isRead = 'is_read';
 
     /**
      * Messages constructor
      */
     public function __construct()
     {
-        parent::__construct($this->tableName, ["id"], [$this->senderId, $this->receiverId, $this->content, $this->dateTime]);
+        parent::__construct($this->tableName, ["id"], [$this->senderId, $this->receiverId, $this->content, $this->dateTime, $this->isRead]);
     }
 }

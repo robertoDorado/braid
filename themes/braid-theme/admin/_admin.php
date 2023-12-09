@@ -11,6 +11,35 @@
                 <a href="#" class="nav-link" id="exit">Sair</a>
             </li>
         </ul>
+        <ul class="navbar nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="far fa-comments"></i>
+                    <span class="badge badge-danger navbar-badge"><?= empty(checkContactsOnHeader()) ? "" : count(checkContactsOnHeader()) ?></span>
+                </a>
+                <?php if (!empty(checkContactsOnHeader())) : ?>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <?php foreach (array_slice(checkContactsOnHeader(), 0, 3) as $contactHeader) : ?>
+                            <a href="#" class="dropdown-item btnOpenChatHeader" data-csrf="<?= empty((new \Source\Core\Session())->csrf_token) ? "" : (new \Source\Core\Session())->csrf_token ?>" data-hash="<?= base64_encode($contactHeader->full_email) ?>">
+                                <div class="media">
+                                    <img src="<?= empty($contactHeader->path_photo) ?
+                                                    theme("assets/img/user/default.png") :
+                                                    theme("assets/img/user/" . $contactHeader->path_photo . "") ?>" alt="<?= empty($contactHeader->path_photo) ? "default.png" : $contactHeader->path_photo ?>" class="img-size-50 mr-3 img-circle">
+                                    <div class="media-body">
+                                        <h3 class="dropdown-item-title">
+                                            <?= $contactHeader->full_name ?>
+                                            <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                        </h3>
+                                        <p class="text-sm"><?= $contactHeader->content ?></p>
+                                        <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i><?= $contactHeader->date_time ?></p>
+                                    </div>
+                                </div>
+                            </a>
+                        <?php endforeach ?>
+                    </div>
+                <?php endif ?>
+            </li>
+        </ul>
     </nav>
     <!-- /.navbar -->
 
