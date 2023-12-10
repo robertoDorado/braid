@@ -64,18 +64,6 @@
                 </div>
             </div>
 
-            <!-- SidebarSearch Form -->
-            <div class="form-inline">
-                <div class="input-group" data-widget="sidebar-search">
-                    <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-sidebar">
-                            <i class="fas fa-search fa-fw"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -89,7 +77,7 @@
                         <a href="<?= url("/braid-system") ?>" class="nav-link <?= $menuSelected == "braid-system" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-edit"></i>
                             <p>
-                                Editar perfil
+                                Editar Perfil
                             </p>
                         </a>
                     </li>
@@ -100,7 +88,7 @@
                             <?php if ($userType == "businessman") : ?>
                                 <p>Lista de projetos</p>
                             <?php elseif ($userType == "designer") : ?>
-                                <p>Projetos disponíveis</p>
+                                <p>Projetos Disponíveis</p>
                             <?php endif ?>
                         </a>
                     </li>
@@ -108,7 +96,7 @@
                         <a href="<?= url("/braid-system/additional-data") ?>" class="nav-link
                         <?= $menuSelected == "additional-data" ? "bg-danger" : "" ?>">
                             <i class="nav-icon fas fa-bullseye"></i>
-                            Dados adicionais
+                            Dados Adicionais
                         </a>
                     </li>
                     <li class="nav-item">

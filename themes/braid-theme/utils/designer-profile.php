@@ -17,3 +17,8 @@
 <p class="text-muted">
     <?= empty($profileData->experience_data) ? "Não específicado" : $profileData->experience_data ?>
 </p>
+<hr>
+<strong><i class="fas fa-pencil-alt mr-1"></i> Portfólio</strong>
+<p class="text-muted">
+    <?= empty($profileData->portfolio_data) ? "Não específicado" : $profileData->portfolio_data ?>
+</p>
