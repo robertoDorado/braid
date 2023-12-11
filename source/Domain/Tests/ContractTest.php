@@ -2,6 +2,7 @@
 
 namespace Source\Domain\Tests;
 
+use PDOException;
 use PHPUnit\Framework\TestCase;
 use Source\Domain\Model\Contract;
 use Source\Domain\Model\Designer;
@@ -72,12 +73,66 @@ class ContractTest extends TestCase
         $this->assertIsBool($signature);
     }
 
-    public function setAdditionalDescription()
+    public function testGetAdditionalDescription()
     {
         $this->contract = new Contract();
         $this->contract->setAdditionalDescription("Description data");
 
         $descriptionData = $this->contract->getAdditionalDescription();
         $this->assertIsString($descriptionData);
+    }
+
+    public function testSetModelContract()
+    {
+        $this->contract = new Contract();
+        $designer = new Designer();
+        $job = new Jobs();
+        $designer->setId(0);
+        $job->setId(0);
+        
+        $this->contract->setDesigner($designer);
+        $this->contract->setJobs($job);
+        $this->contract->setAdditionalDescription("");
+        $this->contract->setSignatureBusinessMan(false);
+        $this->contract->setSignatureDesigner(false);
+        $this->expectException(PDOException::class);
+        $this->contract->setModelContract($this->contract);
+    }
+
+    public function testDestroyContractByJob()
+    {
+        $this->contract = new Contract();
+        $jobs = new Jobs();
+        $jobs->setId(0);
+        $this->contract->setJobs($jobs);
+        $this->assertEmpty($this->contract->destroyContractByJob());
+    }
+
+    public function testGetTotalContractLeftJoinDesigner()
+    {
+        $this->contract = new Contract();
+        $contractsData = $this->contract->getTotalContractLeftJoinDesigner(0);
+        $this->assertEmpty($contractsData);
+    }
+
+    public function testGetContractLeftJoinDesignerA()
+    {
+        $this->contract = new Contract();
+        $contractsData = $this->contract->getContractLeftJoinDesigner(0, true);
+        $this->assertEmpty($contractsData);
+    }
+    
+    public function testGetContractLeftJoinDesignerB()
+    {
+        $this->contract = new Contract();
+        $contractsData = $this->contract->getContractLeftJoinDesigner(0);
+        $this->assertIsObject($contractsData);
+    }
+
+    public function testGetContractByDesignerIdAndJobId()
+    {
+        $this->contract = new Contract();
+        $contractsData = $this->contract->getContractByDesignerIdAndJobId(0, 0);
+        $this->assertEmpty($contractsData);
     }
 }
