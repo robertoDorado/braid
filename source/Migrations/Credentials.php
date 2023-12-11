@@ -28,7 +28,7 @@ class Credentials extends DDL
         $this->removeProperty('table_name');
         $this->setKeysToProperties(['BIGINT AUTO_INCREMENT PRIMARY KEY',
         'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL', 'VARCHAR(255) NULL']);
-        $this->dropTableIfExists()->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 }

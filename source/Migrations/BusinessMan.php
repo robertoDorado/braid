@@ -52,4 +52,4 @@ class BusinessMan extends DDL
     }
 }
 
-(new BusinessMan())->setColumnPathPhoto();
+(new BusinessMan())->defineTable();

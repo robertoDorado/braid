@@ -32,7 +32,7 @@ class Contract extends DDL
         'VARCHAR(1000) NOT NULL', 'TINYINT(1) NULL', 'TINYINT(1) NULL',
         'CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `designer` (`id`)',
         'CONSTRAINT `contract_ibfk_3` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)']);
-        $this->dropTableIfExists()->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 

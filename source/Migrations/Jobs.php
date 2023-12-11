@@ -32,7 +32,7 @@ class Jobs extends DDL
         'VARCHAR(1000) NOT NULL', 'DECIMAL(10, 2) NOT NULL',
         'DATETIME NOT NULL',
         'FOREIGN KEY (business_man_id) REFERENCES business_man(id)']);
-        $this->dropTableIfExists()->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 
@@ -43,4 +43,4 @@ class Jobs extends DDL
     }
 }
 
-(new Jobs())->modifyColumnJobs();
+(new Jobs())->defineTable();

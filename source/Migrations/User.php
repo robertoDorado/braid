@@ -32,7 +32,7 @@ class User extends DDL
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL', 'VARCHAR(255) NOT NULL',
         'VARCHAR(255) NOT NULL', 'VARCHAR(255) NULL', 'TINYINT(1) NOT NULL',
         'UNIQUE KEY full_email (full_email)', 'UNIQUE KEY nick_name (nick_name)']);
-        $this->dropTableIfExists()->createTableQuery();
+        $this->setForeignKeyChecks(0)->dropTableIfExists()->createTableQuery()->setForeignKeyChecks(1);
         $this->executeQuery();
     }
 }
