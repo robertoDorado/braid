@@ -73,7 +73,7 @@ class EvaluationDesigner
         }
 
         $evaluationDesignerData = $evaluationDesignerData->fetch(true);
-        return $evaluationDesignerData;
+        return empty($evaluationDesignerData) ? [] : $evaluationDesignerData;
     }
 
     public function getEvaluationDescription()
