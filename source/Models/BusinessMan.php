@@ -20,7 +20,7 @@ class BusinessMan extends Model
     private string $fullEmail = 'full_email';
 
     /** @var string Foto de identificação */
-    private string $photoPath = 'photo_path';
+    private string $pathPhoto = 'path_photo';
 
     /** @var string  Nome da empresa */
     private string $companyName = 'company_name';

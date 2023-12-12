@@ -89,6 +89,7 @@ $route->get("/company-profile/{hash}", "Admin:companyProfile");
 $route->post("/save-breadcrumb-link", "Admin:saveBreadCrumbLink");
 $route->get("/chat-panel", "Admin:chatPanel");
 $route->post("/chat-panel", "Admin:chatPanel");
+$route->get("/chat-panel-user", "Admin:chatPanelUser");
 $route->post("/chat-panel-user", "Admin:chatPanelUser");
 $route->post("/chat-messages/{hash}", "Admin:chatMessages");
 $route->get("/profile-data-json/{hash}", "Admin:profileDataJson");

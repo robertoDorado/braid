@@ -23,7 +23,7 @@ class Designer extends Model
     private string $positionData = 'position_data';
 
     /** @var string Foto de identificação */
-    private string $photoPath = 'photo_path';
+    private string $pathPhoto = 'path_photo';
 
     /** @var string documento de identificação */
     private string $documentData = 'document_data';

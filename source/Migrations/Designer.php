@@ -60,4 +60,4 @@ class Designer extends DDL
     }
 }
 
-(new Designer())->setColumnPositionData();
+(new Designer())->defineTable();
