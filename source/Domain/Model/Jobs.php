@@ -63,10 +63,6 @@ class Jobs
         $this->jobs = new ModelsJobs();
         $job = $this->jobs->findById($this->getId());
 
-        if (empty($job)) {
-            throw new \Exception("Projeto não identificado");
-        }
-
         if (!$job->destroy()) {
             if (!empty($job->fail())) {
                 throw new \PDOException($job->fail()->getMessage() . " " . $job->queryExecuted());
